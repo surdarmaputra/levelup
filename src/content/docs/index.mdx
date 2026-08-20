@@ -1,0 +1,37 @@
+---
+title: LevelUp
+description: A catalog of guided, production-minded learning materials for software engineers.
+template: splash
+hero:
+  tagline: Guided paths from "I know the language" to shipping production-grade systems. One real domain per material, no toy apps.
+  actions:
+    - text: Browse the catalog
+      link: '#catalog'
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/surdarmaputra/levelup
+      icon: external
+      variant: minimal
+---
+
+import MaterialCatalog from '../../components/MaterialCatalog.astro';
+
+## Catalog
+
+Every material is a sequenced roadmap, not a reference dump. Each step states why it comes
+where it does, what you should be able to explain afterwards, and how to verify you actually
+got it.
+
+<MaterialCatalog />
+
+## How these materials are built
+
+Each material follows the same shape, so what you learn about *how to work through one*
+transfers to the next.
+
+- **One real domain per material.** The hard problems are load-bearing, not bolted on as demos.
+- **Sequenced, not alphabetised.** Every step exists because the previous one created the pain it solves.
+- **`LEARN` and `BUILD` steps.** Some things only survive being struggled with. Those steps tell your AI agent to stay a tutor and refuse to write the code.
+- **Verifiable.** Acceptance criteria and anti-pattern lists per step, so "done" is checkable rather than felt.
+- **Agent-ready.** Each material ships the harness files — `AGENTS.md`, a reviewer prompt, rubrics — so a coding agent is useful rather than merely plausible.

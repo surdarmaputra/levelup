@@ -1,0 +1,20 @@
+---
+title: Page not found
+description: That page does not exist on LevelUp.
+template: splash
+editUrl: false
+sidebar:
+  hidden: true
+pagefind: false
+---
+
+export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+The page you were looking for isn't here — it may have been renamed or moved while a material
+was being restructured.
+
+<p>
+  <a href={`${base}/`}>Back to the catalog</a>
+  {' · '}
+  <a href={`${base}/java-spring-boot/`}>Java with Spring Boot</a>
+</p>

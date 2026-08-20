@@ -1,0 +1,22 @@
+/* LevelUp theme overrides. Keep this file small — prefer Starlight's own
+   CSS custom properties over new component styles. */
+
+:root {
+  --sl-content-width: 50rem;
+}
+
+/* Slightly denser tables: the roadmap pages lean on them heavily. */
+.sl-markdown-content table {
+  font-size: var(--sl-text-sm);
+}
+
+.sl-markdown-content th,
+.sl-markdown-content td {
+  vertical-align: top;
+}
+
+/* The step pages use `---` between steps; make the break readable. */
+.sl-markdown-content hr {
+  margin-block: 2.5rem;
+  border-color: var(--sl-color-gray-5);
+}

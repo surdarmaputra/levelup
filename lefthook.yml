@@ -1,0 +1,4 @@
+pre-push:
+  commands:
+    verify-project:
+      run: bash scripts/verify-project.sh

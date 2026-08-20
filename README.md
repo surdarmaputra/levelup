@@ -27,7 +27,7 @@ npm run dev      # http://localhost:4321/levelup/
 | `npm run build` | Production build into `dist/` |
 | `npm run preview` | Serve `dist/` locally |
 | `npm run check` | Types + content-schema check |
-| `npm run verify` | check → build → internal link check. **The one that gates a push.** |
+| `npm run verify` | check → build → link check → skill content check. **The one that gates a push.** |
 
 ## Structure
 

@@ -1,13 +1,11 @@
 # RFC: [Short RFC description]
 
-> Move this document to Lending Engineering → MGR Pinjam → RFC folder before publishing
-
 | Field | Value |
 |-------|-------|
 | **Authors** | @dev |
-| **Reviewers** | Monetisation Devs, Acq Devs, CX Devs |
+| **Reviewers** | |
 | **Approvers** | Leads |
-| **RFC** | RFC Jira Link |
+| **RFC** | Issue/ticket link |
 | **Pod** | |
 | **Stream** | |
 | **Status** | DRAFT |

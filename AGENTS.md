@@ -18,7 +18,7 @@ Current release: **v0.1** — one material, `java-spring-boot`.
 ## The loop
 
 `npm run verify` is the single source of truth. It runs `astro check` → production build →
-internal link check.
+internal link check → org-specific-content check on the vendored skills.
 
 **Run it after every change. Do not report work as complete without a green run.**
 
@@ -141,7 +141,9 @@ reversed three PRs later.
 
 Agent skills live in `.claude/skills/`. See [`.claude/skills/README.md`](.claude/skills/README.md)
 for what each one does and which are vendored from
-[`surdarmaputra/agent-skills`](https://github.com/surdarmaputra/agent-skills).
+[`surdarmaputra/agent-skills`](https://github.com/surdarmaputra/agent-skills). `prd-to-rfc`
+carries a local patch removing the organisation it was written in; `verify` fails if an
+upstream update reverts it.
 
 Reach for them rather than improvising:
 

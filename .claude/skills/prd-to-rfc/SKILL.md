@@ -68,8 +68,8 @@ Ask user for PRD source. Accept, in this priority:
 Only proceed once confirmed. If it can't be enabled, ask the user to paste the content instead.
 
 Extract the document token from the URL:
-- `https://gotocompany.sg.larksuite.com/docx/<TOKEN>` → token is `<TOKEN>`
-- `https://gotocompany.sg.larksuite.com/wiki/<TOKEN>` → use wiki node tools instead
+- `https://<your-org>.larksuite.com/docx/<TOKEN>` → token is `<TOKEN>`
+- `https://<your-org>.larksuite.com/wiki/<TOKEN>` → use wiki node tools instead
 
 ```
 mcp__lark-mcp__docx_v1_document_rawContent

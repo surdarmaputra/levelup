@@ -1,6 +1,6 @@
 # Humanizer Rules for RFC Writing
 
-Project-tuned banned-word list for cash-loans RFCs. Sweep the draft and replace every hit.
+Banned-word list for RFC writing. Sweep the draft and replace every hit.
 
 ## Banned Words/Phrases
 

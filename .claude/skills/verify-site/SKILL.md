@@ -15,7 +15,8 @@ Code blocks: unchanged, always.
 npm run verify
 ```
 
-`astro check` → `astro build` → `node scripts/check-links.mjs`. Green = shippable.
+`astro check` → `astro build` → `node scripts/check-links.mjs` → org-content grep over
+`.claude/skills`. Green = shippable.
 
 Run it after every change. **Do not report work as complete without a green run.** Never
 weaken a check to get green — if a rule looks wrong, raise it.
@@ -30,6 +31,7 @@ weaken a check to get green — if a rule looks wrong, raise it.
 | `broken internal link` + a resolved path | Wrong number of `../` | Count from the page **URL**, not the file path — see below |
 | `missing base path` | An absolute `/foo/` link in content | Make it relative, or compute it from `import.meta.env.BASE_URL` in `.mdx` |
 | `Incorrect integration order` | `mdx()` before `starlight()` | `starlight()` first |
+| `org-specific content found in the skills` | An `install-remote.sh --update` reverted the `prd-to-rfc` patch | Re-apply it — the table in `.claude/skills/README.md` says exactly what to change |
 
 ### Counting `../`
 

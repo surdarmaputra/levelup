@@ -4,8 +4,9 @@ Two kinds of skill live here.
 
 ## Vendored from `surdarmaputra/agent-skills`
 
-Copied verbatim from [`surdarmaputra/agent-skills`](https://github.com/surdarmaputra/agent-skills)
-at commit `2b3eaea` so the repo works offline and every contributor gets the same behaviour.
+Copied from [`surdarmaputra/agent-skills`](https://github.com/surdarmaputra/agent-skills) at
+commit `2b3eaea` so the repo works offline and every contributor gets the same behaviour.
+
 **Don't edit these in place** — fix them upstream, then re-run the installer:
 
 ```bash
@@ -21,10 +22,22 @@ bash <(curl -fsSL https://raw.githubusercontent.com/surdarmaputra/agent-skills/m
 | `prd-to-rfc` | Turns a PRD (or a settled discussion) into a structured RFC under `docs/rfcs/` |
 | `skill-creator-compact` | Create and iterate on skills |
 
-Two notes on `prd-to-rfc`: its `references/rfc-template.md` opens with a "move this to the
-Lending Engineering folder" line and `references/humanizer-rules.md` calls itself
-"cash-loans" — both are upstream artefacts of where the skill was written. Ignore them; the
-section structure and the banned-word list are what matter here.
+### Local patch: `prd-to-rfc`
+
+One skill is **not** byte-identical to upstream. `prd-to-rfc` arrived carrying the org it was
+written in, and those details are wrong here and would leak into any RFC generated from it:
+
+| File | Removed | Now |
+|---|---|---|
+| `references/rfc-template.md` | "Move this document to Lending Engineering → MGR Pinjam → RFC folder" | line deleted |
+| `references/rfc-template.md` | Reviewers pre-filled with that org's teams | left blank |
+| `references/rfc-template.md` | "RFC Jira Link" | "Issue/ticket link" |
+| `references/humanizer-rules.md` | "banned-word list for cash-loans RFCs" | "banned-word list for RFC writing" |
+| `SKILL.md` | that org's Lark hostname in the URL examples | `<your-org>.larksuite.com` |
+
+`--update` overwrites the whole skill, so it will bring the org-specific lines back. Either
+re-apply this patch after updating, or land the change upstream and drop this note. The
+`grep` in `scripts/verify-project.sh` fails the build if any of it reappears.
 
 ## Project-local
 

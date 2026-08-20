@@ -79,8 +79,9 @@ needs restructuring for the next one has failed.
    scripts only.
 4. `[SITE]` Dark mode, mobile layout, and keyboard-accessible navigation come from the theme
    rather than custom code.
-5. `[HARNESS]` Vendored skills stay byte-identical to their upstream source so they can be
-   updated with the upstream installer instead of merged by hand.
+5. `[HARNESS]` Vendored skills stay as close to their upstream source as possible, so they can
+   be updated with the upstream installer instead of merged by hand. Where a local patch is
+   unavoidable, it is recorded and a check fails the build if it silently reverts.
 
 ---
 
@@ -346,12 +347,19 @@ it needs, and can verify its own work in one command.*
 
 #### Task 3.2: `[HARNESS]` Install skills
 
-- [x] AC1: Five skills vendored byte-identical from `surdarmaputra/agent-skills` at commit
-      `2b3eaea`: `code-review-enhanced`, `conventional-commit`, `grill-me`, `prd-to-rfc`,
-      `skill-creator-compact`.
-- [x] AC2: `.claude/skills/README.md` records the provenance, the upstream update command, and
-      the two upstream org-specific artefacts in `prd-to-rfc`'s references.
-- [x] AC3: Two project-local skills: `add-material` (scaffold a material end to end) and
+- [x] AC1: Five skills vendored from `surdarmaputra/agent-skills` at commit `2b3eaea`:
+      `code-review-enhanced`, `conventional-commit`, `grill-me`, `prd-to-rfc`,
+      `skill-creator-compact`. Four are byte-identical to upstream.
+- [x] AC2: `prd-to-rfc` is patched to remove the organisation it was written in — a "move this
+      to the Lending Engineering folder" instruction, that org's team names pre-filled as
+      reviewers, a Jira reference, a "cash-loans" description, and its Lark hostname in the URL
+      examples. Left in place, every one of them would have been copied into the first RFC
+      generated from the template.
+- [x] AC3: `.claude/skills/README.md` records the provenance, the upstream update command, and
+      the patch as a table of what was removed and what replaced it.
+- [x] AC4: `scripts/verify-project.sh` greps every tracked file for those terms and fails the
+      build if they reappear, so an `--update` that reverts the patch cannot land unnoticed.
+- [x] AC5: Two project-local skills: `add-material` (scaffold a material end to end) and
       `verify-site` (run the loop, read its failures).
 
 #### Task 3.3: `[HARNESS]` Write this RFC
@@ -394,11 +402,15 @@ whole-site and atomic, so there is no partial state to recover from.
    catalog entry" claim.
 3. **`status: 'draft'`.** The catalog supports it and nothing uses it. Should a partially written
    material be publicly visible with a badge, or stay unlisted until complete?
-4. **Repo-root `AGENTS.md` vs the published template.** This repo's harness file and the
+4. **The `prd-to-rfc` patch.** It lives here as a local diff, guarded by a grep. Cleaner to
+   land it upstream in `surdarmaputra/agent-skills` — the org-specific lines are wrong for
+   every consumer, not just this repo — and then delete both the patch and the guard. Worth
+   opening that PR?
+5. **Repo-root `AGENTS.md` vs the published template.** This repo's harness file and the
    TicketFlow template a reader copies are two different documents with the same name. The
    template is a content page now, which resolves it — but a contributor may still open the wrong
    one. Rename the published page?
-5. **Analytics.** Deferred. If it is ever added, the choice needs to survive a static host with
+6. **Analytics.** Deferred. If it is ever added, the choice needs to survive a static host with
    no server-side logging and a strict CSP.
 
 ---
@@ -427,6 +439,7 @@ whole-site and atomic, so there is no partial state to recover from.
   where readers stop.
 - Revisit `src/styles/custom.css` if content pages start needing components beyond tables and
   code blocks.
+- Send the `prd-to-rfc` de-org patch upstream, then drop the local patch and its grep guard.
 
 ---
 

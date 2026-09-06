@@ -1,0 +1,65 @@
+---
+/**
+ * SiteFooter — one simple site-wide footer, rendered at the bottom of every
+ * page by the PageFrame override. Brand + copyright on the left, the GitHub
+ * link (moved out of the header) on the right.
+ */
+const repoUrl = 'https://github.com/surdarmaputra/levelup';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__brand">© {year} LevelUp</p>
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href={repoUrl} target="_blank" rel="noopener">GitHub</a>
+      <span aria-hidden="true">·</span>
+      <span>Built with Astro &amp; Starlight</span>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 5rem;
+    padding: 2rem var(--sl-content-pad-x, 1.5rem);
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--sl-content-width);
+    margin-inline: auto;
+  }
+
+  .site-footer__brand {
+    margin: 0;
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .site-footer__links a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-footer__links a {
+      transition: color 0.15s ease;
+    }
+  }
+
+  .site-footer__links a:hover {
+    color: var(--sl-color-white);
+  }
+</style>

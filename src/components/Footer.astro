@@ -1,0 +1,12 @@
+---
+/**
+ * Footer override — the landing page and other `splash` pages stay clean:
+ * no edit link, no "last updated", no prev/next pagination. Every other page
+ * gets Starlight's default footer unchanged.
+ */
+import StarlightFooter from '@astrojs/starlight/components/Footer.astro';
+
+const isSplash = Astro.locals.starlightRoute.entry.data.template === 'splash';
+---
+
+{!isSplash && <StarlightFooter />}

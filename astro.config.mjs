@@ -29,6 +29,10 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'LevelUp',
+      logo: {
+        src: './src/assets/logo.svg',
+        alt: 'LevelUp',
+      },
       description:
         'A catalog of guided, production-minded learning materials for software engineers.',
       tagline: 'Guided paths to production-grade engineering.',
@@ -51,6 +55,9 @@ export default defineConfig({
       components: {
         PageFrame: './src/components/PageFrame.astro',
         PageTitle: './src/components/PageTitle.astro',
+        Header: './src/components/Header.astro',
+        Hero: './src/components/Hero.astro',
+        Footer: './src/components/Footer.astro',
       },
     }),
     // Must come after starlight() so code blocks in .mdx get Expressive Code.

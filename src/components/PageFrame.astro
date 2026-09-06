@@ -2,6 +2,7 @@
 import StarlightPageFrame from '@astrojs/starlight/components/PageFrame.astro';
 import ProgressTracker from './ProgressTracker.astro';
 import ProgressDialog from './ProgressDialog.astro';
+import SiteFooter from './SiteFooter.astro';
 import { publishedMaterials } from '../catalog';
 
 const starlightRoute = Astro.locals.starlightRoute;
@@ -55,4 +56,6 @@ const pages = isMaterialPage
       <ProgressDialog />
     </>
   )}
+
+  <SiteFooter />
 </StarlightPageFrame>

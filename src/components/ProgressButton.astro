@@ -1,0 +1,333 @@
+---
+interface Props {
+  materialSlug: string;
+  stepId: string;
+}
+
+const { materialSlug, stepId } = Astro.props;
+---
+
+<div
+  class="learn-bar"
+  id="learn-bar"
+  data-material-slug={materialSlug}
+  data-step-id={stepId}
+>
+  <button class="learn-btn" id="btn-mark-learned">
+    <svg class="learn-default" width="13" height="13" viewBox="0 0 16 16" fill="none">
+      <path d="M4 2.5h8a.5.5 0 0 1 .5.5v10l-4.5-2.5L3.5 13V3a.5.5 0 0 1 .5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+    </svg>
+    <svg class="learn-check" width="13" height="13" viewBox="0 0 16 16" fill="none">
+      <path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="learn-label" id="learn-label">Mark as learned</span>
+  </button>
+
+  <button class="note-btn" id="btn-add-note" aria-label="Add note">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <span>Note</span>
+    <span class="note-dot" id="note-dot" hidden></span>
+  </button>
+</div>
+
+<div class="note-panel" id="note-panel" hidden>
+  <textarea id="note-textarea" placeholder="Add a note for this step..." rows="2"></textarea>
+  <div class="note-panel-actions">
+    <button class="mini-btn danger" id="btn-note-clear" hidden>Clear</button>
+    <button class="mini-btn" id="btn-note-cancel">Cancel</button>
+    <button class="mini-btn primary" id="btn-note-save">Save</button>
+  </div>
+</div>
+
+<style>
+  .learn-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .learn-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 999px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .learn-btn:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent-high);
+    background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  }
+
+  .learn-btn.done {
+    background: linear-gradient(135deg, var(--sl-color-accent), color-mix(in srgb, var(--sl-color-accent) 80%, #000));
+    border-color: transparent;
+    color: white;
+  }
+
+  .learn-btn.done:hover {
+    color: white;
+    border-color: transparent;
+  }
+
+  .learn-default {
+    display: inline-block;
+  }
+
+  .learn-check {
+    display: none;
+    transform: scale(0.4);
+    transition: all 0.2s ease;
+  }
+
+  .learn-btn.done .learn-default {
+    display: none;
+  }
+
+  .learn-btn.done .learn-check {
+    display: inline-block;
+    transform: scale(1);
+  }
+
+  .note-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 999px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    position: relative;
+  }
+
+  .note-btn:hover {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+
+  .note-btn.has-note {
+    color: var(--sl-color-accent-high);
+    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+  }
+
+  .note-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  }
+
+  .note-dot[hidden] {
+    display: none;
+  }
+
+  .note-panel {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 12px;
+  }
+
+  .note-panel[hidden] {
+    display: none;
+  }
+
+  .note-panel textarea {
+    width: 100%;
+    padding: 0.5rem 0.625rem;
+    background: var(--sl-color-gray-5);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    color: var(--sl-color-white);
+    font-family: inherit;
+    font-size: 0.8125rem;
+    resize: vertical;
+    min-height: 52px;
+  }
+
+  .note-panel textarea:focus {
+    outline: none;
+    border-color: var(--sl-color-accent);
+  }
+
+  .note-panel-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .mini-btn {
+    padding: 0.375rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 8px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mini-btn:hover {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+
+  .mini-btn.primary {
+    background: var(--sl-color-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  .mini-btn.primary:hover {
+    background: var(--sl-color-accent-high);
+    color: white;
+  }
+
+  .mini-btn.danger {
+    margin-right: auto;
+    color: var(--sl-color-red, #f87171);
+    border-color: color-mix(in srgb, var(--sl-color-red, #f87171) 45%, transparent);
+  }
+
+  .mini-btn.danger[hidden] {
+    display: none;
+  }
+
+  .mini-btn.danger:hover {
+    color: var(--sl-color-red, #f87171);
+    border-color: var(--sl-color-red, #f87171);
+    background: color-mix(in srgb, var(--sl-color-red, #f87171) 12%, transparent);
+  }
+
+  /* --- Micro-interactions --- */
+  @keyframes learn-pop {
+    0% { transform: scale(1); }
+    35% { transform: scale(0.9); }
+    70% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  .learn-btn.pop {
+    animation: learn-pop 0.36s ease;
+  }
+
+  .note-btn:active,
+  .mini-btn:active {
+    transform: scale(0.94);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .learn-btn.pop,
+    .learn-check {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { getProgress, toggleCompleted, setNote } from '../lib/progress';
+
+  function initLearn() {
+    const bar = document.getElementById('learn-bar');
+    if (!bar) return;
+
+    const materialSlug = bar.dataset.materialSlug || '';
+    const stepId = bar.dataset.stepId || '';
+    const btnLearned = document.getElementById('btn-mark-learned');
+    const label = document.getElementById('learn-label');
+    const btnNote = document.getElementById('btn-add-note');
+    const noteDot = document.getElementById('note-dot');
+    const notePanel = document.getElementById('note-panel');
+    const noteTextarea = document.getElementById('note-textarea') as HTMLTextAreaElement;
+    const btnCancel = document.getElementById('btn-note-cancel');
+    const btnClearNote = document.getElementById('btn-note-clear');
+    const btnSave = document.getElementById('btn-note-save');
+
+    function updateUI() {
+      const progress = getProgress(materialSlug, stepId);
+      const isDone = progress?.completed ?? false;
+      const hasNote = !!(progress?.note?.trim() ?? '');
+
+      btnLearned?.classList.toggle('done', isDone);
+      if (label) label.textContent = isDone ? 'Learned' : 'Mark as learned';
+      btnNote?.classList.toggle('has-note', hasNote);
+      if (noteDot) noteDot.hidden = !hasNote;
+    }
+
+    btnLearned?.addEventListener('click', () => {
+      toggleCompleted(materialSlug, stepId);
+      btnLearned.classList.remove('pop');
+      void btnLearned.offsetWidth;
+      btnLearned.classList.add('pop');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    btnNote?.addEventListener('click', () => {
+      const progress = getProgress(materialSlug, stepId);
+      if (noteTextarea) noteTextarea.value = progress?.note ?? '';
+      if (btnClearNote) btnClearNote.hidden = !(progress?.note?.trim() ?? '');
+      notePanel?.removeAttribute('hidden');
+      noteTextarea?.focus();
+    });
+
+    btnCancel?.addEventListener('click', () => {
+      notePanel?.setAttribute('hidden', '');
+      updateUI();
+    });
+
+    btnClearNote?.addEventListener('click', () => {
+      setNote(materialSlug, stepId, '');
+      notePanel?.setAttribute('hidden', '');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    btnSave?.addEventListener('click', () => {
+      const note = noteTextarea?.value?.trim() ?? '';
+      setNote(materialSlug, stepId, note);
+      notePanel?.setAttribute('hidden', '');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    noteTextarea?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        btnSave?.click();
+      }
+      if (e.key === 'Escape') btnCancel?.click();
+    });
+
+    window.addEventListener('progress-updated', updateUI);
+    document.addEventListener('astro:after-swap', () => {
+      window.removeEventListener('progress-updated', updateUI);
+      initLearn();
+    });
+
+    updateUI();
+  }
+
+  initLearn();
+</script>

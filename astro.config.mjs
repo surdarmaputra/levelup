@@ -48,6 +48,10 @@ export default defineConfig({
       routeMiddleware: './src/routeData.ts',
       sidebar: [{ label: 'All materials', link: '/' }, ...materialSidebar],
       pagination: true,
+      components: {
+        PageFrame: './src/components/PageFrame.astro',
+        PageTitle: './src/components/PageTitle.astro',
+      },
     }),
     // Must come after starlight() so code blocks in .mdx get Expressive Code.
     mdx(),

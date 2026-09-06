@@ -1,0 +1,58 @@
+---
+import StarlightPageFrame from '@astrojs/starlight/components/PageFrame.astro';
+import ProgressTracker from './ProgressTracker.astro';
+import ProgressDialog from './ProgressDialog.astro';
+import { publishedMaterials } from '../catalog';
+
+const starlightRoute = Astro.locals.starlightRoute;
+const id = starlightRoute.id ?? '';
+// `id` is the content-collection id, e.g. `java-spring-boot/setup/agent-harness`.
+const currentSlug = id.split('/').filter(Boolean)[0] || '';
+const currentMaterial = publishedMaterials.find((m) => m.slug === currentSlug);
+const isMaterialPage = !!currentMaterial;
+// The current page's step id, e.g. `setup/agent-harness` (relative to the material).
+const currentStepId = isMaterialPage ? id.split('/').slice(1).join('/') : '';
+
+// Flatten the scoped sidebar into the ordered list of page hrefs in this material.
+function collectHrefs(entries: any[]): string[] {
+  const hrefs: string[] = [];
+  for (const entry of entries) {
+    if (!entry) continue;
+    if (entry.type === 'group') {
+      hrefs.push(...collectHrefs(entry.entries ?? []));
+    } else if (entry.type === 'link' && entry.href) {
+      hrefs.push(entry.href);
+    }
+  }
+  return hrefs;
+}
+
+// Keep only pages that belong to the current material; drop the site landing page
+// and the material overview (`/<slug>/`), which has no step to track.
+const marker = `/${currentSlug}/`;
+const pages = isMaterialPage
+  ? collectHrefs(starlightRoute.sidebar ?? []).filter((href) => {
+      const i = href.indexOf(marker);
+      if (i === -1) return false;
+      return href.slice(i + marker.length).replace(/\/$/, '').length > 0;
+    })
+  : [];
+---
+
+<StarlightPageFrame>
+  <slot name="header" slot="header" />
+  <slot name="sidebar" slot="sidebar" />
+  <slot />
+
+  {isMaterialPage && (
+    <>
+      <ProgressTracker
+        materialSlug={currentSlug}
+        materialTitle={currentMaterial.title}
+        currentStepId={currentStepId}
+        pages={pages}
+      />
+      <ProgressDialog />
+    </>
+  )}
+</StarlightPageFrame>

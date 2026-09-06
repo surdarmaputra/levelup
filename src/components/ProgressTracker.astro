@@ -1,0 +1,681 @@
+---
+interface Props {
+  materialSlug: string;
+  materialTitle: string;
+  currentStepId: string;
+  pages: string[];
+}
+
+const { materialSlug, materialTitle, currentStepId, pages } = Astro.props;
+const totalSteps = pages.length;
+---
+
+<div
+  class="pw"
+  id="pw"
+  data-material-slug={materialSlug}
+  data-material-title={materialTitle}
+  data-step-id={currentStepId}
+  data-total-steps={totalSteps}
+  data-pages={JSON.stringify(pages)}
+>
+  <button class="pw-fab" id="pw-fab" aria-label="Progress" aria-expanded="false">
+    <svg class="pw-ring" id="pw-ring" viewBox="0 0 48 48">
+      <circle class="pw-ring-track" cx="24" cy="24" r="20" fill="none" stroke-width="4" />
+      <circle class="pw-ring-fill" id="pw-ring-fill" cx="24" cy="24" r="20" fill="none" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+    </svg>
+    <span class="pw-fab-label" id="pw-fab-label">0%</span>
+  </button>
+
+  <div class="pw-card" id="pw-card" hidden>
+    <div class="pw-head">
+      <span class="pw-title">Your progress</span>
+      <button class="pw-close" id="pw-close" aria-label="Close progress panel">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M4 4l8 8M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="pw-stats">
+      <span class="pw-percent" id="pw-percent">0%</span>
+      <span class="pw-count" id="pw-count">0 / 0</span>
+    </div>
+
+    <div class="pw-track">
+      <div class="pw-fill" id="pw-fill" style="width:0%"></div>
+    </div>
+
+    <div class="pw-actions">
+      <button class="pw-action" id="pw-learn">
+        <svg class="pw-learn-default" width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M4 2.5h8a.5.5 0 0 1 .5.5v10l-4.5-2.5L3.5 13V3a.5.5 0 0 1 .5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        <svg class="pw-learn-done" width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="pw-learn-label">Mark as learned</span>
+      </button>
+      <button class="pw-action" id="pw-note" aria-label="Add note">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Note</span>
+        <span class="pw-note-dot" id="pw-note-dot" hidden></span>
+      </button>
+    </div>
+
+    <div class="pw-note-panel" id="pw-note-panel" hidden>
+      <div class="pw-note-view" id="pw-note-view" hidden></div>
+      <textarea id="pw-note-textarea" placeholder="Add a note..." rows="2"></textarea>
+      <div class="pw-note-btns">
+        <button class="pw-mini pw-danger" id="pw-note-clear" hidden>Clear</button>
+        <button class="pw-mini" id="pw-note-cancel">Cancel</button>
+        <button class="pw-mini primary" id="pw-note-save">Save</button>
+      </div>
+    </div>
+
+    <div class="pw-secondary">
+      <button class="pw-link" id="pw-details">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M3 4.5h10M3 8h10M3 11.5h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Details
+      </button>
+      <button class="pw-link" id="pw-export">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v8M4 6l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        JSON
+      </button>
+      <button class="pw-link" id="pw-export-img">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="5.5" cy="6.5" r="1" fill="currentColor"/>
+          <path d="M3 12l3.5-3.5L9 11l2.5-2.5L13 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Image
+      </button>
+      <button class="pw-link" id="pw-import">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M8 10V2M4 6l4-4 4 4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Import
+      </button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="pw-import-input" accept=".json" hidden />
+
+<style>
+  .pw {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 900;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .pw-fab {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--sl-color-bg-sidebar);
+    border: 1px solid var(--sl-color-hairline);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .pw-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
+  }
+
+  .pw-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
+
+  .pw-ring-track {
+    stroke: var(--sl-color-gray-6);
+  }
+
+  .pw-ring-fill {
+    stroke: var(--sl-color-accent);
+    transition: stroke-dashoffset 0.5s ease;
+  }
+
+  .pw-fab-label {
+    position: relative;
+    z-index: 1;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--sl-color-accent-high);
+  }
+
+  .pw-card {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 248px;
+    padding: 0.9rem 0.9rem 0.7rem;
+    background: var(--sl-color-bg-sidebar);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 16px;
+    box-shadow: 0 20px 52px rgba(0, 0, 0, 0.5);
+    color: var(--sl-color-white);
+    transform-origin: bottom right;
+    animation: pw-pop 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pw-card[hidden] {
+    display: none;
+  }
+
+  @keyframes pw-pop {
+    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .pw-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .pw-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .pw-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .pw-close:hover {
+    color: var(--sl-color-white);
+    background: var(--sl-color-gray-6);
+  }
+
+  .pw-stats {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .pw-percent {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--sl-color-accent), var(--sl-color-accent-high));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pw-count {
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .pw-track {
+    height: 6px;
+    margin: 0.5rem 0 0.85rem;
+    background: var(--sl-color-gray-6);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .pw-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high));
+    transition: width 0.5s ease;
+  }
+
+  .pw-actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem;
+  }
+
+  .pw-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.6rem;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 10px;
+    color: var(--sl-color-gray-1);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pw-action:hover {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .pw-action.done {
+    background: linear-gradient(135deg, var(--sl-color-accent), color-mix(in srgb, var(--sl-color-accent) 78%, #000));
+    border-color: transparent;
+    color: white;
+  }
+
+  .pw-learn-done {
+    display: none;
+  }
+
+  .pw-action.done .pw-learn-default {
+    display: none;
+  }
+
+  .pw-action.done .pw-learn-done {
+    display: block;
+  }
+
+  .pw-action.has-note {
+    color: var(--sl-color-accent-high);
+    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+  }
+
+  .pw-note-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  }
+
+  .pw-note-dot[hidden] {
+    display: none;
+  }
+
+  .pw-note-panel {
+    margin-top: 0.5rem;
+    padding: 0.6rem;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 10px;
+  }
+
+  .pw-note-panel[hidden] {
+    display: none;
+  }
+
+  .pw-note-view {
+    margin-bottom: 0.5rem;
+    padding: 0.45rem 0.55rem;
+    background: color-mix(in srgb, var(--sl-color-gray-5) 80%, transparent);
+    border-left: 2px solid var(--sl-color-accent);
+    border-radius: 6px;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--sl-color-gray-1);
+    white-space: pre-wrap;
+  }
+
+  .pw-note-view[hidden] {
+    display: none;
+  }
+
+  .pw-note-panel textarea {
+    width: 100%;
+    padding: 0.45rem 0.55rem;
+    background: var(--sl-color-gray-5);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    color: var(--sl-color-white);
+    font-family: inherit;
+    font-size: 0.78rem;
+    resize: vertical;
+    min-height: 48px;
+  }
+
+  .pw-note-panel textarea:focus {
+    outline: none;
+    border-color: var(--sl-color-accent);
+  }
+
+  .pw-note-btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin-top: 0.45rem;
+  }
+
+  .pw-mini {
+    padding: 0.32rem 0.65rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 8px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pw-mini:hover {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+
+  .pw-mini.primary {
+    background: var(--sl-color-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  .pw-mini.primary:hover {
+    background: var(--sl-color-accent-high);
+  }
+
+  .pw-mini.pw-danger {
+    margin-right: auto;
+    color: var(--sl-color-red, #f87171);
+    border-color: color-mix(in srgb, var(--sl-color-red, #f87171) 45%, transparent);
+  }
+
+  .pw-mini.pw-danger[hidden] {
+    display: none;
+  }
+
+  .pw-mini.pw-danger:hover {
+    color: var(--sl-color-red, #f87171);
+    border-color: var(--sl-color-red, #f87171);
+    background: color-mix(in srgb, var(--sl-color-red, #f87171) 12%, transparent);
+  }
+
+  .pw-secondary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    margin-top: 0.7rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--sl-color-hairline);
+  }
+
+  .pw-link {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    color: var(--sl-color-gray-3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .pw-link:hover {
+    color: var(--sl-color-accent-high);
+  }
+
+  .pw-link:active {
+    transform: scale(0.93);
+  }
+
+  /* --- Micro-interactions --- */
+  @keyframes pw-pulse {
+    0% {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4),
+        0 0 0 0 color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    }
+    100% {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 18px transparent;
+    }
+  }
+
+  .pw-fab.pulse {
+    animation: pw-pulse 0.65s ease;
+  }
+
+  @keyframes pw-learn-pop {
+    0% { transform: scale(1); }
+    35% { transform: scale(0.9); }
+    70% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+
+  .pw-action.pop {
+    animation: pw-learn-pop 0.36s ease;
+  }
+
+  .pw-percent {
+    transition: color 0.3s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pw-fab.pulse,
+    .pw-action.pop,
+    .pw-ring-fill,
+    .pw-fill,
+    .pw-card {
+      animation: none;
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .pw {
+      bottom: 0.85rem;
+      right: 0.85rem;
+    }
+  }
+</style>
+
+<script>
+  import {
+    getMaterialStats,
+    getMaterialProgress,
+    getProgress,
+    toggleCompleted,
+    setNote,
+    importProgress,
+    downloadExport,
+    downloadProgressCard,
+    buildStepList,
+    parseImportFile,
+  } from '../lib/progress';
+
+  function initWidget() {
+    const widget = document.getElementById('pw');
+    if (!widget) return;
+
+    const materialSlug = widget.dataset.materialSlug || '';
+    const materialTitle = widget.dataset.materialTitle || materialSlug;
+    const stepId = widget.dataset.stepId || '';
+    const totalSteps = parseInt(widget.dataset.totalSteps || '0', 10);
+    let pages: string[] = [];
+    try {
+      pages = JSON.parse(widget.dataset.pages || '[]') as string[];
+    } catch {
+      pages = [];
+    }
+
+    const fab = document.getElementById('pw-fab');
+    const card = document.getElementById('pw-card');
+    const ringFill = document.getElementById('pw-ring-fill');
+    const fabLabel = document.getElementById('pw-fab-label');
+    const percent = document.getElementById('pw-percent');
+    const count = document.getElementById('pw-count');
+    const fill = document.getElementById('pw-fill');
+    const learn = document.getElementById('pw-learn');
+    const learnLabel = document.getElementById('pw-learn-label');
+    const btnNote = document.getElementById('pw-note');
+    const noteDot = document.getElementById('pw-note-dot');
+    const notePanel = document.getElementById('pw-note-panel');
+    const noteView = document.getElementById('pw-note-view');
+    const noteTextarea = document.getElementById('pw-note-textarea') as HTMLTextAreaElement | null;
+    const btnCancel = document.getElementById('pw-note-cancel');
+    const btnClearNote = document.getElementById('pw-note-clear');
+    const btnSave = document.getElementById('pw-note-save');
+    const btnDetails = document.getElementById('pw-details');
+    const btnExport = document.getElementById('pw-export');
+    const btnExportImg = document.getElementById('pw-export-img');
+    const btnImport = document.getElementById('pw-import');
+    const closeBtn = document.getElementById('pw-close');
+    const importInput = document.getElementById('pw-import-input');
+
+    let lastPct = -1;
+
+    function updateUI() {
+      const stats = getMaterialStats(materialSlug, totalSteps);
+      // Circle uses pathLength="100", so offset is just the remaining percent.
+      if (ringFill) {
+        ringFill.style.strokeDasharray = '100';
+        ringFill.style.strokeDashoffset = String(Math.max(0, 100 - stats.percentage));
+      }
+      if (fabLabel) fabLabel.textContent = `${stats.percentage}%`;
+      if (percent) percent.textContent = `${stats.percentage}%`;
+      if (count) count.textContent = `${stats.completed} / ${stats.total}`;
+      if (fill) fill.style.width = `${stats.percentage}%`;
+
+      // Pulse the badge when progress moves forward.
+      if (lastPct !== -1 && stats.percentage > lastPct && fab) {
+        fab.classList.remove('pulse');
+        void fab.offsetWidth;
+        fab.classList.add('pulse');
+      }
+      lastPct = stats.percentage;
+
+      const progress = getProgress(materialSlug, stepId);
+      const isDone = progress?.completed ?? false;
+      const hasNote = !!(progress?.note?.trim() ?? '');
+      learn?.classList.toggle('done', isDone);
+      if (learnLabel) learnLabel.textContent = isDone ? 'Learned' : 'Mark as learned';
+      btnNote?.classList.toggle('has-note', hasNote);
+      if (noteDot) noteDot.hidden = !hasNote;
+    }
+
+    function toggleCard() {
+      const isOpen = card?.hasAttribute('hidden') ? false : !card?.hidden;
+      const open = !isOpen;
+      if (card) card.hidden = !open;
+      fab?.setAttribute('aria-expanded', String(open));
+    }
+
+    fab?.addEventListener('click', toggleCard);
+    closeBtn?.addEventListener('click', () => { if (card) card.hidden = true; });
+
+    learn?.addEventListener('click', () => {
+      toggleCompleted(materialSlug, stepId);
+      learn.classList.remove('pop');
+      void learn.offsetWidth;
+      learn.classList.add('pop');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    btnNote?.addEventListener('click', () => {
+      const progress = getProgress(materialSlug, stepId);
+      const existing = progress?.note?.trim() ?? '';
+      if (noteTextarea) noteTextarea.value = progress?.note ?? '';
+      if (noteView) {
+        if (existing) {
+          noteView.textContent = progress?.note ?? '';
+          noteView.hidden = false;
+        } else {
+          noteView.hidden = true;
+        }
+      }
+      if (btnClearNote) btnClearNote.hidden = !existing;
+      notePanel?.removeAttribute('hidden');
+      noteTextarea?.focus();
+    });
+
+    btnCancel?.addEventListener('click', () => {
+      notePanel?.setAttribute('hidden', '');
+    });
+
+    btnClearNote?.addEventListener('click', () => {
+      setNote(materialSlug, stepId, '');
+      notePanel?.setAttribute('hidden', '');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    btnSave?.addEventListener('click', () => {
+      const note = noteTextarea?.value?.trim() ?? '';
+      setNote(materialSlug, stepId, note);
+      notePanel?.setAttribute('hidden', '');
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    btnDetails?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('open-progress-dialog', { detail: { materialSlug } }));
+    });
+
+    btnExport?.addEventListener('click', () => downloadExport());
+
+    btnExportImg?.addEventListener('click', () => {
+      const stats = getMaterialStats(materialSlug, totalSteps);
+      const progress = getMaterialProgress(materialSlug);
+      const notes = Object.values(progress).filter((e) => e.note?.trim()).length;
+      downloadProgressCard({
+        materialTitle,
+        completed: stats.completed,
+        total: totalSteps,
+        notes,
+        steps: buildStepList(materialSlug, pages),
+      });
+    });
+
+    btnImport?.addEventListener('click', () => importInput?.click());
+
+    importInput?.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const data = await parseImportFile(file);
+      if (!data) {
+        alert('Invalid import file');
+        return;
+      }
+      const result = importProgress(data, 'merge');
+      alert(result.message);
+      updateUI();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+      (e.target as HTMLInputElement).value = '';
+    });
+
+    window.addEventListener('progress-updated', updateUI);
+    document.addEventListener('astro:after-swap', () => {
+      window.removeEventListener('progress-updated', updateUI);
+      initWidget();
+    });
+
+    updateUI();
+  }
+
+  initWidget();
+</script>

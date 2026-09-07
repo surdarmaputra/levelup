@@ -1,7 +1,7 @@
 ---
 import { materials } from '../catalog';
 
-/** Join the configured base path with a content slug, e.g. `/levelup/` + `java-spring-boot`. */
+/** Join the configured base path with a content slug, e.g. `/levelup/` + `laravel-booking-saas`. */
 function href(slug: string) {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   return `${base}/${slug}/`;

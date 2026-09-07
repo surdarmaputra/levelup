@@ -11,7 +11,7 @@ import { getTrackedUnits, getRoadmapStepsForSection } from '../lib/roadmapSteps'
 
 const starlightRoute = Astro.locals.starlightRoute;
 const id = starlightRoute.id ?? '';
-// `id` is the content-collection id, e.g. `java-spring-boot/setup/agent-harness`.
+// `id` is the content-collection id, e.g. `laravel-booking-saas/setup/agent-harness`.
 const currentSlug = id.split('/').filter(Boolean)[0] || '';
 const currentMaterial = publishedMaterials.find((m) => m.slug === currentSlug);
 const isMaterialPage = !!currentMaterial;

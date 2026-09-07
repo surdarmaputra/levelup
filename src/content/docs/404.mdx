@@ -8,6 +8,8 @@ sidebar:
 pagefind: false
 ---
 
+import { publishedMaterials } from '../../catalog';
+
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 The page you were looking for isn't here — it may have been renamed or moved while a material
@@ -15,6 +17,10 @@ was being restructured.
 
 <p>
   <a href={`${base}/`}>Back to the catalog</a>
-  {' · '}
-  <a href={`${base}/java-spring-boot/`}>Java with Spring Boot</a>
+  {publishedMaterials.map((material) => (
+    <>
+      {' · '}
+      <a href={`${base}/${material.entry}/`}>{material.title}</a>
+    </>
+  ))}
 </p>

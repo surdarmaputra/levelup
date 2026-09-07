@@ -14,7 +14,7 @@ Code blocks: unchanged, always.
 Read before touching anything:
 1. `AGENTS.md` — conventions, non-negotiables
 2. `src/catalog.ts` — the `Material` type + existing entries
-3. The reference material, `src/content/docs/java-spring-boot/` — the shape to copy:
+3. The reference material, `src/content/docs/spring-boot-ticketing/` — the shape to copy:
    - `index.md` — the Getting Started page (structure below)
    - `roadmap/foundations.md` — a step file (step anatomy below)
    - `reference/rubrics.md` — the rubric page (below)
@@ -141,8 +141,8 @@ Three fixed headings: `## The goal, and the end state` (what's configured + the 
 ### 1. Settle the shape (ask, don't guess)
 
 One question at a time, recommended answer with each.
-- Slug (kebab-case, becomes the URL segment)
-- Title, one-line description, level, size ("26 steps", "9 chapters")
+- Slug — **`<framework>-<use-case>`**, kebab-case, becomes the URL segment: `laravel-booking-saas`, `spring-boot-ticketing`. Framework, not language.
+- Title — **`Framework — System`**: *Laravel — Multi-Tenant Booking SaaS*. Then the one-line description, level, size ("26 steps", "9 chapters")
 - Stepped roadmap or chapter-style? Section list in reading order.
 
 If source markdown already exists, derive answers from it and confirm.
@@ -211,6 +211,6 @@ each `<slug>/setup/` page. Consequences for a new material:
 | Section with one page | Still give it a directory — a bare page at material root has no sidebar group |
 | Page that shouldn't appear in the sidebar | `sidebar: { hidden: true }` in its frontmatter |
 | Chapter-style material (no steps) | `index.md` + `<section>/` dirs; skip the step/rubric/tracker parts; `## Chapter N` headings still one-per-unit |
-| Renaming a slug | Grep the whole repo — `catalog.ts`, cross-material links, RFCs under `docs/` |
+| Renaming a slug | Grep the whole repo — `catalog.ts`, cross-material links, RFCs under `docs/`. Then add the old→new pair to **both** `renamedMaterials` in `astro.config.mjs` (redirects the old URLs) and `RENAMED_MATERIALS` in `src/lib/progress.ts` (keeps saved progress). Entries stay forever. |
 | Source docs written for GitHub | Strip the leading `<h1>`, add frontmatter, rewrite links to relative |
 | Recording the decision | Structural change → new RFC or amend `docs/rfcs/0001`; see AGENTS.md "Decisions" |

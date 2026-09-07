@@ -11,7 +11,7 @@ GitHub Pages today and a VPS later.
 The content is the product. The code exists to render it, stay out of its way, and make adding
 the next material cheap.
 
-Current release: **v0.1** — one material, `java-spring-boot`.
+Current release: **v0.2** — two materials, `spring-boot-ticketing` and `laravel-booking-saas`.
 
 ---
 
@@ -82,6 +82,13 @@ docs/rfcs/                      design decisions, newest wins
 - `src/catalog.ts` is the only place material metadata lives. The sidebar and the landing page
   both read from it. **Never** hardcode a material into `astro.config.mjs` or a component.
 - Adding a material means: content directory + one `materials` entry. Nothing else.
+- **Slug is `<framework>-<use-case>`**, kebab-case: `laravel-booking-saas`,
+  `spring-boot-ticketing`. The framework, not the language — nobody searches "php laravel
+  booking". Title is `Framework — System`: *Laravel — Multi-Tenant Booking SaaS*.
+- Renaming a slug breaks shared links and orphans saved progress. Both are handled in one
+  place each, and both must be updated together: `renamedMaterials` in `astro.config.mjs`
+  (emits a redirect from every old page URL) and `RENAMED_MATERIALS` in `src/lib/progress.ts`
+  (moves saved progress onto the new slug). Entries stay forever.
 
 **Content**
 - Frontmatter `title` and `description` on every page. `description` is what search and

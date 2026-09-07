@@ -7,8 +7,8 @@ sidebar:
 ---
 
 A guided path from *"I know Java, new to Spring"* to a production-grade backend and fullstack
-application — built around one real domain: an **event ticketing marketplace**, on Java 21 and
-Spring Boot 3.5.
+application — built around one real domain: **TicketFlow**, an event ticketing marketplace that
+sells seats for theatre runs, arena concerts and club gigs, on Java 21 and Spring Boot 3.5.
 
 Twenty-six steps. There's no deadline on any of it — take a step in an evening or over two
 weeks. The order matters, the pace doesn't.
@@ -23,6 +23,27 @@ weeks. The order matters, the pace doesn't.
 
 If you are new to Java itself, this will move too fast — learn the language first. Already
 shipped Spring in production? Skim steps 0–6 as a checklist and start at step 7.
+
+## What you are building, concretely
+
+TicketFlow is one application where organizers publish events against a venue, and customers
+buy seats for a given date. Three events run through the whole roadmap. They were picked
+because they disagree with each other on exactly the points that are hard to build:
+
+| The event | The setup | What it forces you to handle |
+|---|---|---|
+| **Hamlet at the Lyric Theatre** | 380 numbered seats — stalls, circle, balcony, each its own price. One venue, twelve nights. | A seat map hierarchy, availability computed per showtime rather than per event, and a catalog query that must not issue one query per date |
+| **A touring band at Riverside Arena** | 5,000 seats, one night, on sale at 09:00 on a Friday | Bulk seat generation, holds under real contention, caching and stampede protection, rate limiting, a second application instance |
+| **A club gig at The Foundry** | 400 standing places, no numbered seats at all | Capacity as a count on a ticket type rather than a set of seat rows — the case that breaks a model built only around `Seat` |
+
+Seed all three from step 6 onward and keep them. The arena is where the concurrency and scale
+steps get their teeth; the theatre is where seat maps and read performance do; the club gig is
+the one that catches a model which assumed every ticket has a seat.
+
+Other things sold this way, if you want to point your own version at one: sports fixtures,
+cinema screenings, conferences with limited workshop places, museum timed entry, comedy clubs,
+festival day passes, ferry crossings, guided tours. All of them sell a fixed inventory against
+a moment in time, and all of them oversell if you get the locking wrong.
 
 ## Why an event ticketing marketplace
 
@@ -40,6 +61,9 @@ Ticketing was chosen because the hard parts are unavoidable:
 
 You can't fake concurrency correctness. Either your test proves 100 concurrent buyers get
 exactly 10 seats, or it doesn't.
+
+Every one of these is somebody's production system today, and every one of them is a system
+people pay to have built.
 
 ## What you'll learn
 

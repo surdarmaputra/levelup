@@ -22,6 +22,14 @@ Copy this into your own project root as `AGENTS.md`. It is the deliverable of
 
 Event ticketing marketplace. Modular monolith, Java 21 + Spring Boot 3.5.x.
 
+Three example events are seeded and used in every test. They disagree on purpose:
+
+- **Hamlet at the Lyric Theatre** — 380 numbered seats, three price tiers, twelve showtimes
+- **Riverside Arena** — 5,000 seats, one showtime, an on-sale spike
+- **The Foundry** — 400 general-admission places, no seat map, quota on a `TicketType`
+
+A feature works when it works for all three.
+
 This is a **learning project** following `docs/ROADMAP.md`. Correctness and comprehension
 matter more than delivery speed. There is no deadline.
 

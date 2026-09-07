@@ -81,7 +81,7 @@ sidebar:
 
 ## Step 6 — Venues, seat maps, and bulk operations
 
-**Story:** *As an organizer, I define a venue with a 5,000-seat map (sections, rows, seats) and create showtimes against it.*
+**Story:** *As an organizer, I define Riverside Arena's 5,000-seat map (sections, rows, seats) and create showtimes against it.*
 
 **Mode:** `BUILD` — Bulk generation is mechanical. But you decide the aggregate boundaries.
 
@@ -100,12 +100,14 @@ sidebar:
 
 **Expected outcome:** `Venue` → `SeatMap` → `Section` → `Row` → `Seat`. Bulk seat generator. `Showtime` linked to venue. `TicketType` with price and quota. Admin UI for seat map upload/preview.
 
+Seed the three example events here and keep them for the rest of the roadmap: the Lyric Theatre (380 seats, three price tiers, twelve showtimes), Riverside Arena (5,000 seats, one showtime), and The Foundry (400 general-admission places, no seat map — quota on a `TicketType`). The Foundry is the one that tells you whether your model assumed every ticket has a seat.
+
 **Verification**
 
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-06` — generate a 5,000-seat map in a single request; assert it completes under 3 seconds and produces batched inserts, not 5,000 individual round-trips |
-| **L2 — Manual checks** | (a) Log SQL statement counts and confirm batching is active <br>(b) Attempt to create a duplicate seat label in the same row — DB constraint rejects it (not just application code) |
+| **L2 — Manual checks** | (a) Log SQL statement counts and confirm batching is active <br>(b) Attempt to create a duplicate seat label in the same row — DB constraint rejects it (not just application code) <br>(c) Create The Foundry's general-admission event. If it needs a fake seat map to exist, the model is wrong. |
 | **L4 — Anti-patterns** | `AP-06-a`, `AP-06-b`, `AP-06-c`, `AP-06-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-06` green, JaCoCo domain gate on, money is never a floating-point type |
 
@@ -133,6 +135,8 @@ sidebar:
 
 **Expected outcome:** Public catalog API with filtering (city, date range, category, price band), sorting, keyset pagination. Query-count assertions in tests. Flyway migration adding indexes.
 
+The page that catches you: Hamlet's twelve showtimes with remaining availability on each. Written the obvious way it is one query per date.
+
 **Verification**
 
 | | |
@@ -146,7 +150,7 @@ sidebar:
 
 ## Step 8 — Concurrency: seat holds and the overselling problem
 
-**Story:** *As a customer, when I select seats they're held for me for 10 minutes; two customers can never be sold the same seat, even under a 10,000-request-per-second on-sale.*
+**Story:** *As a customer buying the last row at the Riverside on-sale, my seats are held for 10 minutes; two customers can never be sold the same seat, even under a 10,000-request-per-second on-sale.*
 
 **Mode:** `LEARN` — **Strictly no agent implementation.** This step is the reason the roadmap exists.
 

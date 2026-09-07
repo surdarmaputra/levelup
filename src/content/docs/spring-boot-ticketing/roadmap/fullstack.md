@@ -47,7 +47,7 @@ sidebar:
 
 ## Step 16 — Interactive seat map and hold timer
 
-**Story:** *As a customer, I see a live seat map for my showtime, select seats, and watch a countdown showing how long they're held before release.*
+**Story:** *As a customer picking seats for Hamlet, I see a live seat map for that night, select two seats in the circle, and watch a countdown showing how long they're held before release.*
 
 **Mode:** `LEARN` — Client-side race conditions are subtle. Debug them yourself.
 

@@ -11,9 +11,9 @@ sidebar:
 
 **Mode:** `BUILD` — Templates and forms. Agent-generated, you review for AP-05-*.
 
-**Why now:** You need something to click. It also teaches server-side rendering while your auth is still session-based — the two fit together naturally.
+**Why now:** You need something to click. It also teaches server-side rendering while your auth is still session-based, and the two fit together naturally.
 
-> **This is Path 2's first deliverable.** Thymeleaf here is a permanent choice, not a stepping stone. Internal CRUD back-offices are genuinely faster to build and maintain server-rendered. The React storefront (step 15+) is a different surface with different needs.
+> **This is Path 2's first deliverable.** Thymeleaf here is a permanent choice, not a temporary step. Internal CRUD back-offices really are faster to build and maintain server-rendered. The React storefront (step 15+) is a different surface with different needs.
 
 **Concepts:**
 - Server-side rendering, template composition, fragments, layout dialect
@@ -25,9 +25,9 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-thymeleaf`, `thymeleaf-extras-springsecurity6`, HTMX, Tailwind 4 + daisyUI 5
 
-**On daisyUI over an admin template:** the good free templates (TailAdmin, Flowbite Admin) ship Alpine.js, which overlaps heavily with HTMX — running both means two competing interactivity models and a step spent debugging their interaction instead of learning Spring. daisyUI is CSS-only with zero JS, so nothing fights HTMX, and its semantic classes (`btn btn-primary`, `card`, `drawer`) keep Thymeleaf fragments readable. Utility-class soup inside a `.html` fragment is genuinely painful to review. **Steal layout and page composition** from the template demos — that's the part worth taking.
+**On daisyUI over an admin template:** the good free templates (TailAdmin, Flowbite Admin) ship Alpine.js, which overlaps heavily with HTMX. Running both means two competing interactivity models, and a step spent debugging their interaction instead of learning Spring. daisyUI is CSS-only with zero JS, so nothing fights HTMX, and its semantic classes (`btn btn-primary`, `card`, `drawer`) keep Thymeleaf fragments readable. A wall of utility classes inside a `.html` fragment is hard to review. **Take the layout and page composition** from the template demos — that is the part worth reusing.
 
-**Build:** Login page. Event list with server-side pagination and search. Create/edit forms. HTMX inline delete + live search.
+**Expected outcome:** Login page. Event list with server-side pagination and search. Create/edit forms. HTMX inline delete + live search.
 
 **Verification**
 
@@ -48,7 +48,7 @@ sidebar:
 
 **Why now:** Immediately after the first UI exists and before there are 20 screens to retrofit. Design systems applied late are never applied consistently.
 
-**Why this step exists at all:** you asked for portfolio-grade output. Portfolio-grade UI is overwhelmingly *consistency and state coverage*, not fancy components. The reason most portfolio dashboards read as amateur isn't the button styling — it's that nobody designed the empty state, the loading state, or the 40-character-title overflow. Reviewers notice.
+**Why this step exists at all:** you asked for portfolio-grade output. Portfolio-grade UI is mostly *consistency and state coverage*, not fancy components. Most portfolio dashboards look amateur not because of the button styling, but because nobody designed the empty state, the loading state, or the 40-character-title overflow. Reviewers notice.
 
 **Concepts:**
 - Design tokens: color, type scale, spacing rhythm, radius, elevation. Define once, never hardcode.
@@ -60,11 +60,11 @@ sidebar:
 - Data density for admin surfaces — dashboards are not marketing pages
 - Charts that inform rather than decorate: axis labels, units, no 3D, no gratuitous animation
 - Responsive tables — the hardest common admin problem
-- Accessible color contrast (WCAG AA) as a constraint on palette selection, applied *before* you fall in love with a color
+- Accessible color contrast (WCAG AA) as a constraint on palette selection, applied *before* you commit to a color
 
 **Libraries:** Tailwind 4, daisyUI 5, ApexCharts, Lucide icons
 
-**Build:** Token definitions + custom daisyUI theme. Reusable Thymeleaf fragments: page shell, data table, form field, empty state, error state, skeleton, toast. Organizer dashboard with 3 charts. Dark mode toggle. Retrofit step 5's screens onto the system.
+**Expected outcome:** Token definitions + custom daisyUI theme. Reusable Thymeleaf fragments: page shell, data table, form field, empty state, error state, skeleton, toast. Organizer dashboard with 3 charts. Dark mode toggle. Step 5's screens rebuilt on top of the system.
 
 **Verification**
 
@@ -75,7 +75,7 @@ sidebar:
 | **L4 — Anti-patterns** | `AP-05b-a`, `AP-05b-b`, `AP-05b-c`, `AP-05b-d`, `AP-05b-e` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-05b` green, zero hardcoded design values, all four states covered on every data surface |
 
-**Harness impact:** add design tokens and the component-fragment inventory to `AGENTS.md` (v2 checkpoint). Without this, the agent invents a new button style on every screen — the single fastest way to make a UI look amateur.
+**Harness impact:** add design tokens and the component-fragment inventory to `AGENTS.md` (v2 checkpoint). Without this, the agent invents a new button style on every screen, which is the fastest way to make a UI look amateur.
 
 ---
 
@@ -85,7 +85,7 @@ sidebar:
 
 **Mode:** `BUILD` — Bulk generation is mechanical. But you decide the aggregate boundaries.
 
-**Why now:** You need meaningful data volume before performance work (step 7) or concurrency work (step 8) means anything. 20 rows teaches nothing.
+**Why now:** You need a real amount of data before performance work (step 7) or concurrency work (step 8) means anything. 20 rows teaches nothing.
 
 **Concepts:**
 - Modeling composition and hierarchy in JPA; when *not* to use inheritance
@@ -98,7 +98,7 @@ sidebar:
 
 **Libraries:** none new
 
-**Build:** `Venue` → `SeatMap` → `Section` → `Row` → `Seat`. Bulk seat generator. `Showtime` linked to venue. `TicketType` with price and quota. Admin UI for seat map upload/preview.
+**Expected outcome:** `Venue` → `SeatMap` → `Section` → `Row` → `Seat`. Bulk seat generator. `Showtime` linked to venue. `TicketType` with price and quota. Admin UI for seat map upload/preview.
 
 **Verification**
 
@@ -117,7 +117,7 @@ sidebar:
 
 **Mode:** `LEARN` — You must feel the N+1 and read the EXPLAIN output yourself.
 
-**Why now:** You now have enough data for performance problems to be measurable rather than theoretical. And you must feel the N+1 problem before caching, or you'll use caching to hide it instead of fix it.
+**Why now:** You now have enough data for performance problems to be measurable rather than theoretical. You must also feel the N+1 problem before caching, or you'll use caching to hide it instead of fix it.
 
 **Concepts:**
 - **The N+1 problem** — how to detect it, and the three real fixes (`JOIN FETCH`, `@EntityGraph`, projections)
@@ -131,7 +131,7 @@ sidebar:
 
 **Libraries:** none new. Add `datasource-proxy` or `p6spy` for query counting in tests.
 
-**Build:** Public catalog API with filtering (city, date range, category, price band), sorting, keyset pagination. Query-count assertions in tests. Flyway migration adding indexes.
+**Expected outcome:** Public catalog API with filtering (city, date range, category, price band), sorting, keyset pagination. Query-count assertions in tests. Flyway migration adding indexes.
 
 **Verification**
 
@@ -166,7 +166,7 @@ sidebar:
 
 **Libraries:** none new — this is deliberately done with just Postgres first. Redis-backed distributed holds arrive in step 12, once you can feel why single-node locking breaks.
 
-**Build:** `SeatHold` with expiry. Hold/release/confirm operations. Scheduled expiry sweeper. Purchase transaction converting holds to tickets. Concurrent test harness.
+**Expected outcome:** `SeatHold` with expiry. Hold/release/confirm operations. Scheduled expiry sweeper. Purchase transaction converting holds to tickets. Concurrent test harness.
 
 **Verification**
 

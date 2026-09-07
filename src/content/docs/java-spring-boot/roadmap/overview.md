@@ -28,20 +28,20 @@ sidebar:
 | Frontend quality | Biome (lint + format + imports) + minimal ESLint for `react-hooks` + TypeScript `strict` |
 | AI harness | `AGENTS.md` from step 0, evolving v1→v5. Two-mode contract per step. |
 
-**Note on step count:** the plan came out to 24 steps, not 23. Step 20 (service extraction + deploy) needed its own slot rather than being crammed into the resilience step.
+**Note on step count:** the roadmap is 26 numbered steps (0 through 24, plus 5b). Step 20 (service extraction + deploy) has its own slot rather than being folded into the resilience step.
 
 ---
 
 ## Why this domain
 
-Ticketing was chosen because it *forces* the advanced topics rather than decorating with them:
+Ticketing was chosen because it *forces* the advanced topics rather than just decorating with them:
 
 - **Overselling is a real correctness problem** → locking, seat holds with TTL, distributed locks
 - **Payment gateways are asynchronous and unreliable** → idempotency keys, outbox pattern, webhooks, compensation
 - **On-sale moments are genuine traffic spikes** → caching, rate limiting, read/write split, horizontal scaling
 - **Seat maps demand real client state** → the React path isn't a toy
 
-A CRUD app cannot teach these. Any caching or locking you added to one would be theater.
+A CRUD app cannot teach these. Any caching or locking you added to one would be for show.
 
 ---
 
@@ -84,8 +84,8 @@ These are continuous, not per-step. Each switches on at a specific step and stay
 | Lefthook pre-commit | Step 0 | Format + fast checks before commit. Must run in <5s or it gets bypassed. |
 | `make verify` | Step 0 | One command: format → compile → test → arch → frontend lint. Local, CI, and agent loop all use it. |
 | GitHub Actions CI | Step 3 | Runs `make verify` on every push. Nothing else. |
-| Testcontainers in CI | Step 3 | Integration tests run real Postgres. No H2 — H2 lies about locking semantics. |
-| JaCoCo coverage gate | Step 6 | ≥80% on `**/domain/**` only. Not global — global coverage targets produce fake tests. |
+| Testcontainers in CI | Step 3 | Integration tests run real Postgres. No H2 — H2 behaves differently on locking. |
+| JaCoCo coverage gate | Step 6 | ≥80% on `**/domain/**` only. Not global; a global coverage target produces fake tests. |
 | ArchUnit: layer rules | Step 9 | Controllers must not reference repositories. Domain must not import Spring. |
 | ArchUnit: module rules | Step 9 | Modules communicate only via published interfaces or domain events |
 | OpenAPI contract diff | Step 12 | Breaking API change fails CI unless version bumped |
@@ -94,12 +94,10 @@ These are continuous, not per-step. Each switches on at a specific step and stay
 | Dependency vulnerability scan | Step 14 | OWASP dependency-check; build fails on CVSS ≥7 |
 | Bundle size budget | Step 18 | Frontend CI fails if the budget is exceeded |
 
-**On what's deliberately absent: Checkstyle and PMD.** Checkstyle largely enforces formatting, which Spotless already does deterministically and with auto-fix. PMD's genuinely useful findings overlap Error Prone with a far worse signal-to-noise ratio. Running all four produces hundreds of warnings nobody reads — and a gate that gets ignored is worse than no gate, because it teaches you that build output is noise. If you later want an aggregate dashboard, SonarQube Community at step 20 is optional. Not before.
-
----
+**On what's deliberately absent: Checkstyle and PMD.** Checkstyle mostly enforces formatting, which Spotless already does deterministically and with auto-fix. PMD's genuinely useful findings overlap Error Prone with a far worse signal-to-noise ratio. Running all four produces hundreds of warnings nobody reads, and a gate that gets ignored is worse than no gate, because it teaches you that build output is noise. If you later want an aggregate dashboard, SonarQube Community at step 20 is optional. Not before.
 
 ---
 
 ## Reading the steps
 
-Each step's structure, the `LEARN`/`BUILD` mode contract, and the five verification layers are explained in [Getting Started](../../getting-started/#how-to-read-the-roadmap). Read that first if you haven't.
+Each step's structure, the `LEARN`/`BUILD` mode contract, and the five verification layers are explained in [Getting Started](../../#how-to-read-a-roadmap-step). Read that first if you haven't.

@@ -11,7 +11,7 @@ Things a roadmap of this kind usually includes that were left out on purpose:
 |---|---|
 | GraphQL | Adds a query-language learning curve without teaching a Spring concept you'd otherwise miss |
 | gRPC | Valuable, but only after you have several services. You'll have two. |
-| Reactive stack (WebFlux) | Java 21 virtual threads solve most of what WebFlux was for, at a fraction of the cognitive cost. Learn WebFlux later, if a real backpressure requirement appears. |
+| Reactive stack (WebFlux) | Java 21 virtual threads solve most of what WebFlux was for, and are far easier to reason about. Learn WebFlux later, if you get a real backpressure requirement. |
 | Service mesh | Solves problems you get at 20+ services |
 | Multi-region / multi-tenancy | Each is a roadmap of its own |
 | Micro-frontends | An organizational solution to an organizational problem you don't have |

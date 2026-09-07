@@ -5,33 +5,52 @@ sidebar:
   order: 2
 ---
 
-Portable system prompt implementing **Verification Layer 3** of the roadmap. Model-agnostic.
+A portable system prompt implementing **Verification Layer 3** — the AI code review you run at
+the end of every roadmap step. Model-agnostic, works in a plain chat window.
 
----
+## The goal, and the end state
 
-## Why this exists, and why it's written the way it is
+After this section you have the reviewer prompt below saved wherever you'll use it:
 
-A default AI code review produces encouragement. Paste code, ask "review this," and you get *"Great structure! A few minor suggestions..."* That is worse than no review — it manufactures confidence at exactly the moment you need to be told you're wrong.
+| Tool | Where it lives |
+|---|---|
+| Claude Project / custom GPT | Custom instructions, with `ROADMAP.md` and `RUBRICS.md` attached as knowledge |
+| Cursor | `.cursor/rules/reviewer.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Raw API | The system prompt; substitute `{{ROADMAP_STEP}}`, `{{RUBRIC_SECTION}}`, `{{CODE}}` before sending |
 
-Every constraint below exists to counteract that specific failure. Don't soften them.
+You configure it once. From then on every step ends the same way: paste that step's rubric
+section plus your implementation and test, get a `FAIL` / `PASS_WITH_FINDINGS` / `PASS`
+verdict, fix, resubmit until `PASS`.
 
----
+## Why
 
-## Setup
+A default AI code review just encourages you. Paste code, ask "review this," and you get
+*"Great structure! A few minor suggestions..."* That is worse than no review, because it gives
+you confidence at exactly the moment you need to be told you're wrong.
 
-**Claude Projects / ChatGPT custom GPT** — paste the prompt below as custom instructions. Attach `ROADMAP.md` and `RUBRICS.md` as project knowledge.
+Every rule in the prompt exists to fight that one failure: it forces a completeness check, a
+review of your *test* before your code, a one-by-one check of every anti-pattern, and an
+adversarial pass that must describe a concrete way the code breaks before any verdict is
+allowed. Don't soften them.
 
-**Cursor** — save as `.cursor/rules/reviewer.mdc`. Reference the rubric file path in the prompt.
+**One rule:** paste **only the rubric section for the step under review**, never the whole
+file. The full file leaks later steps and produces off-topic suggestions.
 
-**GitHub Copilot** — save as `.github/copilot-instructions.md`.
+## How
 
-**Raw API** — pass as the system prompt. Substitute `{{ROADMAP_STEP}}`, `{{RUBRIC_SECTION}}`, `{{CODE}}` before sending.
+**1. Save the prompt** (below) in your tool of choice — see the table above.
 
-**Rule:** paste **only the rubric section for the step under review**, not the whole file. The full file leaks later steps and produces off-scope suggestions.
+**2. Attach the roadmap and rubrics** where the tool supports project knowledge (Claude
+Projects, custom GPTs). Otherwise paste the step and its rubric section inline each time.
 
----
+**3. At the end of each step, submit both the implementation and the acceptance test.** Code
+alone forces the reviewer to guess, and guessing produces false confidence.
 
-## The prompt
+**4. Fix and resubmit until `PASS`.** A `FAIL` on the first pass is normal, particularly at
+steps 8, 10, and 12.
+
+### The prompt
 
 ```
 You are a senior backend engineer conducting a code review for a developer working
@@ -174,16 +193,17 @@ Result: <survives | breaks, and how>
 <anything out of scope you deliberately ignored, so they know it wasn't overlooked>
 ```
 
----
+### Working with the reviewer
 
-## Working with the reviewer
+**If it PASSes on the first submission at steps 8, 10, 12, or 20 — be suspicious.** Those steps
+are hard. A clean first pass more often means your acceptance test is weak than that your code
+is perfect. Read your test again and ask whether it would fail against a deliberately broken
+implementation. Then break it on purpose and confirm.
 
-**Submit both implementation and test.** Code alone forces the reviewer to guess, and guessing produces false confidence.
+**Push back on findings you disagree with.** Ask it to justify the finding against the rubric.
+It should either back it up or drop it. A reviewer that gives in the moment you push back isn't
+reviewing. If it folds without an argument, treat the original finding as unresolved and check
+it yourself.
 
-**Fix and resubmit until PASS.** A `FAIL` on the first pass is normal, particularly at steps 8, 10, and 12.
-
-**If it PASSes on the first submission at steps 8, 10, 12, or 20 — be suspicious.** Those steps are hard. A clean first pass more often means your acceptance test is weak than that your code is flawless. Reread your test and ask whether it would fail against a deliberately broken implementation. Then break it deliberately and confirm.
-
-**Challenge findings you disagree with.** Ask it to justify against the rubric. It should either substantiate or withdraw. A reviewer that instantly capitulates to pushback isn't reviewing — if it folds without argument, treat the original finding as unresolved and check it yourself.
-
-**Don't paste the entire codebase.** Scope to the step. A reviewer given everything reviews nothing well.
+**Don't paste the entire codebase.** Scope to the step. A reviewer given everything reviews
+nothing well.

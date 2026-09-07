@@ -48,11 +48,8 @@ export const materials: Material[] = [
     size: '26 steps',
     tags: ['Java 21', 'Spring Boot 3.5', 'PostgreSQL', 'React', 'AI-assisted'],
     status: 'available',
-    entry: 'java-spring-boot/getting-started',
-    links: [
-      { label: 'Overview', slug: 'java-spring-boot' },
-      { label: 'Getting Started', slug: 'java-spring-boot/getting-started' },
-    ],
+    entry: 'java-spring-boot',
+    links: [{ label: 'Getting Started', slug: 'java-spring-boot' }],
     sections: [
       { label: 'Setup', directory: 'setup' },
       { label: 'Roadmap', directory: 'roadmap' },

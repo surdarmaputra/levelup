@@ -11,7 +11,7 @@ sidebar:
 
 **Mode:** `BUILD` — Mechanical refactor. But you draw the port boundary before the agent moves anything.
 
-**Why now:** You now have a service class that would need a hardcoded gateway SDK inside it. **That pain is the prerequisite.** Ports and adapters taught before this point is cargo cult.
+**Why now:** You now have a service class that would need a hardcoded gateway SDK inside it. **You need to feel that pain first.** Ports and adapters taught before this point is a pattern copied without its reason.
 
 **Concepts:**
 - Ports and adapters (hexagonal): domain at the centre, infrastructure at the edges
@@ -25,7 +25,18 @@ sidebar:
 
 **Libraries:** `archunit-junit5`, WireMock, a sandbox gateway (Stripe test mode or Midtrans sandbox)
 
-**Build:** Refactor `ordering` to hexagonal. `PaymentGatewayPort` interface in domain. Two adapters: real gateway + in-memory fake. WireMock contract tests. ArchUnit rules.
+**Expected outcome:** `ordering` refactored to hexagonal. `PaymentGatewayPort` interface in the domain. Two adapters: real gateway + in-memory fake. WireMock contract tests. ArchUnit rules. Rough shape of the module:
+
+```text
+ordering/
+├── domain/         entities, value objects, the port interfaces — plain Java, no Spring/JPA
+├── application/    use-case services that orchestrate the domain
+└── adapter/
+    ├── in/         REST controllers, message listeners
+    └── out/        JPA repositories, the payment-gateway adapters
+```
+
+Names are a suggestion; the rule that matters is `domain/` importing nothing from a framework.
 
 **Verification**
 
@@ -46,11 +57,11 @@ sidebar:
 
 **Mode:** `LEARN` — The dual-write problem must be understood, not pattern-matched.
 
-**Why now:** Payment integration exists but is naively synchronous. This step makes it survive reality.
+**Why now:** Payment integration exists but is synchronous with no safeguards. This step makes it hold up in production.
 
 **Concepts:**
-- **The dual-write problem** — why "save to DB, then publish to queue" loses messages, and why it's not fixable with try/catch
-- **The transactional outbox pattern** — the actual solution
+- **The dual-write problem** — why "save to DB, then publish to queue" loses messages, and why try/catch doesn't fix it
+- **The transactional outbox pattern** — the fix that actually works
 - Idempotency keys: client-supplied and gateway-supplied; storage and TTL
 - Webhook security: signature verification, replay windows, timing-safe comparison
 - At-least-once delivery, and why your consumers must therefore be idempotent
@@ -61,7 +72,7 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-amqp`, `testcontainers:rabbitmq`, `spring-retry`
 
-**Build:** Outbox table + relay. Webhook endpoint with signature verification and idempotency. Rabbit publisher/consumers. Email dispatch consumer. DLQ + retry policy.
+**Expected outcome:** Outbox table + relay. Webhook endpoint with signature verification and idempotency. Rabbit publisher/consumers. Email dispatch consumer. DLQ + retry policy.
 
 **Verification**
 
@@ -83,7 +94,7 @@ sidebar:
 **Why now:** You have domain events (step 10) to drive projection updates, and you've measured the read path (step 7). Both are prerequisites.
 
 **Concepts:**
-- **CQRS explained properly:** separating the write model (correctness, invariants, locks) from the read model (speed, denormalization). Not event sourcing — a different, separable idea.
+- **CQRS explained properly:** separating the write model (correctness, invariants, locks) from the read model (speed, denormalization). This is not event sourcing; it is a different, separate idea.
 - Why the same model can't serve both: your 1000:1 read/write ratio means read queries contend with purchase locks
 - Building a projection from domain events; eventual consistency and its user-visible consequences
 - Spring Cache abstraction: `@Cacheable`, `@CacheEvict`, `@CachePut` — and their limits
@@ -95,7 +106,7 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-data-redis`, `spring-boot-starter-cache`, `testcontainers:redis`
 
-**Build:** Redis-backed availability projection updated by domain events. Cached catalog reads. Stampede protection. Explicit staleness budget documented per cached item.
+**Expected outcome:** Redis-backed availability projection updated by domain events. Cached catalog reads. Stampede protection. Explicit staleness budget documented per cached item.
 
 **Verification**
 
@@ -129,7 +140,7 @@ sidebar:
 
 **Libraries:** `spring-session-data-redis`, ShedLock, nginx (Compose), Redisson (optional)
 
-**Build:** Compose config with nginx + 2 app instances. Session externalization. ShedLock on scheduled jobs. Distributed hold locks. Graceful shutdown. Contract diff guardrail turns on.
+**Expected outcome:** Compose config with nginx + 2 app instances. Session externalization. ShedLock on scheduled jobs. Distributed hold locks. Graceful shutdown. Contract diff guardrail turns on.
 
 **Verification**
 
@@ -148,12 +159,12 @@ sidebar:
 
 **Mode:** `BUILD` — Config-heavy. Agent scaffolds the stack; you define which metrics matter.
 
-**Why now:** Before resilience (step 14). You cannot tune a circuit breaker you can't observe. Also before deploy — shipping unobservable code to a VPS is how you get 3am mysteries.
+**Why now:** Before resilience (step 14). You cannot tune a circuit breaker you can't observe. Also before deploy: shipping code you can't observe to a VPS leads to 3am incidents.
 
 **Concepts:**
 - The three pillars, and why logs alone stop scaling at 2 instances
 - Actuator: endpoints, security exposure, custom health indicators
-- Micrometer: counters, gauges, timers, distribution summaries; **percentiles over averages** (p99 is the truth, mean is a comfortable lie)
+- Micrometer: counters, gauges, timers, distribution summaries; **percentiles over averages** (p99 shows the slow requests; the mean hides them)
 - Prometheus scraping; RED method (Rate, Errors, Duration) and USE method
 - **Structured JSON logging** with MDC; correlation ID propagation through async boundaries and message queues
 - OpenTelemetry + Micrometer Tracing; spans, context propagation, sampling strategy
@@ -163,7 +174,7 @@ sidebar:
 
 **Libraries:** `micrometer-registry-prometheus`, `micrometer-tracing-bridge-otel`, `opentelemetry-exporter-otlp`, `logstash-logback-encoder`. Compose: Prometheus, Grafana, Loki, Tempo.
 
-**Build:** Full local observability stack. Custom business metrics. Correlation IDs surviving Rabbit hops. Grafana dashboard. Three alert rules.
+**Expected outcome:** Full local observability stack. Custom business metrics. Correlation IDs surviving Rabbit hops. Grafana dashboard. Three alert rules.
 
 **Verification**
 
@@ -187,7 +198,7 @@ sidebar:
 **Why now:** Last step of the API path. Requires observability to tune, and integrations to protect.
 
 **Concepts:**
-- Failure modes: slow is worse than down (a hung dependency exhausts your pool; a fast failure doesn't)
+- Failure modes: slow is worse than down. A hung dependency exhausts your thread pool; a fast failure doesn't.
 - **Circuit breaker** — states, thresholds, half-open probing, and how to size the window
 - Retry with exponential backoff + **jitter**; which operations are safe to retry (only idempotent ones)
 - **Bulkhead** isolation — one failing dependency must not sink the whole service
@@ -200,7 +211,7 @@ sidebar:
 
 **Libraries:** `resilience4j-spring-boot3`, Bucket4j + Redis, k6
 
-**Build:** Circuit breaker + retry + timeout + bulkhead on the payment adapter. Distributed rate limiting. Virtual waiting room for high-demand on-sales. k6 load test suite. Dependency scanning guardrail on.
+**Expected outcome:** Circuit breaker + retry + timeout + bulkhead on the payment adapter. Distributed rate limiting. Virtual waiting room for high-demand on-sales. k6 load test suite. Dependency scanning guardrail on.
 
 **Verification**
 

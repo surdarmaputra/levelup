@@ -5,11 +5,19 @@ sidebar:
   order: 1
 ---
 
-Lookup table for verification. `ACC-NN` = the gating acceptance test for step NN. `AP-NN-x` = anti-patterns for step NN.
+Every roadmap step has a **rubric** here: the objective pass/fail bar for that step. This page is the full text of the `ACC-NN` and `AP-NN-x` items that each step's **Verification** block only names by ID — a lookup you read one section of per step, not a checklist you complete. It has two parts.
 
-**Usage:** the AI code reviewer loads **only the section for the step under review**. Do not paste this whole file into a review — it leaks future steps and dilutes the reviewer's attention.
+**`ACC-NN` — the gating acceptance test.** One test, unambiguous pass/fail, no judgement call. It states exactly what must be proven — *"100 concurrent purchases against 10 seats: exactly 10 succeed"*. You write the test, watch it fail, then make it pass.
 
-**On anti-patterns:** these are the things that actually go wrong, drawn from how these mistakes appear in real codebases. Most are invisible at runtime until they aren't. Self-check against them before requesting review.
+**`AP-NN-x` — the anti-patterns.** Named mistakes that pass the acceptance test but are still wrong: the `@Transactional` self-invocation that silently runs in no transaction, the `@Scheduled` job that runs twice the moment you run two instances. Most don't show up at runtime until they do.
+
+**Why this exists.** The common failure of self-directed learning is that everything *feels* like it works. The rubric turns "done" into something you check rather than something you feel.
+
+**How to use it — three times per step:**
+
+1. Before you build, read `ACC-NN` and write that test first. Watch it fail.
+2. Once it passes, self-check against every `AP-NN-x` in the step's section.
+3. Paste **only that step's section** into the [AI reviewer](../../setup/reviewer-setup/) — never the whole file. The full file leaks later steps and dilutes the reviewer's attention.
 
 ---
 

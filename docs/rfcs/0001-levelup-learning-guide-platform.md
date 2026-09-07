@@ -503,6 +503,43 @@ stylesheet; components keep their own scoped `<style>`. This consumes the "Revis
 **Constraints held.** Static output, no client framework, both base paths build, `npm run
 verify` green.
 
+### 2026-09-07 — Material structure conventions
+
+A round of restructuring on `java-spring-boot` that also sets the template for every future
+material. `.claude/skills/add-material/SKILL.md` and AGENTS.md now carry the detail; the
+decisions:
+
+**One `index.md`, folded.** The old split — `index.md` (a bare "material overview with link
+tables") plus a separate `getting-started.md` — was duplicative and confusing. They are now one
+page: `index.md`, `sidebar.order: 0`, `label: Getting Started`. It answers *what / why / who
+it's for / what you'll learn (tech table) / how it's structured / the paths / how to read a
+step / how to use the rubrics / start here*. The catalog `entry` points at `<slug>` (not
+`<slug>/getting-started`), and `links` is a single `{ label: 'Getting Started', slug: '<slug>' }`.
+
+**Step anatomy is fixed.** Every roadmap step is `## Step N — Title` followed by the same
+parts in the same order: **Story** (user-story format) · **Mode** (`LEARN`/`BUILD`) · **Why
+now** · **Concepts** · **Libraries** · **Expected outcome** · **Verification** (L1/L2/L4/Done-
+when table) · optional **Harness impact**. `**Build:**` is renamed **Expected outcome** — it
+describes the end state, not a task list, and carries a *high-level* project-structure sketch
+on the steps where "where does this code go" is a genuine open question (skeleton, hexagonal
+refactor, service extraction). The step-format table in `index.md` matches.
+
+**Rubrics are a lookup, stated as such.** `reference/rubrics.md` opens by saying it holds the
+full text of the `ACC-NN` / `AP-NN-x` IDs each step's Verification block only names; you read
+one section per step; the reviewer gets one section, never the file.
+
+**Setup pages have a fixed shape:** `## The goal, and the end state` / `## Why` / `## How`.
+
+**Prose is plain English.** A light editing pass removed AI-slop idioms and split the worst
+run-on sentences, targeting a non-native reader. The terse register and every technical claim
+stay. New material follows the same rule (see AGENTS.md "Content").
+
+**Per-step progress tracking.** The tracker moved from page-level to step-level; its unit list
+is derived at build from the `## Step N` headings under `roadmap/` plus each `setup/` page.
+Full detail in RFC 0002, amendment A2.
+
+**Constraints held.** Static output, both base paths build, `npm run verify` green.
+
 ---
 
 ## 🗄️ Appendix
@@ -531,11 +568,12 @@ SITE_URL=https://learn.example.com BASE_PATH=/ npm run build
   size: '18 chapters',
   tags: ['Go', 'Raft', 'gRPC'],
   status: 'planned',
-  entry: 'go-distributed-systems/getting-started',
-  links: [{ label: 'Overview', slug: 'go-distributed-systems' }],
+  entry: 'go-distributed-systems',
+  links: [{ label: 'Getting Started', slug: 'go-distributed-systems' }],
   sections: [{ label: 'Chapters', directory: 'chapters' }],
 }
 ```
 
-Then create `src/content/docs/go-distributed-systems/` with an `index.md` and a `chapters/`
-directory, and run `npm run verify`.
+Then create `src/content/docs/go-distributed-systems/` with an `index.md` (the Getting Started
+page) and a `chapters/` directory, and run `npm run verify`. Use the `add-material` skill — it
+carries the full step / rubric / setup structure.

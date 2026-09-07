@@ -56,6 +56,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'php-laravel',
+    title: 'PHP with Laravel',
+    description:
+      'Go from "I know PHP, new to Laravel" to a production-grade multi-tenant SaaS, built around one real domain: a booking platform sold to service businesses.',
+    tagline:
+      'Twenty-four steps, one real domain. Tenant isolation, time correctness, and money you cannot fake with a CRUD app.',
+    level: 'Intermediate',
+    size: '24 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'PostgreSQL', 'Livewire', 'Inertia + React'],
+    status: 'available',
+    entry: 'php-laravel',
+    links: [{ label: 'Getting Started', slug: 'php-laravel' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

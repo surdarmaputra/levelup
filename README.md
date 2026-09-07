@@ -12,7 +12,8 @@ where it does, what you should be able to explain afterwards, and how to verify 
 
 | Material | Level | Size | Status |
 |---|---|---|---|
-| [Java with Spring Boot](src/content/docs/java-spring-boot/) — production roadmap around an event ticketing marketplace | Intermediate | 26 steps | Available |
+| [Spring Boot — Event Ticketing Marketplace](src/content/docs/spring-boot-ticketing/) — production roadmap around an event ticketing marketplace | Intermediate | 26 steps | Available |
+| [Laravel — Multi-Tenant Booking SaaS](src/content/docs/laravel-booking-saas/) — a booking platform a barbershop, a dental clinic and a yoga studio all run on | Intermediate | 24 steps | Available |
 
 ## Quick start
 
@@ -39,11 +40,10 @@ src/
 ├── styles/custom.css           theme overrides
 └── content/docs/
     ├── index.mdx               landing page — the catalog
-    └── java-spring-boot/       one directory per learning material
-        ├── index.md            material overview
-        ├── getting-started.md
+    └── <framework>-<use-case>/ one directory per learning material
+        ├── index.md            the Getting Started page
         ├── setup/              agent harness, reviewer prompt
-        ├── roadmap/            steps 0–24, split into five sections
+        ├── roadmap/            the sequenced steps, split into sections
         └── reference/          rubrics, AGENTS.md template, omissions
 
 docs/rfcs/                      design decisions

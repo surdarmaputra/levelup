@@ -47,7 +47,7 @@ function getStore(): ProgressStore {
     if (parsed.version !== SCHEMA_VERSION) {
       return migrateStore(parsed);
     }
-    return parsed;
+    return renameMaterials(parsed);
   } catch {
     return createEmptyStore();
   }
@@ -67,7 +67,36 @@ function migrateStore(oldStore: ProgressStore): ProgressStore {
   const newStore = createEmptyStore();
   newStore.materials = oldStore.materials || {};
   saveStore(newStore);
-  return newStore;
+  return renameMaterials(newStore);
+}
+
+/**
+ * Material slugs a reader may have progress saved under, mapped to their current
+ * slug. Progress is keyed by slug, so renaming a material would otherwise orphan
+ * it. Entries stay here permanently — a reader who last visited before the rename
+ * is exactly the person this exists for.
+ */
+const RENAMED_MATERIALS: Record<string, string> = {
+  'java-spring-boot': 'spring-boot-ticketing',
+  'php-laravel': 'laravel-booking-saas',
+};
+
+/** Move progress saved under an old material slug onto the current one. */
+function renameMaterials(store: ProgressStore): ProgressStore {
+  let changed = false;
+
+  for (const [oldSlug, newSlug] of Object.entries(RENAMED_MATERIALS)) {
+    const old = store.materials[oldSlug];
+    if (!old) continue;
+
+    // Anything already saved under the new slug wins — it is the more recent edit.
+    store.materials[newSlug] = { ...old, ...(store.materials[newSlug] ?? {}) };
+    delete store.materials[oldSlug];
+    changed = true;
+  }
+
+  if (changed) saveStore(store);
+  return store;
 }
 
 export function getProgress(materialSlug: string, stepId: string): ProgressEntry | null {

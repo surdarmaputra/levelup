@@ -14,7 +14,7 @@ Code blocks: unchanged, always.
 Read before touching anything:
 1. `AGENTS.md` — conventions, non-negotiables
 2. `src/catalog.ts` — the `Material` type + existing entries
-3. The reference material, `src/content/docs/java-spring-boot/` — the shape to copy:
+3. The reference material, `src/content/docs/spring-boot-ticketing/` — the shape to copy:
    - `index.md` — the Getting Started page (structure below)
    - `roadmap/foundations.md` — a step file (step anatomy below)
    - `reference/rubrics.md` — the rubric page (below)
@@ -40,6 +40,47 @@ parts below then don't apply.
 Do **not** create a separate `getting-started.md` — `index.md` *is* that page (folded together
 2026-09-07, RFC 0001 amendment).
 
+## Name the examples — before writing anything
+
+A domain category is not a domain. "A booking system", "a ticketing system", "an e-commerce
+platform" cannot be seeded, cannot be tested, and give the reader nothing to picture.
+
+**Pick three concrete instances of the domain and run them through the whole material.**
+
+| Material | Its three |
+|---|---|
+| `laravel-booking-saas` | Northside Barbershop · Bright Smile Dental · Loft Yoga |
+| `spring-boot-ticketing` | Hamlet at the Lyric Theatre · Riverside Arena · The Foundry |
+
+**Choose them to disagree.** Each one exists to break a rule the others don't. The usual shape:
+
+| Role | What it does | Example |
+|---|---|---|
+| The simple case | If this is wrong, nothing else matters | Northside: 3 barbers, one 30-minute service, no buffer |
+| The awkward constraint | Carries the rule that complicates the model | Bright Smile: cleanup buffer, deposits, refund window |
+| The one that doesn't fit | Breaks a model built only around the obvious entity | The Foundry: 400 standing places, so a ticket with no seat |
+
+Write down, per example, **which rule it exists to break**. If you can't, you picked three
+skins of the same thing and they teach nothing.
+
+**Where they go — four places, all of them:**
+
+1. `index.md` → a `## What you are building, concretely` section: a table of *instance → its
+   setup → what it forces you to handle*, then the concrete questions to keep asking, then the
+   wider real-world list (*driving schools, physios, vets…*) so a reader can retarget their own build.
+2. `roadmap/overview.md` → a `## The three example <things>` section, plus the rule that none of
+   them is ever special-cased in code (`if ($tenant->slug === …)` means the model is wrong).
+3. The steps → stories, expected outcomes, `ACC-NN` criteria and L2 manual checks name them.
+   *"Bright Smile's last slot refused because the cleanup buffer runs past closing"* beats
+   *"a booking that exceeds opening hours"*.
+4. `reference/agents-template.md` → the three, so the reader's agent knows them too.
+
+**Seed them in the first step that creates data** and keep them for the rest of the roadmap.
+The bar is that a reader can run the thing, not just read about it.
+
+Numbers must agree with what the steps already claim. If a step says "generate a 5,000-seat
+map", the arena has 5,000 seats.
+
 ## The Getting Started page (`index.md`)
 
 Big-picture *what / why / how*, in this order. The reader should finish it knowing what they'll
@@ -49,6 +90,7 @@ build, why this domain, and how to work a step.
 |---|---|
 | Intro (no heading) | One paragraph: the path, the domain, step count, "sequence matters, pace doesn't" |
 | `## Who this is for` | Assumed knowledge; what's **not** assumed; who should skip ahead or stop |
+| `## What you are building, concretely` | The three named examples — see above. Table (instance → setup → what it forces), the questions to keep asking, the wider real-world list |
 | `## Why <the domain>` | Why this domain forces the hard topics — a table: *reality of the domain → what it makes you learn* |
 | `## What you'll learn` | A table grouped by area (language, framework, persistence, …) → concrete tech |
 | `## How this material is structured` | The Setup / Roadmap / Reference parts: what each is, when you read it. Then the roadmap-section table (section → step range → focus) |
@@ -141,9 +183,11 @@ Three fixed headings: `## The goal, and the end state` (what's configured + the 
 ### 1. Settle the shape (ask, don't guess)
 
 One question at a time, recommended answer with each.
-- Slug (kebab-case, becomes the URL segment)
-- Title, one-line description, level, size ("26 steps", "9 chapters")
+- Slug — **`<framework>-<use-case>`**, kebab-case, becomes the URL segment: `laravel-booking-saas`, `spring-boot-ticketing`. Framework, not language.
+- Title — **`Framework — System`**: *Laravel — Multi-Tenant Booking SaaS*. Then the one-line description, level, size ("26 steps", "9 chapters")
 - Stepped roadmap or chapter-style? Section list in reading order.
+- **The three named examples** — see *Name the examples* above. Put them to the author as a
+  choice, one instance at a time if they disagree, and say per example which rule it breaks.
 
 If source markdown already exists, derive answers from it and confirm.
 
@@ -186,6 +230,8 @@ npm run verify
 
 Green before "done". Then eyeball `npm run dev`:
 - Card on `/` — status, level, tags, working CTA → lands on the Getting Started page
+- The three named examples appear on `index.md`, in `roadmap/overview.md`, in the steps, and in
+  the `AGENTS.md` template — and are seeded by the first data step
 - Sidebar on a material page shows **only** that material
 - Right-hand TOC populated on a step page, one entry per `## Step`
 - On a `roadmap/` step page: a mark-as-learned / note control under every `## Step` heading and
@@ -211,6 +257,6 @@ each `<slug>/setup/` page. Consequences for a new material:
 | Section with one page | Still give it a directory — a bare page at material root has no sidebar group |
 | Page that shouldn't appear in the sidebar | `sidebar: { hidden: true }` in its frontmatter |
 | Chapter-style material (no steps) | `index.md` + `<section>/` dirs; skip the step/rubric/tracker parts; `## Chapter N` headings still one-per-unit |
-| Renaming a slug | Grep the whole repo — `catalog.ts`, cross-material links, RFCs under `docs/` |
+| Renaming a slug | Grep the whole repo — `catalog.ts`, cross-material links, RFCs under `docs/`. Then add the old→new pair to **both** `renamedMaterials` in `astro.config.mjs` (redirects the old URLs) and `RENAMED_MATERIALS` in `src/lib/progress.ts` (keeps saved progress). Entries stay forever. |
 | Source docs written for GitHub | Strip the leading `<h1>`, add frontmatter, rewrite links to relative |
 | Recording the decision | Structural change → new RFC or amend `docs/rfcs/0001`; see AGENTS.md "Decisions" |

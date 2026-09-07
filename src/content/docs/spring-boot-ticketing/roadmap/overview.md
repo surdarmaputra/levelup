@@ -45,6 +45,24 @@ A CRUD app cannot teach these. Any caching or locking you added to one would be 
 
 ---
 
+## The three example events
+
+Every step is written against the same three events. Seed them at step 6 and keep them for the
+rest of the roadmap — they disagree with each other on purpose, and a feature that works for
+all three is a feature that works.
+
+| Event | Setup | The rule it exists to break |
+|---|---|---|
+| **Hamlet at the Lyric Theatre** | 380 numbered seats across stalls, circle and balcony; three price tiers; twelve showtimes on one venue | Availability is per showtime, not per event. A catalog page listing all twelve dates is where the N+1 shows up. |
+| **Riverside Arena, one night** | 5,000 seats, a single showtime, on sale 09:00 Friday | Everyone arrives in the same minute: bulk generation, contention on the last rows, cache stampede, rate limiting, two instances |
+| **The Foundry, club gig** | 400 standing places, general admission, no seat map | A ticket with no seat. Quota on a `TicketType` instead of `Seat` rows — the case a seat-only model cannot express. |
+
+Concrete questions to keep asking as you build: does the catalog page for Hamlet issue twelve
+queries or one? When the arena's last ten seats go, do exactly ten buyers win? Can The Foundry
+sell its 400th ticket without a single `Seat` row existing?
+
+---
+
 ## The domain model (target state)
 
 ```

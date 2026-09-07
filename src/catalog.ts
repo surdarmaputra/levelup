@@ -16,7 +16,7 @@ export interface MaterialSection {
 }
 
 export interface Material {
-  /** URL segment and content directory name, e.g. `java-spring-boot`. */
+  /** URL segment and content directory name, e.g. `laravel-booking-saas`. */
   slug: string;
   /** Display title, used on the card and as the sidebar group label. */
   title: string;
@@ -38,8 +38,8 @@ export interface Material {
 
 export const materials: Material[] = [
   {
-    slug: 'java-spring-boot',
-    title: 'Java with Spring Boot',
+    slug: 'spring-boot-ticketing',
+    title: 'Spring Boot — Event Ticketing Marketplace',
     description:
       'Go from "I know Java, new to Spring" to a production-grade backend and fullstack app, built around one real domain: an event ticketing marketplace.',
     tagline:
@@ -48,8 +48,27 @@ export const materials: Material[] = [
     size: '26 steps',
     tags: ['Java 21', 'Spring Boot 3.5', 'PostgreSQL', 'React', 'AI-assisted'],
     status: 'available',
-    entry: 'java-spring-boot',
-    links: [{ label: 'Getting Started', slug: 'java-spring-boot' }],
+    entry: 'spring-boot-ticketing',
+    links: [{ label: 'Getting Started', slug: 'spring-boot-ticketing' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'laravel-booking-saas',
+    title: 'Laravel — Multi-Tenant Booking SaaS',
+    description:
+      'Go from "I know PHP, new to Laravel" to a production-grade multi-tenant SaaS, built around one real domain: the appointment-booking platform a barbershop, a dental clinic and a yoga studio all run on.',
+    tagline:
+      'Twenty-four steps, one real domain. Tenant isolation, time correctness, and money you cannot fake with a CRUD app.',
+    level: 'Intermediate',
+    size: '24 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'PostgreSQL', 'Livewire', 'Inertia + React'],
+    status: 'available',
+    entry: 'laravel-booking-saas',
+    links: [{ label: 'Getting Started', slug: 'laravel-booking-saas' }],
     sections: [
       { label: 'Setup', directory: 'setup' },
       { label: 'Roadmap', directory: 'roadmap' },
@@ -60,7 +79,7 @@ export const materials: Material[] = [
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');
 
-/** Find the material that owns a given page pathname, e.g. `/java-spring-boot/setup/`. */
+/** Find the material that owns a given page pathname, e.g. `/laravel-booking-saas/setup/`. */
 export function materialForPathname(pathname: string, base = '/'): Material | undefined {
   const withoutBase = pathname.slice(base.replace(/\/$/, '').length);
   const slug = withoutBase.split('/').filter(Boolean)[0];

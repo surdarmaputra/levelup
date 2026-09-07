@@ -445,6 +445,33 @@ whole-site and atomic, so there is no partial state to recover from.
 
 ## 📝 Amendments
 
+### 2026-09-07 — Material slug and title convention, and how a rename is handled
+
+A second material (`laravel-booking-saas`) made the naming ad hoc: the first was named after
+its stack (`java-spring-boot`), which says nothing about what a reader builds. Two rules now
+apply to every material, and both were applied retroactively — `java-spring-boot` became
+`spring-boot-ticketing`.
+
+**Slug is `<framework>-<use-case>`.** Kebab-case, framework rather than language:
+`laravel-booking-saas`, `spring-boot-ticketing`. The framework is the searched term, and the
+language is implied by it. It also puts the system in the URL, which is what distinguishes two
+materials on the same stack — the catalog is expected to hold more than one Laravel material.
+
+**Title is `Framework — System`.** *Laravel — Multi-Tenant Booking SaaS*, *Spring Boot — Event
+Ticketing Marketplace*. Mirrors the slug order, so cards group by stack as the catalog grows,
+and carries the qualifier the slug drops.
+
+**A rename has two consequences, each handled in exactly one place.** Both must be updated in
+the same change, and entries in them are permanent:
+
+| Consequence | Handled by |
+|---|---|
+| Links shared under the old URL 404 | `renamedMaterials` in `astro.config.mjs` — emits a redirect page for every URL the material has, enumerated from the content tree because a redirect destination must be a real route. Astro applies `base` to the source but not the destination, so the destination is written with the base prefix. |
+| Saved progress is orphaned (localStorage is keyed by slug) | `RENAMED_MATERIALS` in `src/lib/progress.ts` — moves progress onto the new slug on the next read. Anything already saved under the new slug wins. |
+
+This supersedes the Appendix's `go-distributed-systems` example slug, which would now be named
+for what it builds rather than for Go.
+
 ### 2026-09-06 — Landing page and site typography
 
 Enhancement pass on the landing page and the site's type. Structural parts that change

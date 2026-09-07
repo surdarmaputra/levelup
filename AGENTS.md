@@ -11,7 +11,7 @@ GitHub Pages today and a VPS later.
 The content is the product. The code exists to render it, stay out of its way, and make adding
 the next material cheap.
 
-Current release: **v0.1** — one material, `java-spring-boot`.
+Current release: **v0.2** — two materials, `spring-boot-ticketing` and `laravel-booking-saas`.
 
 ---
 
@@ -82,8 +82,32 @@ docs/rfcs/                      design decisions, newest wins
 - `src/catalog.ts` is the only place material metadata lives. The sidebar and the landing page
   both read from it. **Never** hardcode a material into `astro.config.mjs` or a component.
 - Adding a material means: content directory + one `materials` entry. Nothing else.
+- **Slug is `<framework>-<use-case>`**, kebab-case: `laravel-booking-saas`,
+  `spring-boot-ticketing`. The framework, not the language — nobody searches "php laravel
+  booking". Title is `Framework — System`: *Laravel — Multi-Tenant Booking SaaS*.
+- Renaming a slug breaks shared links and orphans saved progress. Both are handled in one
+  place each, and both must be updated together: `renamedMaterials` in `astro.config.mjs`
+  (emits a redirect from every old page URL) and `RENAMED_MATERIALS` in `src/lib/progress.ts`
+  (moves saved progress onto the new slug). Entries stay forever.
 
 **Content**
+- **Every material names its examples.** A domain category — "a booking system", "a ticketing
+  system" — is not a domain. Name **three concrete instances** of it and run them through the
+  whole material: *Northside Barbershop / Bright Smile Dental / Loft Yoga*, *Hamlet at the Lyric
+  Theatre / Riverside Arena / The Foundry*. Rules:
+  - Pick them so they **disagree** on the axes the material teaches. Each one exists to break a
+    rule the others don't: one is the simple case, one carries the awkward constraint, one
+    doesn't fit the obvious model at all. Write down, per example, which rule that is.
+  - They live in four places: a `## What you are building, concretely` section on `index.md`
+    (a table: the instance → its setup → what it forces you to handle), a
+    `## The three example <things>` section in `roadmap/overview.md`, the stories, expected
+    outcomes and gating tests of the steps, and the material's `AGENTS.md` template.
+  - **Seed them in the first step that creates data**, and keep them for the rest of the
+    roadmap. A reader must be able to run the thing, not just read about it.
+  - State the rule that they are never special-cased in code. `if ($tenant->slug === …)` means
+    the model is wrong, not the example.
+  - Also list the wider real-world set (*driving schools, physiotherapists, vets…* /
+    *cinema, conferences, museum timed entry…*) so a reader can point their own build at one.
 - Frontmatter `title` and `description` on every page. `description` is what search and
   social cards show.
 - **No `<h1>` in the body** — Starlight renders it from `title`.

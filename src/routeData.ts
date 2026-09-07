@@ -15,7 +15,7 @@ export const onRequest = defineRouteMiddleware((context) => {
   const { starlightRoute } = context.locals;
   const { id } = starlightRoute;
 
-  // `id` is the content-collection id, e.g. `java-spring-boot/setup/agent-harness`.
+  // `id` is the content-collection id, e.g. `laravel-booking-saas/setup/agent-harness`.
   const currentSlug = id.split('/').filter(Boolean)[0];
   const current = publishedMaterials.find((m) => m.slug === currentSlug);
 

@@ -87,7 +87,7 @@ Names are a suggestion; the rule that matters is `domain/` importing nothing fro
 
 ## Step 11 — Caching and the CQRS read model
 
-**Story:** *As a customer, the event page with live seat availability loads in under 100ms, even when 50,000 people are viewing it simultaneously during an on-sale.*
+**Story:** *As a customer, the Riverside Arena page with live seat availability loads in under 100ms, even when 50,000 people are viewing it simultaneously at 09:00 on the Friday it goes on sale.*
 
 **Mode:** `LEARN` — Cache invalidation is judgement. Agent may implement once *you* specify the strategy.
 

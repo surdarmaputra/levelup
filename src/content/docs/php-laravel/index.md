@@ -7,8 +7,8 @@ sidebar:
 ---
 
 A guided path from *"I know PHP, new to Laravel"* to a production-grade multi-tenant SaaS —
-built around one real domain: **Bookline**, a booking and scheduling platform sold to service
-businesses, on PHP 8.5 and Laravel 13.
+built around one real domain: **Bookline**, an appointment-booking platform that barbershops,
+dental clinics and yoga studios use to sell their own time, on PHP 8.5 and Laravel 13.
 
 Twenty-four steps. There's no deadline on any of it — take a step in an evening or over two
 weeks. The order matters, the pace doesn't.
@@ -24,6 +24,30 @@ Livewire, Inertia, Stripe.
 
 If you are new to PHP itself, this will move too fast — learn the language first. Already
 shipping Laravel in production? Skim steps 0–4 as a checklist and start at step 5.
+
+## What you are building, concretely
+
+Bookline is one Laravel application serving many independent businesses. Each one signs up,
+gets its own address, configures what it sells and when, and takes bookings from its own
+customers — who never see any other business on the platform.
+
+Three of them are used as the running examples all the way through the roadmap. They were
+picked because they disagree with each other on exactly the points that are hard to build:
+
+| The business | What it sells | What it forces you to handle |
+|---|---|---|
+| **Northside Barbershop** — 3 barbers | 30-minute cuts, back to back, walk-ins between them | Per-staff schedules, a slot grid, availability that must be fast because customers book on a phone in the street |
+| **Bright Smile Dental** — 4 dentists, 2 hygienists | 45-minute appointments, 15 minutes of cleanup after each, deposits to reduce no-shows | Buffers after a service, deposits and refunds, a cancellation window, reminders the day before |
+| **Loft Yoga** — 2 instructors | Group classes with 12 places, a weekly timetable, some seasonal | Capacity greater than one, recurring weekly rules, and DST — a Sunday 09:00 class stays at 09:00 through the clock change |
+
+Same code, same database, three businesses whose rules do not match. That is the whole
+exercise: one system, configured per tenant, and never a line of `if ($tenant->name === …)`.
+
+Other businesses in this shape, if you want to point your own version at one: driving schools,
+tattoo studios, physiotherapists, veterinary clinics, photography studios, private tutors, car
+service centres, nail bars, massage therapists, coworking meeting rooms. All of them sell time
+in slots, all of them lose money to no-shows, and all of them are somebody's paying customer
+today.
 
 ## Why a booking SaaS
 
@@ -42,8 +66,8 @@ once was chosen because the hard parts are unavoidable:
 You can't fake a tenancy leak. Either your test proves tenant A's query never returns tenant
 B's row, or it doesn't.
 
-Every business in the world that sells time — a clinic, a salon, a studio, a repair shop, a
-tutor — runs on software shaped like this. Building it once teaches you the shape.
+Every business that sells time runs on software shaped like this, and most of them are paying
+for it today. Building it once teaches you the shape.
 
 ## What you'll learn
 
@@ -169,7 +193,7 @@ pass/fail bar for that step, in two parts:
   it fail, then make it pass.
 - **`AP-NN-x`** — named anti-patterns: mistakes that pass the tests but are still wrong (a
   queued job that runs without a tenant and writes rows to whichever tenant was last active; a
-  cache key that serves one salon's schedule to another).
+  cache key that serves Northside's schedule to a Bright Smile patient).
 
 Use it three times per step: read `ACC-NN` before you build and write that test first;
 self-check against every `AP-NN-x` once it passes; then paste **only that step's section**

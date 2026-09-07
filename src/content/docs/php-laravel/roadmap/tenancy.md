@@ -13,14 +13,14 @@ nothing — and step 22 adopts one anyway, once you know what it is doing for yo
 
 ## Step 5 — The tenant, and resolving it from the request
 
-**Story:** *As a business owner, I get my own address at `mysalon.bookline.app`, so that my staff sign in somewhere that belongs to us.*
+**Story:** *As a business owner, I get my own address at `northside.bookline.app`, so that my staff sign in somewhere that belongs to us.*
 
 **Mode:** `BUILD` — resolution is plumbing. The judgement comes in step 6.
 
 **Why now:** Every table from step 2 needs a `tenant_id`, and every request after this one needs to know which tenant it is for. Do it before there are 30 tables, not after.
 
 **Concepts:**
-- **What a tenant is here**: one business, with its own staff, services, customers and bookings — not one user
+- **What a tenant is here**: one business — Northside Barbershop, Bright Smile Dental, Loft Yoga — with its own staff, services, customers and bookings. A tenant is not a user: Northside has three barbers who all sign in to the same tenant.
 - **Resolution strategies**: subdomain, path prefix, custom domain, header. What each costs in local development, TLS, and cookie scope.
 - **Where resolution belongs**: middleware, early, before authorisation — and why a controller resolving the tenant is already too late
 - **Binding the current tenant into the container** as a scoped singleton, so nothing has to pass it around
@@ -140,6 +140,8 @@ app/Tenancy/
 
 **Expected outcome:** A back-office behind tenant + membership middleware: onboarding (business profile, timezone, slug), services CRUD, staff CRUD with invitations, weekly working hours and time off. A design tokens file and a handful of shared Blade components — button, input, table, modal — that every screen uses.
 
+The bar: set up Bright Smile Dental from an empty tenant, through the UI only — six staff, three services with different durations, the cleanup buffer, opening hours, and one dentist's holiday. If any of it still needs a seeder, the back-office is not done.
+
 ```text
 resources/views/
 ├── components/     the design system: button, field, table, modal
@@ -152,6 +154,6 @@ app/Livewire/       one component per screen, thin, delegating to services
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-08` — a Livewire test that creates a service, edits it, and deletes it as an owner; then asserts a staff-role user is forbidden from each write action while still able to read. |
-| **L2 — Manual checks** | (a) Open the network tab and type in a filter field. Count the requests. If it is one per keystroke, fix the binding. <br>(b) Set the tenant's timezone to something far from yours and confirm every displayed time changes. If nothing changes, step 10 has work waiting. |
+| **L2 — Manual checks** | (a) Open the network tab and type in a filter field. Count the requests. If it is one per keystroke, fix the binding. <br>(b) Set Loft Yoga's timezone to something far from yours and confirm every displayed time changes. If nothing changes, step 10 has work waiting. <br>(c) Sign in as a Northside barber and open a Bright Smile URL. You should get a 403, not an empty page. |
 | **L4 — Anti-patterns** | `AP-08-a`, `AP-08-b`, `AP-08-c` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-08` green, and you can set up a plausible business end to end without touching the database |

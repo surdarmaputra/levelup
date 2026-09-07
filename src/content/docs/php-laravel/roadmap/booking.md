@@ -22,15 +22,20 @@ where generated code looks right and is wrong.
 - **Availability as set arithmetic**: opening hours, minus time off, minus existing bookings, minus buffers, intersected with a booking horizon
 - **Interval algebra** — the six ways two intervals can relate, and the two that people always forget when they write the overlap condition by hand
 - **Slot granularity**: fixed grid (every 15 minutes) vs free-start. What each does to the number of candidate slots and to customer expectations.
-- **Buffers and setup time**: before, after, and the difference between a service that needs cleanup and one that does not
+- **Buffers and setup time**: Bright Smile needs 15 minutes of cleanup after every appointment, Northside needs none. A 45-minute service in a 60-minute footprint is not the same thing as a 60-minute service.
 - **Lead time and horizon** — no bookings in the next two hours, none more than 60 days out
-- **Capacity beyond one**: a class with eight places is the same engine with a count instead of a boolean. Decide now whether you support it.
+- **Capacity beyond one**: Loft Yoga's class has 12 places, so "is this slot free" becomes "how many places are left". It is the same engine with a count instead of a boolean — decide now whether you support it, because retrofitting it later touches every rule.
 - **Where the computation lives**: a pure, testable service that takes a date range and returns intervals, with no framework types in its signature
 - **Property-based thinking**: what must be true of *any* output — no slot outside opening hours, no slot overlapping a booking, no slot shorter than the service
 
 **Libraries:** `nesbot/carbon` (bundled), optionally `spatie/period` — decide whether the dependency earns its place
 
 **Expected outcome:** A pure `AvailabilityService` taking (staff, service, date range) and returning available intervals, with working hours, time off, existing bookings, buffers, lead time and horizon all applied. Table-driven tests covering each rule alone and in combination.
+
+It must give the right answer for all three example businesses without knowing which one it is
+serving: Northside's 30-minute cuts back to back, Bright Smile's 45-minute appointment that
+occupies 60 minutes and therefore cannot start at 17:15 before an 18:00 close, and Loft Yoga's
+class that stays bookable until the twelfth place is taken.
 
 ```text
 app/Scheduling/
@@ -43,7 +48,7 @@ app/Scheduling/
 
 | | |
 |---|---|
-| **L1 — Gating test** | `ACC-09` — a table-driven test where each row states opening hours, existing bookings, time off, buffer and service duration, and asserts the exact list of slots returned. Include a day fully booked, a day fully off, and a booking that starts before opening and ends after it. |
+| **L1 — Gating test** | `ACC-09` — a table-driven test where each row states opening hours, existing bookings, time off, buffer and service duration, and asserts the exact list of slots returned. Include: Northside fully booked, Bright Smile's last slot of the day refused because the cleanup buffer runs past closing, a day fully off, and a booking that starts before opening and ends after it. |
 | **L2 — Manual checks** | (a) Feed the engine a week with 200 existing bookings and time the call. Note the number; step 13 will attack it. <br>(b) Hand the rules list to someone else and ask them to name a case you did not test. There is always one. |
 | **L4 — Anti-patterns** | `AP-09-a`, `AP-09-b`, `AP-09-c` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-09` green, and the engine can be tested without touching the database |
@@ -63,7 +68,7 @@ app/Scheduling/
 - **Store UTC, render tenant-local** — and the third timezone, the customer's, which affects display only
 - **DST gaps**: on the spring-forward day, 02:30 does not exist. What does your engine emit for a business that opens at 02:00?
 - **DST overlaps**: on the autumn day, 01:30 happens twice. Which one did the customer book?
-- **Recurring weekly rules** are local rules — "every Tuesday at 09:00" is not "every 168 hours"
+- **Recurring weekly rules** are local rules — Loft Yoga's "every Sunday at 09:00" is not "every 168 hours", and the week the clocks change is where the two answers differ
 - **Duration vs interval arithmetic**: adding one day is not adding 24 hours
 - Carbon's immutable API, and why the mutable one causes action at a distance
 - **A clock abstraction** so tests can control "now" instead of sleeping
@@ -78,7 +83,7 @@ app/Scheduling/
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-10` — with the tenant timezone set to one that observes DST, assert the slot list on the spring-forward day contains no non-existent local time, and on the fall-back day the duplicated hour resolves to exactly one instant. Assert a weekly 09:00 rule stays 09:00 local on both sides of each transition. |
-| **L2 — Manual checks** | (a) Set the tenant timezone to `Pacific/Chatham` (a 45-minute offset) and read the rendered schedule. <br>(b) Change a tenant's timezone after bookings exist. Decide, and document, whether existing bookings move. |
+| **L2 — Manual checks** | (a) Set Loft Yoga's timezone to `Pacific/Chatham` (a 45-minute offset) and read the rendered schedule. <br>(b) Book a Loft Yoga class as a customer whose browser is in another continent. Both of you must agree on which class it is. <br>(c) Change a tenant's timezone after bookings exist. Decide, and document, whether existing bookings move. |
 | **L4 — Anti-patterns** | `AP-10-a`, `AP-10-b`, `AP-10-c`, `AP-10-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-10` green, and no `now()` call remains outside the clock |
 
@@ -119,7 +124,7 @@ app/Scheduling/
 
 ## Step 12 — Double-booking: locking vs an exclusion constraint
 
-**Story:** *As a business owner, two customers can never hold the same slot with the same member of staff, so that I never have to phone one of them to apologise.*
+**Story:** *As a business owner, two customers can never both book Tuesday 10:00 with the same barber, so that I never have to phone one of them to apologise.*
 
 **Mode:** `LEARN` — write the failing concurrency test first. It is the only way to know your fix worked.
 
@@ -128,7 +133,7 @@ app/Scheduling/
 **Concepts:**
 - **Why check-then-insert is always a bug**: between the `SELECT` that finds the slot free and the `INSERT` that takes it, another request does the same thing
 - **Transaction isolation** in PostgreSQL: what `READ COMMITTED` actually promises, and why "it worked in testing" means "only one request at a time"
-- **Pessimistic locking**: `SELECT ... FOR UPDATE` on what, exactly? Locking the booking row does nothing — the row does not exist yet. Lock the staff-day, or the resource.
+- **Pessimistic locking**: `SELECT ... FOR UPDATE` on what, exactly? Locking the booking row does nothing — the row does not exist yet. Lock the staff-day, or the resource. Note that Loft Yoga's class of 12 is a different problem: there the count is the thing to protect, not the slot.
 - **The database as the guarantee**: a PostgreSQL `EXCLUDE USING gist` constraint over a `tstzrange` and the staff id makes overlap *unrepresentable*. Compare it honestly with the lock.
 - **Deadlocks** — consistent lock ordering, and what to do with the deadlock you still get
 - **Retry and backoff** on serialisation failures, and why blind retry on any exception is dangerous with money involved

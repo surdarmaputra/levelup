@@ -19,8 +19,16 @@ Copy this into your own project root as `AGENTS.md`. It is the deliverable of
 
 ## Project
 
-Bookline — a multi-tenant booking and scheduling platform for service businesses.
+Bookline — a multi-tenant appointment-booking platform for service businesses.
 PHP 8.5 + Laravel 13, PostgreSQL, Redis.
+
+Three example tenants are seeded and used in every test. They disagree on purpose:
+
+- **Northside Barbershop** — 3 barbers, one 30-minute service, no buffer
+- **Bright Smile Dental** — 6 staff, services of 30/45/60 minutes, 15-minute cleanup buffer, deposit per booking, 24-hour cancellation window
+- **Loft Yoga** — 2 instructors, classes with 12 places, a fixed weekly timetable, customers in other timezones
+
+A feature works when it works for all three. Never special-case a tenant by slug or name.
 
 This is a **learning project** following `docs/ROADMAP.md`. Correctness and comprehension
 matter more than delivery speed. There is no deadline.

@@ -60,7 +60,7 @@ export const materials: Material[] = [
     slug: 'php-laravel',
     title: 'PHP with Laravel',
     description:
-      'Go from "I know PHP, new to Laravel" to a production-grade multi-tenant SaaS, built around one real domain: a booking platform sold to service businesses.',
+      'Go from "I know PHP, new to Laravel" to a production-grade multi-tenant SaaS, built around one real domain: the appointment-booking platform a barbershop, a dental clinic and a yoga studio all run on.',
     tagline:
       'Twenty-four steps, one real domain. Tenant isolation, time correctness, and money you cannot fake with a CRUD app.',
     level: 'Intermediate',

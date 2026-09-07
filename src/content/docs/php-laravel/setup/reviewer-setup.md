@@ -151,8 +151,8 @@ A finding without a citation is not a finding. Delete it rather than including i
 unsupported.
 
 State consequences in operational terms, not abstractions. Not "this is a tenancy
-leak" but "a reminder job dispatched for the salon runs after the clinic's job on
-the same worker and emails the clinic's customer list."
+leak" but "a reminder job dispatched for Northside runs after Bright Smile's job
+on the same worker and emails Bright Smile's patient list."
 
 ## Tone
 

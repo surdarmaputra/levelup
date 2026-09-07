@@ -110,16 +110,16 @@ app/
 
 **Libraries:** `laravel/framework` (Eloquent), Pest, `fakerphp/faker`
 
-**Expected outcome:** Migrations, models, factories and seeders for `services`, `staff`, `working_hours`, `customers` — no tenancy yet. Money stored as integer minor units with the currency alongside it. Every timestamp column `timestamptz`. A seeder that produces one plausible business you can eyeball.
+**Expected outcome:** Migrations, models, factories and seeders for `services`, `staff`, `working_hours`, `customers` — no tenancy yet. Money stored as integer minor units with the currency alongside it. Every timestamp column `timestamptz`. A seeder that produces the three example businesses from the [overview](../overview/#the-three-example-tenants): Northside Barbershop (3 barbers, one 30-minute service), Bright Smile Dental (6 staff, three services, a cleanup buffer, a deposit) and Loft Yoga (2 instructors, classes of 12). Tenancy arrives in step 5; for now they are three sets of rows you can eyeball.
 
 **Verification**
 
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-02` — save a `Service` with related staff, reload it from the database in a fresh query, and assert every field and relationship round-trips, including money and timestamps. Runs against real PostgreSQL. |
-| **L2 — Manual checks** | (a) Run `php artisan migrate:fresh --seed`, then read the schema in `psql` with `\d+`. Column types are what you intended, not what Laravel guessed. <br>(b) Enable query logging on one page and count the queries. Note the N+1 you will fix in step 13. |
+| **L2 — Manual checks** | (a) Run `php artisan migrate:fresh --seed`, then read the schema in `psql` with `\d+`. Column types are what you intended, not what Laravel guessed. <br>(b) Read the seeded rows for all three businesses. If Loft Yoga's class capacity or Bright Smile's cleanup buffer has nowhere to live, the schema is not finished. <br>(c) Enable query logging on one page and count the queries. Note the N+1 you will fix in step 13. |
 | **L4 — Anti-patterns** | `AP-02-a`, `AP-02-b`, `AP-02-c`, `AP-02-d` — [full text](../../reference/rubrics/) |
-| **Done when** | `ACC-02` green, `migrate:fresh --seed` gives you a usable business in one command |
+| **Done when** | `ACC-02` green, `migrate:fresh --seed` gives you all three example businesses in one command |
 
 ---
 

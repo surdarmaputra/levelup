@@ -13,7 +13,7 @@ on code that already works is the job.
 
 ## Step 19 — The public booking page (Inertia + React + Reverb)
 
-**Story:** *As a customer, I pick a service, a member of staff and a time on one page, and I see a slot disappear the moment someone else takes it.*
+**Story:** *As someone who needs a haircut, I pick a barber and a time on one page, and I see a slot disappear the moment someone else takes it.*
 
 **Mode:** `BUILD` — a real frontend. Generate freely, review the state handling.
 
@@ -46,7 +46,7 @@ resources/js/
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-19` — an end-to-end browser test books a slot from the public page and asserts the booking exists in the correct tenant with the correct instant. A second test opens the same page in two sessions, takes the slot in one, and asserts the other removes it without a reload. |
-| **L2 — Manual checks** | (a) Open the page on a phone. Complete a booking one-handed. <br>(b) Set your browser timezone to another continent and confirm the page says which timezone the times are in. <br>(c) Let a hold expire with the page open. What the customer sees must be honest. |
+| **L2 — Manual checks** | (a) Open Northside's page on a phone. Complete a booking one-handed, standing up. That is how this page is actually used. <br>(b) Book a Loft Yoga class with your browser timezone set to another continent and confirm the page says which timezone the times are in. <br>(c) Let a hold expire with the page open. What the customer sees must be honest. |
 | **L4 — Anti-patterns** | `AP-19-a`, `AP-19-b`, `AP-19-c`, `AP-19-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-19` green, and no broadcast channel can be subscribed to across tenants |
 
@@ -54,7 +54,7 @@ resources/js/
 
 ## Step 20 — The public API and token authentication
 
-**Story:** *As a business owner, I connect my website to my Bookline account with an API key, so that my own site can show live availability.*
+**Story:** *As a dental practice with our own website, I connect it to Bookline with an API key, so that patients book from our site instead of being sent somewhere else.*
 
 **Mode:** `BUILD` — the contract is mostly settled by step 3.
 
@@ -87,7 +87,7 @@ resources/js/
 
 ## Step 21 — Payments migration: BYO keys → Stripe Connect
 
-**Story:** *As a business owner, I onboard once and the platform's fee is taken automatically, so that I do not have to manage my own gateway keys.*
+**Story:** *As a tattoo studio taking deposits, I onboard once and the platform's fee is taken automatically, so that I do not have to manage my own gateway keys.*
 
 **Mode:** `LEARN` — a migration of live behaviour. The reasoning matters more than the code.
 
@@ -120,7 +120,7 @@ resources/js/
 
 ## Step 22 — Tenancy migration: shared database → database per tenant
 
-**Story:** *As an enterprise customer, my data lives in its own database, so that my compliance review can be answered honestly.*
+**Story:** *As a dental group, our patient data lives in its own database, so that our compliance review can be answered honestly.*
 
 **Mode:** `LEARN` — the second migration, and the more dangerous one.
 

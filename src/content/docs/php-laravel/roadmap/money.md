@@ -26,8 +26,8 @@ project.
 **Concepts:**
 - **Subscription lifecycle**: trialing, active, past due, cancelled, and the grace period at the end of a paid month
 - **What Cashier gives you** and what it leaves to you — it manages Stripe state, not your product rules
-- **Plan limits as product rules**: staff seats, services, bookings per month. Where the check lives, and what happens to data that already exceeds a new, lower limit.
-- **Downgrade is the hard direction**: the customer has 10 staff and moves to the 3-staff plan. Block, soft-lock, or archive? Decide and write it down.
+- **Plan limits as product rules**: staff seats, services, bookings per month. Northside fits the small plan with three barbers; Bright Smile's six staff do not. Where the check lives, and what happens to data that already exceeds a new, lower limit.
+- **Downgrade is the hard direction**: Bright Smile has six staff and moves to the three-staff plan. Block the downgrade, soft-lock the extra staff, or archive them? Decide and write it down.
 - **Proration** — what changes mid-cycle actually cost, and why you should not reimplement Stripe's arithmetic
 - **The billing portal**: hosted checkout and hosted portal over hand-built card forms, and the PCI reason why
 - **Test mode discipline**: test clocks for trial expiry, and the card numbers that force each failure
@@ -40,7 +40,7 @@ project.
 
 | | |
 |---|---|
-| **L1 — Gating test** | `ACC-14` — a tenant on the 3-staff plan is refused the fourth staff member with a 402-or-403 and a message naming the limit; on upgrading, the same action succeeds. Using a Stripe test clock, a trial that ends without a payment method moves the tenant to the restricted state, and no bookings are lost. |
+| **L1 — Gating test** | `ACC-14` — Northside on the 3-staff plan is refused a fourth barber with a 402-or-403 and a message naming the limit; on upgrading, the same action succeeds. Using a Stripe test clock, a trial that ends without a payment method moves the tenant to the restricted state, and no bookings are lost. |
 | **L2 — Manual checks** | (a) Walk checkout end to end with a test card. Then repeat with the card that requires 3-D Secure. <br>(b) Downgrade a tenant that exceeds the new limit and describe, in the UI, exactly what happened to the excess. |
 | **L4 — Anti-patterns** | `AP-14-a`, `AP-14-b`, `AP-14-c` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-14` green, and no plan limit is enforced in more than one place |
@@ -113,7 +113,7 @@ project.
 
 ## Step 17 — Deposits, refunds, and the no-show policy
 
-**Story:** *As a business owner, customers who book a chargeable service pay a deposit, so that fewer of them fail to turn up.*
+**Story:** *As a dental practice, customers pay a deposit when they book, so that fewer of them fail to turn up and leave a 45-minute hole in a dentist's day.*
 
 **Mode:** `LEARN` — money plus state transitions. Write the tests first.
 
@@ -123,7 +123,7 @@ project.
 - **Where payment sits in the booking flow**: hold → pay → confirm, and what must happen when the payment succeeds after the hold has already expired
 - **Payment intents are asynchronous** — the customer's browser and your webhook both report success, at different times, in either order
 - **Money arithmetic**: integer minor units, no floats, explicit currency on every amount, and rounding decided once
-- **Refunds**: full, partial, and the cancellation window that decides which. Refunds fail too.
+- **Refunds**: full, partial, and the cancellation window that decides which — Bright Smile refunds in full up to 24 hours before, and not at all after. Refunds fail too.
 - **The no-show flow** — who marks it, what it charges, and how it is disputed
 - **Compensation, not rollback**: an external charge cannot be rolled back by a database transaction. If confirmation fails after the charge, the fix is a refund, recorded.
 - **Reconciliation**: every deposit in your database maps to exactly one payment at the provider. A nightly job proves it.
@@ -146,7 +146,7 @@ project.
 
 ## Step 18 — Queues, Horizon, and work that must not be lost
 
-**Story:** *As a customer, I get a reminder the day before my appointment, so that I do not forget it.*
+**Story:** *As a dental patient, I get a reminder the day before my appointment, so that I do not forget it and lose my deposit.*
 
 **Mode:** `BUILD` — the infrastructure is configuration. Read the retry and failure settings carefully.
 

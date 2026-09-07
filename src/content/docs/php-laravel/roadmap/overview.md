@@ -13,7 +13,7 @@ sidebar:
 | Assumed baseline | Comfortable with PHP 8 and SQL. New to Laravel. |
 | Language / runtime | PHP 8.5, `declare(strict_types=1)` everywhere |
 | Framework | Laravel 13.x |
-| Domain | Bookline — a booking and scheduling platform sold to service businesses |
+| Domain | Bookline — an appointment-booking platform for service businesses (barbershops, dental clinics, yoga studios) |
 | Tenancy | Shared database + `tenant_id`, hand-rolled (steps 5–8) → database per tenant with `stancl/tenancy` (step 22) |
 | Tenant resolution | Subdomain (`acme.bookline.test`), resolved in middleware, bound in the container |
 | Infrastructure | PostgreSQL 17, Redis 8, Mailpit, Docker Compose |
@@ -45,6 +45,27 @@ them:
 - **Nothing happens on a page load** → reminders, expiries, and payment follow-ups all run on queues
 
 A CRUD app cannot teach these. Any locking or caching you added to one would be for show.
+
+---
+
+## The three example tenants
+
+Every step is written against the same three businesses. Seed them in step 2 and keep them for
+the rest of the roadmap — they disagree with each other on purpose, and a feature that works
+for all three is a feature that works.
+
+| Tenant | Setup | The rule it exists to break |
+|---|---|---|
+| **Northside Barbershop** `northside` | 3 barbers, one service ("Cut", 30 min), open 09:00–18:00 Tue–Sat | The simple case. If availability is wrong here, nothing else matters. |
+| **Bright Smile Dental** `brightsmile` | 4 dentists, 2 hygienists, services of 30/45/60 min, 15 min cleanup after each, a deposit per booking, a 24-hour cancellation window | Buffers, deposits, refunds, and staff who can only perform some services |
+| **Loft Yoga** `loftyoga` | 2 instructors, classes with 12 places, a fixed weekly timetable, and customers who book from another timezone | Capacity above one, recurring weekly rules, and the DST case |
+
+Concrete questions to keep asking as you build: can Bright Smile take a booking that ends after
+closing time because of its cleanup buffer? Does Loft Yoga's Sunday 09:00 class stay at 09:00
+the week the clocks change? Can Northside's second barber be booked while the first is busy?
+
+None of the three may ever be special-cased in code. If you find yourself writing
+`if ($tenant->slug === 'loftyoga')`, the model is wrong, not the tenant.
 
 ---
 

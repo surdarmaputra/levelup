@@ -9,7 +9,7 @@ Every roadmap step has a **rubric** here: the objective pass/fail bar for that s
 
 **`ACC-NN` — the gating acceptance test.** One test, unambiguous pass/fail, no judgement call. It states exactly what must be proven — *"50 concurrent requests for one slot: exactly one booking exists"*. You write the test, watch it fail, then make it pass.
 
-**`AP-NN-x` — the anti-patterns.** Named mistakes that pass the acceptance test but are still wrong: the queued job that runs with no tenant and writes to whichever one was last active, the cache key that serves one salon's schedule to another. Most don't show up at runtime until they do.
+**`AP-NN-x` — the anti-patterns.** Named mistakes that pass the acceptance test but are still wrong: the queued job that runs with no tenant and writes to whichever one was last active, the cache key that serves Northside's schedule to Bright Smile. Most don't show up at runtime until they do.
 
 **Why this exists.** The common failure of self-directed learning is that everything *feels* like it works. The rubric turns "done" into something you check rather than something you feel.
 
@@ -102,7 +102,7 @@ Every roadmap step has a **rubric** here: the objective pass/fail bar for that s
 | ID | Anti-pattern |
 |---|---|
 | AP-06-a | **A hand-maintained list of tenant-owned models in the test.** The next model added will not be on it. Discover models by reflection so forgetting the trait is a failure, not an omission. |
-| AP-06-b | **Unique constraints that ignore `tenant_id`.** A globally unique service name means the second business cannot call their service "Haircut". Every unique index in a tenant-owned table includes the tenant. |
+| AP-06-b | **Unique constraints that ignore `tenant_id`.** A globally unique service name means the second barbershop to sign up cannot call their service "Cut". Every unique index in a tenant-owned table includes the tenant. |
 | AP-06-c | **Raw queries and `DB::table()` used casually.** The global scope does not apply. Each one needs an explicit tenant condition and a written reason for existing. |
 | AP-06-d | **No tenant in context treated as "return everything".** It must throw. A scope that quietly disables itself is worse than no scope, because you will trust it. |
 
@@ -114,7 +114,7 @@ Every roadmap step has a **rubric** here: the objective pass/fail bar for that s
 
 | ID | Anti-pattern |
 |---|---|
-| AP-07-a | **Cache keys without the tenant.** The single most common multi-tenant production bug: one business's schedule served to another, with no error anywhere. |
+| AP-07-a | **Cache keys without the tenant.** The single most common multi-tenant production bug: Northside's schedule served to a Bright Smile patient, with no error anywhere. |
 | AP-07-b | **Tenant context set but never cleared.** A worker is a long-running process. Context that leaks between jobs is a leak between customers. Clear it in a `finally`. |
 | AP-07-c | **Serialising the whole tenant model into the job.** Stale by the time it runs, and it puts tenant data in the queue payload. Serialise the id. |
 | AP-07-d | **A scheduled command that loops over tenants without isolating failures.** Tenant 3 throws and tenants 4 to 400 never run — usually discovered by a customer. |

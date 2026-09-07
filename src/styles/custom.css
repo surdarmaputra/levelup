@@ -262,3 +262,33 @@ mobile-starlight-toc nav {
     animation: none;
   }
 }
+
+/* Completed-step cue in the on-this-page table of contents (see TocProgress.astro). */
+starlight-toc a.toc-step-done > span::before,
+mobile-starlight-toc a.toc-step-done > span::before {
+  content: "✓";
+  margin-inline-end: 0.35em;
+  color: var(--sl-color-accent);
+  font-weight: 700;
+}
+
+/* Current page name in the sticky mobile "On this page" bar (see MobilePageName.astro). */
+mobile-starlight-toc summary .lu-page-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--sl-color-white);
+}
+
+mobile-starlight-toc summary .lu-page-name + .toggle {
+  flex-shrink: 0;
+}
+
+/* The page name replaces the scroll-position readout on mobile. */
+mobile-starlight-toc summary:has(.lu-page-name) .display-current {
+  display: none;
+}
+

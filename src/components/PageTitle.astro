@@ -9,11 +9,14 @@ const currentSlug = id.split('/').filter(Boolean)[0] || '';
 const isMaterialPage = publishedMaterials.some((m) => m.slug === currentSlug);
 // stepId is the part of the id after the material slug, e.g. `setup/agent-harness`.
 const stepId = currentSlug ? id.split('/').slice(1).join('/') : '';
+// Setup pages are tracked as a whole and get the page-title mark-learned bar.
+// Roadmap section pages mark each step inline instead (see RoadmapStepControls).
+const isSetupPage = isMaterialPage && stepId.startsWith('setup/');
 ---
 
 <div class="page-title-wrap">
   <StarlightPageTitle />
-  {isMaterialPage && stepId && <ProgressButton materialSlug={currentSlug} stepId={stepId} />}
+  {isSetupPage && <ProgressButton materialSlug={currentSlug} stepId={stepId} />}
 </div>
 
 <style>

@@ -101,7 +101,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.1rem 1.25rem 0.9rem;
-    border-bottom: 1px solid var(--sl-color-hairline);
   }
 
   .pd-title {
@@ -143,8 +142,7 @@
   }
 
   .pd-summary {
-    padding: 1.1rem 1.25rem;
-    border-bottom: 1px solid var(--sl-color-hairline);
+    padding: 0.4rem 1.25rem 1.1rem;
   }
 
   .pd-summary-top {
@@ -309,6 +307,23 @@
     background: var(--sl-color-gray-6);
     border: 1px solid var(--sl-color-hairline);
     transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  #pd-overlay .pd-group {
+    margin: 0.9rem 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sl-color-gray-3);
+  }
+
+  #pd-overlay .pd-group:first-child {
+    margin-top: 0;
+  }
+
+  #pd-overlay .pd-group.hidden {
+    display: none;
   }
 
   #pd-overlay .pd-item:hover {
@@ -494,45 +509,39 @@
     importProgress,
     downloadExport,
     downloadProgressCard,
-    buildStepList,
+    buildStepListFromUnits,
     parseImportFile,
   } from '../lib/progress';
 
+  interface TrackedUnit {
+    id: string;
+    label: string;
+    section: string;
+  }
+
   let currentSlug = '';
   let currentTitle = '';
-  let pagesList: string[] = [];
+  let unitsList: TrackedUnit[] = [];
+  let stepIdsList: string[] = [];
   let activeFilter = 'all';
   let lastPct = -1;
   let pendingFlash = '';
   let enterAnim = false;
 
-  function cleanPath(href: string): string {
-    const parts = href.split('/').filter(Boolean);
-    const idx = parts.indexOf(currentSlug);
-    if (idx === -1) return href;
-    return parts.slice(idx + 1).join('/');
-  }
-
-  function displayLabel(step: string): string {
-    const last = step.split('/').filter(Boolean).pop() || step;
-    return last
-      .replace(/[-_]+/g, ' ')
-      .replace(/\b\w/g, (c) => c.toUpperCase());
-  }
-
   function initDialog() {
     const overlay = document.getElementById('pd-overlay');
     if (!overlay) return;
 
-    // Read the material and page list from the floating widget.
+    // Read the material and its tracked-unit manifest from the floating widget.
     const widget = document.getElementById('pw');
     currentSlug = widget?.getAttribute('data-material-slug') || '';
     currentTitle = widget?.getAttribute('data-material-title') || currentSlug;
     try {
-      pagesList = JSON.parse(widget?.dataset.pages || '[]') as string[];
+      unitsList = JSON.parse(widget?.dataset.steps || '[]') as TrackedUnit[];
     } catch {
-      pagesList = [];
+      unitsList = [];
     }
+    stepIdsList = unitsList.map((u) => u.id);
 
     const btnClose = document.getElementById('btn-pd-close');
     const btnExport = document.getElementById('btn-pd-export');
@@ -548,7 +557,7 @@
     function render() {
       if (!list) return;
       const progress = getMaterialProgress(currentSlug);
-      const stats = getMaterialStats(currentSlug, pagesList.length);
+      const stats = getMaterialStats(currentSlug, stepIdsList);
 
       const ring = document.getElementById('pd-ring');
       const ringLabel = document.getElementById('pd-ring-label');
@@ -556,7 +565,7 @@
       const caption = document.getElementById('pd-caption');
       if (ring) ring.style.setProperty('--p', String(stats.percentage));
       if (ringLabel) ringLabel.textContent = `${stats.percentage}%`;
-      if (count) count.textContent = `${stats.completed} of ${pagesList.length} steps`;
+      if (count) count.textContent = `${stats.completed} of ${stats.total} steps`;
 
       // Pulse the summary when the percentage actually moves.
       if (lastPct !== -1 && lastPct !== stats.percentage) {
@@ -570,24 +579,30 @@
       lastPct = stats.percentage;
       if (caption) {
         caption.textContent =
-          stats.completed === pagesList.length && pagesList.length > 0
+          stats.completed === stats.total && stats.total > 0
             ? 'All done — great work!'
             : 'Keep going — every step counts.';
       }
 
-      if (pagesList.length === 0) {
+      if (unitsList.length === 0) {
         list.innerHTML = '<div class="pd-empty">No steps available for this material yet.</div>';
         return;
       }
 
+      let lastSection = '';
       list.innerHTML =
-        pagesList
-          .map((href, i) => {
-            const step = cleanPath(href);
+        unitsList
+          .map((unit, i) => {
+            const step = unit.id;
             const entry = progress[step];
             const done = entry?.completed ?? false;
             const note = entry?.note?.trim() ?? '';
             const hasNote = !!note;
+            let header = '';
+            if (unit.section !== lastSection) {
+              lastSection = unit.section;
+              header = `<div class="pd-group">${escapeHtml(unit.section)}</div>`;
+            }
             const cls = [
               'pd-item',
               done ? 'done-item' : '',
@@ -596,14 +611,14 @@
             ]
               .filter(Boolean)
               .join(' ');
-            const delay = enterAnim ? ` style="animation-delay:${Math.min(i * 28, 320)}ms"` : '';
-            return `
+            const delay = enterAnim ? ` style="animation-delay:${Math.min(i * 22, 320)}ms"` : '';
+            return `${header}
             <div class="${cls}"${delay} data-step="${step}" data-done="${done}" data-note="${hasNote}">
-              <div class="pd-item-label">${done ? CHECK_SVG : ''}${displayLabel(step)}</div>
+              <div class="pd-item-label">${done ? CHECK_SVG : ''}${escapeHtml(unit.label)}</div>
               ${hasNote ? `<div class="pd-item-note">${escapeHtml(note)}</div>` : ''}
               <div class="pd-item-actions">
                 <button class="pd-mini ${done ? 'primary' : ''}" data-action="toggle">${
-                  done ? `${CHECK_SVG}Learned` : 'Mark learned'
+                  done ? `${CHECK_SVG}Learned` : 'Mark as learned'
                 }</button>
                 <button class="pd-mini" data-action="edit">${hasNote ? 'Edit note' : 'Add note'}</button>
               </div>
@@ -701,15 +716,15 @@
     btnExport?.addEventListener('click', () => downloadExport());
 
     btnExportImg?.addEventListener('click', () => {
-      const stats = getMaterialStats(currentSlug, pagesList.length);
+      const stats = getMaterialStats(currentSlug, stepIdsList);
       const progress = getMaterialProgress(currentSlug);
       const notes = Object.values(progress).filter((e) => e.note?.trim()).length;
       downloadProgressCard({
         materialTitle: currentTitle,
         completed: stats.completed,
-        total: pagesList.length,
+        total: stats.total,
         notes,
-        steps: buildStepList(currentSlug, pagesList),
+        steps: buildStepListFromUnits(currentSlug, unitsList),
       });
     });
 
@@ -749,6 +764,19 @@
         else if (filter === 'with-notes') show = note;
         el.classList.toggle('hidden', !show);
         if (show) visible += 1;
+      });
+      // Drop a section header when everything under it is filtered out.
+      list?.querySelectorAll('.pd-group').forEach((group) => {
+        let anyVisible = false;
+        let el = group.nextElementSibling;
+        while (el && !el.classList.contains('pd-group')) {
+          if (el.classList.contains('pd-item') && !el.classList.contains('hidden')) {
+            anyVisible = true;
+            break;
+          }
+          el = el.nextElementSibling;
+        }
+        group.classList.toggle('hidden', !anyVisible);
       });
       const empty = document.getElementById('pd-filter-empty');
       if (empty) empty.hidden = visible > 0;

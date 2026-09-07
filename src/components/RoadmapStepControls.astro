@@ -1,0 +1,375 @@
+---
+import type { RoadmapStep } from '../lib/roadmapSteps';
+
+interface Props {
+  materialSlug: string;
+  steps: RoadmapStep[];
+}
+
+const { steps } = Astro.props;
+const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
+---
+
+<script type="application/json" is:inline data-rsc-steps set:html={JSON.stringify(payload)} />
+
+<template data-rsc-tpl>
+  <div class="rsc not-content" data-step-id="">
+    <button class="rsc-toggle" type="button" aria-pressed="false">
+      <svg class="rsc-ic rsc-ic-todo" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+      <svg class="rsc-ic rsc-ic-done" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="currentColor" />
+        <path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="var(--sl-color-black, #fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span class="rsc-label">Mark as learned</span>
+    </button>
+
+    <button class="rsc-note-btn" type="button">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <span>Note</span>
+      <span class="rsc-note-dot" hidden></span>
+    </button>
+
+    <div class="rsc-note-panel" hidden>
+      <textarea rows="2" placeholder="Note for this step…"></textarea>
+      <div class="rsc-note-actions">
+        <button class="rsc-mini rsc-danger" type="button" data-act="clear" hidden>Clear</button>
+        <button class="rsc-mini" type="button" data-act="cancel">Cancel</button>
+        <button class="rsc-mini rsc-primary" type="button" data-act="save">Save</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .rsc {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .rsc--end {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .rsc-toggle,
+  .rsc-note-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.28rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 999px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .rsc-toggle:hover,
+  .rsc-note-btn:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent-high);
+  }
+
+  .rsc-ic {
+    flex: none;
+  }
+
+  .rsc-ic-done {
+    display: none;
+    color: var(--sl-color-accent);
+  }
+
+  .rsc.is-done .rsc-toggle {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+    color: var(--sl-color-accent-high);
+  }
+
+  .rsc.is-done .rsc-ic-todo {
+    display: none;
+  }
+
+  .rsc.is-done .rsc-ic-done {
+    display: inline-block;
+  }
+
+  .rsc-note-btn.has-note {
+    color: var(--sl-color-accent-high);
+    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+  }
+
+  .rsc-note-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  }
+
+  .rsc-note-dot[hidden] {
+    display: none;
+  }
+
+  .rsc-note-panel {
+    flex-basis: 100%;
+    max-width: 32rem;
+    margin-top: 0.15rem;
+    padding: 0.7rem;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 12px;
+  }
+
+  .rsc-note-panel[hidden] {
+    display: none;
+  }
+
+  .rsc-note-panel textarea {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    background: var(--sl-color-gray-5);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: 0.8rem;
+    resize: vertical;
+    min-height: 48px;
+  }
+
+  .rsc-note-panel textarea:focus {
+    outline: none;
+    border-color: var(--sl-color-accent);
+  }
+
+  .rsc-note-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .rsc-mini {
+    padding: 0.32rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 8px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .rsc-mini:hover {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+
+  .rsc-mini.rsc-primary {
+    background: var(--sl-color-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  .rsc-mini.rsc-primary:hover {
+    background: var(--sl-color-accent-high);
+  }
+
+  .rsc-mini.rsc-danger {
+    margin-right: auto;
+    color: var(--sl-color-red, #f87171);
+    border-color: color-mix(in srgb, var(--sl-color-red, #f87171) 45%, transparent);
+  }
+
+  .rsc-mini.rsc-danger[hidden] {
+    display: none;
+  }
+
+  @keyframes rsc-pop {
+    0% { transform: scale(1); }
+    35% { transform: scale(0.9); }
+    70% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+
+  .rsc-toggle.pop {
+    animation: rsc-pop 0.34s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rsc-toggle.pop {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { getProgress, toggleCompleted, setNote } from '../lib/progress';
+
+  interface StepRef {
+    slug: string;
+    stepId: string;
+  }
+
+  function updateRow(row: HTMLElement, materialSlug: string, stepId: string) {
+    const p = getProgress(materialSlug, stepId);
+    const done = p?.completed ?? false;
+    const hasNote = !!p?.note?.trim();
+    row.classList.toggle('is-done', done);
+    const toggle = row.querySelector('.rsc-toggle');
+    toggle?.setAttribute('aria-pressed', String(done));
+    const label = row.querySelector('.rsc-label');
+    if (label) label.textContent = done ? 'Learned' : 'Mark as learned';
+    row.querySelector('.rsc-note-btn')?.classList.toggle('has-note', hasNote);
+    const dot = row.querySelector('.rsc-note-dot') as HTMLElement | null;
+    if (dot) dot.hidden = !hasNote;
+  }
+
+  function wireRow(row: HTMLElement, materialSlug: string, stepId: string) {
+    const toggle = row.querySelector('.rsc-toggle') as HTMLElement | null;
+    const noteBtn = row.querySelector('.rsc-note-btn') as HTMLElement | null;
+    const panel = row.querySelector('.rsc-note-panel') as HTMLElement | null;
+    const ta = row.querySelector('textarea') as HTMLTextAreaElement | null;
+    const clearBtn = row.querySelector('[data-act="clear"]') as HTMLElement | null;
+    const saveBtn = row.querySelector('[data-act="save"]') as HTMLElement | null;
+
+    toggle?.addEventListener('click', () => {
+      toggleCompleted(materialSlug, stepId);
+      toggle.classList.remove('pop');
+      void toggle.offsetWidth;
+      toggle.classList.add('pop');
+      updateRow(row, materialSlug, stepId);
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    noteBtn?.addEventListener('click', () => {
+      const p = getProgress(materialSlug, stepId);
+      if (ta) ta.value = p?.note ?? '';
+      if (clearBtn) clearBtn.hidden = !p?.note?.trim();
+      panel?.removeAttribute('hidden');
+      ta?.focus();
+    });
+
+    row.querySelector('[data-act="cancel"]')?.addEventListener('click', () => {
+      panel?.setAttribute('hidden', '');
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      setNote(materialSlug, stepId, '');
+      panel?.setAttribute('hidden', '');
+      updateRow(row, materialSlug, stepId);
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    saveBtn?.addEventListener('click', () => {
+      setNote(materialSlug, stepId, ta?.value.trim() ?? '');
+      panel?.setAttribute('hidden', '');
+      updateRow(row, materialSlug, stepId);
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+    });
+
+    ta?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        saveBtn?.click();
+      }
+      if (e.key === 'Escape') panel?.setAttribute('hidden', '');
+    });
+
+    updateRow(row, materialSlug, stepId);
+  }
+
+  function initStepControls() {
+    const dataEl = document.querySelector('script[data-rsc-steps]');
+    const tpl = document.querySelector('template[data-rsc-tpl]') as HTMLTemplateElement | null;
+    const content = document.querySelector('.sl-markdown-content');
+    if (!dataEl || !tpl || !content) return;
+
+    const materialSlug = document.getElementById('pw')?.dataset.materialSlug || '';
+    let steps: StepRef[];
+    try {
+      steps = JSON.parse(dataEl.textContent || '[]');
+    } catch {
+      return;
+    }
+
+    const sel = (slug: string) => `[id="${slug.replace(/"/g, '\\"')}"]`;
+    const makeRow = (stepId: string, pos: 'top' | 'end') => {
+      const row = tpl.content.firstElementChild?.cloneNode(true) as HTMLElement | undefined;
+      if (!row) return null;
+      row.dataset.stepId = stepId;
+      row.dataset.rscPos = pos;
+      if (pos === 'end') row.classList.add('rsc--end');
+      return row;
+    };
+
+    // Clean slate — state lives in storage, so re-injecting is free and avoids
+    // any "already there" bookkeeping.
+    content.querySelectorAll('.rsc').forEach((r) => r.remove());
+
+    const rows: HTMLElement[] = [];
+    steps.forEach((step, i) => {
+      const heading = content.querySelector(sel(step.slug));
+      if (!heading) return;
+
+      // Control right under the heading, for orientation / quick skip.
+      const top = makeRow(step.stepId, 'top');
+      if (top) {
+        heading.insertAdjacentElement('afterend', top);
+        wireRow(top, materialSlug, step.stepId);
+        rows.push(top);
+      }
+
+      // Control at the end of the step, so finishing a read = one tap, no scroll.
+      const next = steps[i + 1];
+      let anchor: Element | null = null;
+      if (next) {
+        const nextHeading = content.querySelector(sel(next.slug));
+        if (nextHeading) {
+          anchor =
+            nextHeading.previousElementSibling?.tagName === 'HR'
+              ? nextHeading.previousElementSibling
+              : nextHeading;
+        }
+      }
+      const end = makeRow(step.stepId, 'end');
+      if (end) {
+        if (anchor) anchor.insertAdjacentElement('beforebegin', end);
+        else content.appendChild(end);
+        wireRow(end, materialSlug, step.stepId);
+        rows.push(end);
+      }
+    });
+
+    const refreshAll = () => {
+      for (const row of rows) updateRow(row, materialSlug, row.dataset.stepId || '');
+    };
+    window.addEventListener('progress-updated', refreshAll);
+    document.addEventListener(
+      'astro:after-swap',
+      () => {
+        window.removeEventListener('progress-updated', refreshAll);
+        initStepControls();
+      },
+      { once: true }
+    );
+  }
+
+  initStepControls();
+</script>

@@ -1,0 +1,68 @@
+---
+import type { RoadmapStep } from '../lib/roadmapSteps';
+
+interface Props {
+  materialSlug: string;
+  steps: RoadmapStep[];
+}
+
+const { steps } = Astro.props;
+const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
+---
+
+<script type="application/json" is:inline data-tocp-steps set:html={JSON.stringify(payload)} />
+
+<script>
+  import { getProgress } from '../lib/progress';
+
+  interface StepRef {
+    slug: string;
+    stepId: string;
+  }
+
+  function initTocProgress() {
+    const dataEl = document.querySelector('script[data-tocp-steps]');
+    if (!dataEl) return;
+
+    const materialSlug = document.getElementById('pw')?.dataset.materialSlug || '';
+    let steps: StepRef[];
+    try {
+      steps = JSON.parse(dataEl.textContent || '[]');
+    } catch {
+      return;
+    }
+
+    // Only touch the on-this-page tables of contents, not in-content anchors.
+    const roots = [
+      document.querySelector('starlight-toc'),
+      document.querySelector('mobile-starlight-toc'),
+    ].filter(Boolean) as Element[];
+
+    const apply = () => {
+      for (const step of steps) {
+        const done = getProgress(materialSlug, step.stepId)?.completed ?? false;
+        for (const root of roots) {
+          const link = root.querySelector(
+            `a[href="#${step.slug.replace(/"/g, '\\"')}"]`
+          ) as HTMLElement | null;
+          if (!link) continue;
+          link.classList.toggle('toc-step-done', done);
+          link.dataset.stepId = step.stepId;
+        }
+      }
+    };
+
+    apply();
+    window.addEventListener('progress-updated', apply);
+    document.addEventListener(
+      'astro:after-swap',
+      () => {
+        window.removeEventListener('progress-updated', apply);
+        initTocProgress();
+      },
+      { once: true }
+    );
+  }
+
+  initTocProgress();
+</script>

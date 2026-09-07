@@ -1,13 +1,20 @@
 ---
+interface TrackedUnit {
+  id: string;
+  label: string;
+  section: string;
+}
+
 interface Props {
   materialSlug: string;
   materialTitle: string;
   currentStepId: string;
-  pages: string[];
+  /** 'step' = Setup page, 'section' = roadmap section page, 'lookup' = untracked. */
+  pageKind: 'step' | 'section' | 'lookup';
+  units: TrackedUnit[];
 }
 
-const { materialSlug, materialTitle, currentStepId, pages } = Astro.props;
-const totalSteps = pages.length;
+const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.props;
 ---
 
 <div
@@ -16,8 +23,8 @@ const totalSteps = pages.length;
   data-material-slug={materialSlug}
   data-material-title={materialTitle}
   data-step-id={currentStepId}
-  data-total-steps={totalSteps}
-  data-pages={JSON.stringify(pages)}
+  data-page-kind={pageKind}
+  data-steps={JSON.stringify(units)}
 >
   <button class="pw-fab" id="pw-fab" aria-label="Progress" aria-expanded="false">
     <svg class="pw-ring" id="pw-ring" viewBox="0 0 48 48">
@@ -46,7 +53,11 @@ const totalSteps = pages.length;
       <div class="pw-fill" id="pw-fill" style="width:0%"></div>
     </div>
 
-    <div class="pw-actions">
+    <p class="pw-lookup-hint" id="pw-lookup-hint" hidden>
+      Reference material — not a tracked step.
+    </p>
+
+    <div class="pw-actions" id="pw-actions">
       <button class="pw-action" id="pw-learn">
         <svg class="pw-learn-default" width="14" height="14" viewBox="0 0 16 16" fill="none">
           <path d="M4 2.5h8a.5.5 0 0 1 .5.5v10l-4.5-2.5L3.5 13V3a.5.5 0 0 1 .5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
@@ -262,6 +273,21 @@ const totalSteps = pages.length;
     gap: 0.45rem;
   }
 
+  .pw-actions[hidden] {
+    display: none;
+  }
+
+  .pw-lookup-hint {
+    margin: 0 0 0.1rem;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--sl-color-gray-3);
+  }
+
+  .pw-lookup-hint[hidden] {
+    display: none;
+  }
+
   .pw-action {
     display: flex;
     align-items: center;
@@ -418,9 +444,7 @@ const totalSteps = pages.length;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 0.9rem;
-    margin-top: 0.7rem;
-    padding-top: 0.6rem;
-    border-top: 1px solid var(--sl-color-hairline);
+    margin-top: 0.9rem;
   }
 
   .pw-link {
@@ -503,9 +527,15 @@ const totalSteps = pages.length;
     importProgress,
     downloadExport,
     downloadProgressCard,
-    buildStepList,
+    buildStepListFromUnits,
     parseImportFile,
   } from '../lib/progress';
+
+  interface TrackedUnit {
+    id: string;
+    label: string;
+    section: string;
+  }
 
   function initWidget() {
     const widget = document.getElementById('pw');
@@ -514,13 +544,14 @@ const totalSteps = pages.length;
     const materialSlug = widget.dataset.materialSlug || '';
     const materialTitle = widget.dataset.materialTitle || materialSlug;
     const stepId = widget.dataset.stepId || '';
-    const totalSteps = parseInt(widget.dataset.totalSteps || '0', 10);
-    let pages: string[] = [];
+    const pageKind = (widget.dataset.pageKind || 'lookup') as 'step' | 'section' | 'lookup';
+    let units: TrackedUnit[] = [];
     try {
-      pages = JSON.parse(widget.dataset.pages || '[]') as string[];
+      units = JSON.parse(widget.dataset.steps || '[]') as TrackedUnit[];
     } catch {
-      pages = [];
+      units = [];
     }
+    const stepIds = units.map((u) => u.id);
 
     const fab = document.getElementById('pw-fab');
     const card = document.getElementById('pw-card');
@@ -545,11 +576,30 @@ const totalSteps = pages.length;
     const btnImport = document.getElementById('pw-import');
     const closeBtn = document.getElementById('pw-close');
     const importInput = document.getElementById('pw-import-input');
+    const actions = document.getElementById('pw-actions');
+    const lookupHint = document.getElementById('pw-lookup-hint');
+
+    // Only Setup pages carry a page-level mark-learned control. Roadmap section
+    // pages mark each step inline; reference/overview pages aren't tracked.
+    if (actions) actions.hidden = pageKind !== 'step';
+    if (lookupHint) {
+      if (pageKind === 'section') {
+        lookupHint.textContent =
+          'Mark each step on the page, or tap Details to mark them here.';
+        lookupHint.hidden = false;
+      } else if (pageKind === 'lookup') {
+        lookupHint.textContent = 'Reference material — not a tracked step.';
+        lookupHint.hidden = false;
+      } else {
+        lookupHint.hidden = true;
+      }
+    }
+    if (pageKind !== 'step') notePanel?.setAttribute('hidden', '');
 
     let lastPct = -1;
 
     function updateUI() {
-      const stats = getMaterialStats(materialSlug, totalSteps);
+      const stats = getMaterialStats(materialSlug, stepIds);
       // Circle uses pathLength="100", so offset is just the remaining percent.
       if (ringFill) {
         ringFill.style.strokeDasharray = '100';
@@ -567,6 +617,8 @@ const totalSteps = pages.length;
         fab.classList.add('pulse');
       }
       lastPct = stats.percentage;
+
+      if (pageKind !== 'step') return;
 
       const progress = getProgress(materialSlug, stepId);
       const isDone = progress?.completed ?? false;
@@ -588,6 +640,7 @@ const totalSteps = pages.length;
     closeBtn?.addEventListener('click', () => { if (card) card.hidden = true; });
 
     learn?.addEventListener('click', () => {
+      if (pageKind !== 'step') return;
       toggleCompleted(materialSlug, stepId);
       learn.classList.remove('pop');
       void learn.offsetWidth;
@@ -597,6 +650,7 @@ const totalSteps = pages.length;
     });
 
     btnNote?.addEventListener('click', () => {
+      if (pageKind !== 'step') return;
       const progress = getProgress(materialSlug, stepId);
       const existing = progress?.note?.trim() ?? '';
       if (noteTextarea) noteTextarea.value = progress?.note ?? '';
@@ -639,15 +693,15 @@ const totalSteps = pages.length;
     btnExport?.addEventListener('click', () => downloadExport());
 
     btnExportImg?.addEventListener('click', () => {
-      const stats = getMaterialStats(materialSlug, totalSteps);
+      const stats = getMaterialStats(materialSlug, stepIds);
       const progress = getMaterialProgress(materialSlug);
       const notes = Object.values(progress).filter((e) => e.note?.trim()).length;
       downloadProgressCard({
         materialTitle,
         completed: stats.completed,
-        total: totalSteps,
+        total: stats.total,
         notes,
-        steps: buildStepList(materialSlug, pages),
+        steps: buildStepListFromUnits(materialSlug, units),
       });
     });
 

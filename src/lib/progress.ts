@@ -115,16 +115,24 @@ export function getMaterialProgress(materialSlug: string): MaterialProgress {
   return store.materials[materialSlug] || {};
 }
 
+/** Step ids for a material's tracked page hrefs, e.g. `/x/setup/foo/` → `setup/foo`. */
+export function stepIdsFromPages(materialSlug: string, pages: string[]): string[] {
+  return pages.map((href) => stepIdFromHref(href, materialSlug));
+}
+
 export function getMaterialStats(
   materialSlug: string,
-  totalSteps: number
+  stepIds: string[]
 ): { completed: number; total: number; percentage: number } {
   const progress = getMaterialProgress(materialSlug);
-  const completed = Object.values(progress).filter((e) => e.completed).length;
+  // Count only completions for pages that are actually tracked steps — reference
+  // and overview pages may carry a stale entry but must not affect the total.
+  const completed = stepIds.filter((id) => progress[id]?.completed).length;
+  const total = stepIds.length;
   return {
     completed,
-    total: totalSteps,
-    percentage: totalSteps > 0 ? Math.round((completed / totalSteps) * 100) : 0,
+    total,
+    percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
   };
 }
 
@@ -235,6 +243,18 @@ export function buildStepList(materialSlug: string, pages: string[]): StepStatus
   return pages.map((href) => ({
     label: stepLabelFromHref(href, materialSlug),
     done: progress[stepIdFromHref(href, materialSlug)]?.completed ?? false,
+  }));
+}
+
+/** Ordered step list with completion state, from a `{ id, label }` manifest. */
+export function buildStepListFromUnits(
+  materialSlug: string,
+  units: { id: string; label: string }[]
+): StepStatus[] {
+  const progress = getMaterialProgress(materialSlug);
+  return units.map((u) => ({
+    label: u.label,
+    done: progress[u.id]?.completed ?? false,
   }));
 }
 

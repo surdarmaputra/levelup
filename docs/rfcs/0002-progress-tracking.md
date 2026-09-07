@@ -236,6 +236,41 @@ surface for no user-visible gain.
 Applies only to dynamically-injected markup. New components with static markup keep using
 scoped `<style>`.
 
+### A2 — Step-level tracking for the roadmap (2026-09-07)
+
+The original model tracked one entry per Markdown **page** (`stepId = 'roadmap/foundations'`
+covered steps 0–4 in a single toggle). Readers wanted per-step granularity.
+
+**Decision:**
+
+- **What counts.** A material's trackable units are each **Setup page** plus each **roadmap
+  step** (`## Step N` heading inside a section page). For `java-spring-boot` that is 28:
+  2 setup + 26 steps. `roadmap/overview` and everything under `reference/` are lookup-only,
+  as before.
+- **`stepId` scheme.** `<section-path>/step-<n>`, e.g. `roadmap/foundations/step-0`,
+  `roadmap/domain-depth/step-5b`. Derived from the step *number*, so rephrasing a heading
+  does not orphan progress. Setup pages keep their page-path id (`setup/agent-harness`).
+- **Manifest.** `src/lib/roadmapSteps.ts` parses the step headings out of `entry.body` at
+  build time and slugs them with `github-slugger` (matching Starlight's own heading slugs).
+  It is the single source of truth for the denominator, the dialog list, the PNG card, and
+  the TOC cue — nothing hand-maintained. `PageFrame.astro` serialises the ordered
+  `{id,label,section}` manifest onto `#pw` as `data-steps`.
+- **UI.** Each `## Step` heading gets an inline control row (`RoadmapStepControls.astro`,
+  client-injected after the heading) — a compact mark-done toggle + note. The page-title
+  "Mark as learned" bar (`ProgressButton`) is now shown **only on Setup pages**. Completed
+  steps get a `✓` in the right-hand "On this page" list (`TocProgress.astro` +
+  `.toc-step-done` rule in `custom.css`). The floating tracker gains a `data-page-kind`
+  (`step` / `section` / `lookup`) replacing the old `data-is-step` boolean. The dialog lists
+  every unit grouped by section.
+
+**Resolves Open Question 1** — the completed-step cue lives in the on-this-page TOC, not the
+left nav sidebar (which stays a per-section menu).
+
+**Resolves Open Question 4** — no schema bump, no data migration. `getMaterialStats` counts
+only ids present in the current manifest, so a stale page-level entry
+(`roadmap/foundations`) from the old model is simply ignored and the percentage recomputes
+against the new unit list.
+
 ---
 
 ## 📎 References

@@ -1,0 +1,215 @@
+---
+/**
+ * HeroIllustration — a hand-built, animated SVG for the landing hero.
+ *
+ * Motif: an ascending staircase of three platforms with a glowing node that
+ * climbs a drawn path to the top — "level up", literally. Line-led and
+ * geometric, tuned to the dark theme, using Starlight's accent tokens so it
+ * stays on-brand. All motion is a one-shot build-in plus a single slow pulse;
+ * it fully settles under `prefers-reduced-motion: reduce`.
+ */
+---
+
+<div class="hero-illustration" role="img" aria-label="A path climbing three ascending steps to a glowing point">
+  <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="lu-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="var(--sl-color-accent)" stop-opacity="0.5" />
+        <stop offset="55%" stop-color="var(--sl-color-accent)" stop-opacity="0.12" />
+        <stop offset="100%" stop-color="var(--sl-color-accent)" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="lu-step" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--sl-color-accent)" stop-opacity="0.16" />
+        <stop offset="100%" stop-color="var(--sl-color-accent)" stop-opacity="0.02" />
+      </linearGradient>
+    </defs>
+
+    <!-- dotted grid backdrop -->
+    <g class="grid">
+      {
+        Array.from({ length: 10 }, (_, row) =>
+          Array.from({ length: 13 }, (_, col) => (
+            <circle cx={44 + col * 32} cy={44 + row * 32} r="1.3" />
+          ))
+        )
+      }
+    </g>
+
+    <!-- ambient glow behind the summit -->
+    <circle class="glow" cx="396" cy="92" r="150" fill="url(#lu-glow)" />
+
+    <!-- the three steps -->
+    <g class="steps">
+      <rect class="step" x="96" y="264" width="108" height="86" rx="10" fill="url(#lu-step)" />
+      <rect class="step" x="204" y="190" width="108" height="160" rx="10" fill="url(#lu-step)" />
+      <rect class="step" x="312" y="116" width="108" height="234" rx="10" fill="url(#lu-step)" />
+    </g>
+
+    <!-- connecting climb -->
+    <path
+      class="track"
+      pathLength="1"
+      d="M30 350 L96 350 L96 264 L204 264 L204 190 L312 190 L312 116 L396 116 L396 92"
+    />
+    <path
+      class="track-lead"
+      pathLength="1"
+      d="M30 350 L96 350 L96 264 L204 264 L204 190 L312 190 L312 116 L396 116 L396 92"
+    />
+
+    <!-- summit node -->
+    <g class="node">
+      <circle class="node-halo" cx="396" cy="80" r="18" />
+      <circle class="node-core" cx="396" cy="80" r="6.5" />
+    </g>
+
+    <!-- rising chevrons -->
+    <g class="sparks">
+      <path class="spark" d="M150 250 l9 -10 l9 10" style="--d:0s" />
+      <path class="spark" d="M258 176 l9 -10 l9 10" style="--d:1.1s" />
+      <path class="spark" d="M366 100 l9 -10 l9 10" style="--d:2.2s" />
+    </g>
+
+    <!-- ground -->
+    <line class="ground" x1="24" y1="350" x2="456" y2="350" />
+  </svg>
+</div>
+
+<style>
+  .hero-illustration {
+    display: block;
+    width: 100%;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .grid circle {
+    fill: var(--sl-color-gray-5);
+    opacity: 0.35;
+  }
+
+  .ground {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+    stroke-dasharray: 2 6;
+    stroke-linecap: round;
+  }
+
+  .step {
+    stroke: var(--sl-color-accent);
+    stroke-opacity: 0.45;
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    transform: translateY(14px) scaleY(0.96);
+    opacity: 0;
+    animation: step-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .step:nth-child(1) { animation-delay: 0.15s; }
+  .step:nth-child(2) { animation-delay: 0.3s; }
+  .step:nth-child(3) { animation-delay: 0.45s; }
+
+  .track {
+    stroke: var(--sl-color-accent-high);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.5s forwards;
+  }
+
+  .track-lead {
+    stroke: var(--sl-color-white);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 0.14 0.86;
+    stroke-dashoffset: 1;
+    opacity: 0;
+    animation:
+      lead-in 0.01s linear 2.1s forwards,
+      comet 3s linear 2.1s infinite;
+  }
+
+  .node {
+    opacity: 0;
+    animation: node-in 0.5s ease 1.9s forwards;
+  }
+  .node-halo {
+    fill: var(--sl-color-accent);
+    opacity: 0.25;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pulse 2.6s ease-in-out 2.4s infinite;
+  }
+  .node-core {
+    fill: var(--sl-color-white);
+  }
+
+  .spark {
+    stroke: var(--sl-color-accent-high);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    animation: float 4.2s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+
+  .hero-illustration {
+    animation: illo-in 0.8s ease both;
+  }
+
+  @keyframes illo-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes step-rise {
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes lead-in {
+    to { opacity: 0.9; }
+  }
+  @keyframes comet {
+    from { stroke-dashoffset: 1; }
+    to   { stroke-dashoffset: 0; }
+  }
+  @keyframes node-in {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.25; }
+    50%      { transform: scale(1.5); opacity: 0.08; }
+  }
+  @keyframes float {
+    0%        { opacity: 0; transform: translateY(6px); }
+    20%, 55%  { opacity: 0.9; }
+    100%      { opacity: 0; transform: translateY(-16px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-illustration,
+    .step,
+    .track,
+    .node,
+    .node-halo,
+    .spark {
+      animation: none;
+    }
+    .hero-illustration { opacity: 1; transform: none; }
+    .step { opacity: 1; transform: none; }
+    .track { stroke-dashoffset: 0; }
+    .track-lead { display: none; }
+    .node { opacity: 1; }
+    .spark { opacity: 0.55; transform: none; }
+  }
+</style>

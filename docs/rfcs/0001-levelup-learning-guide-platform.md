@@ -438,8 +438,107 @@ whole-site and atomic, so there is no partial state to recover from.
 - Consider a `LinkCard`-based "next step" footer on each roadmap section, once there is data on
   where readers stop.
 - Revisit `src/styles/custom.css` if content pages start needing components beyond tables and
-  code blocks.
+  code blocks. *(2026-09-06: partly consumed — see Amendments.)*
 - Send the `prd-to-rfc` de-org patch upstream, then drop the local patch and its grep guard.
+
+---
+
+## 📝 Amendments
+
+### 2026-09-06 — Landing page and site typography
+
+Enhancement pass on the landing page and the site's type. Structural parts that change
+decisions recorded above:
+
+**Component overrides.** `Header`, `Hero`, and `Footer` join the two overrides RFC 0002 added
+(`PageFrame`, `PageTitle`). Each is a thin wrapper over Starlight's own component:
+
+- `Footer` renders nothing when `entry.data.template === 'splash'` — the landing page and the
+  404 page drop the edit link, "last updated", and prev/next pagination. Every content page
+  keeps that default footer unchanged.
+- `Header` keeps Starlight's grid but centres the search box (capped at `34rem`), drops the
+  social-icon group, and reduces the theme switcher to its icon (no label text or caret).
+- `Hero` is identical to upstream except that a hero with no `image` renders
+  `HeroIllustration.astro` in the media column instead of leaving it blank.
+- `PageFrame` additionally renders `SiteFooter.astro` (below) on every page.
+
+This retires the Solution section's "the custom code is three small files" claim — already
+loosened by RFC 0002. The rule it does **not** retire: every override stays a wrapper over the
+Starlight component, no forked layout.
+
+**Typography.** Body and UI move to Inter, headings and the hero title to Bricolage Grotesque.
+Both are self-hosted through `@fontsource-variable/*` — no font CDN, honouring AGENTS.md's "no
+font CDN without discussing the privacy and CSP cost". The `@font-face` blocks carry
+`unicode-range`, so only the Latin subsets download in practice (~90 KB). A Google Fonts /
+CDN link was rejected on the CSP and privacy cost; a single self-hosted face was rejected as
+too flat for the "modern, appealing" brief.
+
+**Hero illustration.** `src/components/HeroIllustration.astro` is a hand-authored inline SVG —
+an ascending staircase with a self-drawing path and a pulsing summit node. No animation
+library (would add a runtime, violating the static-only constraint); no stock asset (licensing
+and brand fit). All motion is a one-shot build-in plus one slow pulse, and it settles fully
+under `prefers-reduced-motion: reduce`. The landing "Browse the catalog" CTA gets a rotating
+conic-gradient border (CSS `@property` angle; static ring where `@property` is unsupported;
+frozen under reduced motion).
+
+**Site footer.** `SiteFooter.astro` — one simple footer (`© <year> LevelUp` · GitHub link ·
+"Built with Astro & Starlight"), rendered site-wide from the `PageFrame` override. This is
+where the GitHub link now lives, having been removed from the header. Content pages therefore
+show two footers: Starlight's in-content edit/pagination block, then this site-wide one.
+
+**Chrome.** The nav background is aligned to the page background and its divider dropped. The
+nav sidebar shares the page background (`--sl-color-bg-sidebar`), and both sidebar dividers
+(left nav, right TOC) and the mobile "On this page" bar's fill are removed — a flat reading
+surface. Card, button, and link hover states gain small transitions, each guarded by
+`prefers-reduced-motion`.
+
+**Catalog card.** The status label ("Available") is dropped; level and step count move from a
+header row to a line between the description and the tag list.
+
+**`src/styles/custom.css`.** Grows from three rules to six sections — typography, header,
+flat sidebars, landing-page spacing, micro-interactions, CTA border. Still the only global
+stylesheet; components keep their own scoped `<style>`. This consumes the "Revisit
+`src/styles/custom.css`" follow-up.
+
+**Constraints held.** Static output, no client framework, both base paths build, `npm run
+verify` green.
+
+### 2026-09-07 — Material structure conventions
+
+A round of restructuring on `java-spring-boot` that also sets the template for every future
+material. `.claude/skills/add-material/SKILL.md` and AGENTS.md now carry the detail; the
+decisions:
+
+**One `index.md`, folded.** The old split — `index.md` (a bare "material overview with link
+tables") plus a separate `getting-started.md` — was duplicative and confusing. They are now one
+page: `index.md`, `sidebar.order: 0`, `label: Getting Started`. It answers *what / why / who
+it's for / what you'll learn (tech table) / how it's structured / the paths / how to read a
+step / how to use the rubrics / start here*. The catalog `entry` points at `<slug>` (not
+`<slug>/getting-started`), and `links` is a single `{ label: 'Getting Started', slug: '<slug>' }`.
+
+**Step anatomy is fixed.** Every roadmap step is `## Step N — Title` followed by the same
+parts in the same order: **Story** (user-story format) · **Mode** (`LEARN`/`BUILD`) · **Why
+now** · **Concepts** · **Libraries** · **Expected outcome** · **Verification** (L1/L2/L4/Done-
+when table) · optional **Harness impact**. `**Build:**` is renamed **Expected outcome** — it
+describes the end state, not a task list, and carries a *high-level* project-structure sketch
+on the steps where "where does this code go" is a genuine open question (skeleton, hexagonal
+refactor, service extraction). The step-format table in `index.md` matches.
+
+**Rubrics are a lookup, stated as such.** `reference/rubrics.md` opens by saying it holds the
+full text of the `ACC-NN` / `AP-NN-x` IDs each step's Verification block only names; you read
+one section per step; the reviewer gets one section, never the file.
+
+**Setup pages have a fixed shape:** `## The goal, and the end state` / `## Why` / `## How`.
+
+**Prose is plain English.** A light editing pass removed AI-slop idioms and split the worst
+run-on sentences, targeting a non-native reader. The terse register and every technical claim
+stay. New material follows the same rule (see AGENTS.md "Content").
+
+**Per-step progress tracking.** The tracker moved from page-level to step-level; its unit list
+is derived at build from the `## Step N` headings under `roadmap/` plus each `setup/` page.
+Full detail in RFC 0002, amendment A2.
+
+**Constraints held.** Static output, both base paths build, `npm run verify` green.
 
 ---
 
@@ -469,11 +568,12 @@ SITE_URL=https://learn.example.com BASE_PATH=/ npm run build
   size: '18 chapters',
   tags: ['Go', 'Raft', 'gRPC'],
   status: 'planned',
-  entry: 'go-distributed-systems/getting-started',
-  links: [{ label: 'Overview', slug: 'go-distributed-systems' }],
+  entry: 'go-distributed-systems',
+  links: [{ label: 'Getting Started', slug: 'go-distributed-systems' }],
   sections: [{ label: 'Chapters', directory: 'chapters' }],
 }
 ```
 
-Then create `src/content/docs/go-distributed-systems/` with an `index.md` and a `chapters/`
-directory, and run `npm run verify`.
+Then create `src/content/docs/go-distributed-systems/` with an `index.md` (the Getting Started
+page) and a `chapters/` directory, and run `npm run verify`. Use the `add-material` skill — it
+carries the full step / rubric / setup structure.

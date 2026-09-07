@@ -1,0 +1,27 @@
+---
+import StarlightPageTitle from '@astrojs/starlight/components/PageTitle.astro';
+import ProgressButton from './ProgressButton.astro';
+import { publishedMaterials } from '../catalog';
+
+const starlightRoute = Astro.locals.starlightRoute;
+const id = starlightRoute.id ?? '';
+const currentSlug = id.split('/').filter(Boolean)[0] || '';
+const isMaterialPage = publishedMaterials.some((m) => m.slug === currentSlug);
+// stepId is the part of the id after the material slug, e.g. `setup/agent-harness`.
+const stepId = currentSlug ? id.split('/').slice(1).join('/') : '';
+// Setup pages are tracked as a whole and get the page-title mark-learned bar.
+// Roadmap section pages mark each step inline instead (see RoadmapStepControls).
+const isSetupPage = isMaterialPage && stepId.startsWith('setup/');
+---
+
+<div class="page-title-wrap">
+  <StarlightPageTitle />
+  {isSetupPage && <ProgressButton materialSlug={currentSlug} stepId={stepId} />}
+</div>
+
+<style>
+  .page-title-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

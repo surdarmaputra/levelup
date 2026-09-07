@@ -7,22 +7,12 @@ function href(slug: string) {
   return `${base}/${slug}/`;
 }
 
-const statusLabel: Record<string, string> = {
-  available: 'Available',
-  draft: 'In progress',
-  planned: 'Planned',
-};
 ---
 
 <ul class="material-catalog">
   {
     materials.map((material) => (
       <li class="material-card" data-status={material.status}>
-        <div class="material-card__meta">
-          <span class="material-card__status">{statusLabel[material.status]}</span>
-          <span>{material.level}</span>
-          <span>{material.size}</span>
-        </div>
         <h3 class="material-card__title">
           {material.status === 'planned' ? (
             material.title
@@ -31,6 +21,11 @@ const statusLabel: Record<string, string> = {
           )}
         </h3>
         <p class="material-card__description">{material.description}</p>
+        <div class="material-card__meta">
+          <span>{material.level}</span>
+          <span aria-hidden="true">·</span>
+          <span>{material.size}</span>
+        </div>
         <ul class="material-card__tags">
           {material.tags.map((tag) => (
             <li>{tag}</li>
@@ -51,20 +46,40 @@ const statusLabel: Record<string, string> = {
   .material-catalog {
     list-style: none;
     padding: 0;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     display: grid;
-    gap: 1.25rem;
+    gap: 1.5rem;
     grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
   }
 
   .material-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
     border: 1px solid var(--sl-color-gray-5);
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     background: var(--sl-color-black);
+    transition:
+      transform 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .material-card:not([data-status='planned']):hover {
+    transform: translateY(-3px);
+    border-color: var(--sl-color-accent);
+    box-shadow: 0 16px 40px -20px var(--sl-color-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .material-card {
+      transition: none;
+    }
+    .material-card:hover {
+      transform: none;
+    }
   }
 
   .material-card[data-status='planned'] {
@@ -75,15 +90,11 @@ const statusLabel: Record<string, string> = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-top: 0.15rem;
     font-size: var(--sl-text-xs);
     color: var(--sl-color-gray-3);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-  }
-
-  .material-card__status {
-    color: var(--sl-color-accent-high);
-    font-weight: 600;
   }
 
   .material-card__title {

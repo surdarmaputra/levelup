@@ -1,0 +1,36 @@
+---
+/**
+ * Puts the current page's title into the sticky mobile "On this page" bar so a
+ * reader scrolling a long step page can always see which page they're on.
+ * Desktop is unaffected (that bar is mobile-only).
+ */
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<span id="lu-page-name-data" data-title={title} hidden></span>
+
+<script>
+  function initMobilePageName() {
+    const data = document.getElementById('lu-page-name-data');
+    const title = data?.getAttribute('data-title')?.trim();
+    if (!title) return;
+
+    const summary = document.querySelector('mobile-starlight-toc summary');
+    if (!summary) return;
+
+    let label = summary.querySelector('.lu-page-name');
+    if (!label) {
+      label = document.createElement('span');
+      label.className = 'lu-page-name';
+      summary.insertBefore(label, summary.firstChild);
+    }
+    label.textContent = title;
+  }
+
+  initMobilePageName();
+  document.addEventListener('astro:after-swap', initMobilePageName);
+</script>

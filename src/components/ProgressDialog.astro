@@ -1,0 +1,796 @@
+<div class="pd-overlay" id="pd-overlay" hidden>
+  <div class="pd-dialog" role="dialog" aria-modal="true" aria-label="Progress details">
+    <header class="pd-head">
+      <h2 class="pd-title">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2a8 8 0 100 16 8 8 0 000-16z" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 10l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Progress details
+      </h2>
+      <div class="pd-head-actions">
+        <button class="pd-icon-btn" id="btn-pd-export" aria-label="Export progress as JSON">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2v8M4 6l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="pd-icon-btn" id="btn-pd-export-img" aria-label="Export progress as image">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="5.5" cy="6.5" r="1.1" fill="currentColor"/>
+            <path d="M3 12l3.5-3.5L9 11l2.5-2.5L13 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="pd-icon-btn" id="btn-pd-close" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="pd-summary">
+      <div class="pd-summary-top">
+        <div class="pd-ring" id="pd-ring">
+          <span class="pd-ring-label" id="pd-ring-label">0%</span>
+        </div>
+        <div class="pd-summary-text">
+          <div class="pd-count" id="pd-count">0 of 0 steps</div>
+          <div class="pd-caption" id="pd-caption">Keep going — every step counts.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-filters">
+      <button class="pd-filter active" data-filter="all">All</button>
+      <button class="pd-filter" data-filter="completed">Completed</button>
+      <button class="pd-filter" data-filter="with-notes">With notes</button>
+    </div>
+
+    <div class="pd-list" id="pd-list"></div>
+
+    <footer class="pd-foot">
+      <button class="pd-foot-btn" id="btn-pd-import">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M8 10V2M4 6l4-4 4 4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Import
+      </button>
+    </footer>
+  </div>
+</div>
+
+<input type="file" id="pd-import-input" accept=".json" hidden />
+
+<style>
+  /* Shell only. The list rows are injected at runtime via innerHTML, so their
+     styles cannot be scoped here — see the is:global block below. */
+  .pd-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  .pd-overlay[hidden] {
+    display: none;
+  }
+
+  .pd-dialog {
+    width: 100%;
+    max-width: 540px;
+    max-height: 84vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--sl-color-bg-sidebar);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 18px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    font-family: system-ui, -apple-system, sans-serif;
+    color: var(--sl-color-white);
+    overflow: hidden;
+  }
+
+  .pd-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.25rem 0.9rem;
+  }
+
+  .pd-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .pd-title svg {
+    color: var(--sl-color-accent);
+  }
+
+  .pd-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .pd-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pd-icon-btn:hover {
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+  }
+
+  .pd-summary {
+    padding: 0.4rem 1.25rem 1.1rem;
+  }
+
+  .pd-summary-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pd-ring {
+    --ring-size: 64px;
+    position: relative;
+    width: var(--ring-size);
+    height: var(--ring-size);
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--sl-color-accent) calc(var(--p, 0) * 1%), var(--sl-color-gray-6) 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px var(--sl-color-hairline);
+  }
+
+  .pd-ring::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--sl-color-bg-sidebar);
+  }
+
+  .pd-ring-label {
+    position: relative;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--sl-color-accent-high);
+  }
+
+  .pd-count {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .pd-caption {
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3);
+    margin-top: 0.25rem;
+  }
+
+  .pd-filters {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .pd-filter {
+    padding: 0.375rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    color: var(--sl-color-gray-3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pd-filter:hover {
+    border-color: var(--sl-color-gray-3);
+    color: var(--sl-color-white);
+  }
+
+  .pd-filter.active {
+    background: var(--sl-color-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  .pd-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .pd-foot {
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .pd-foot-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.875rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 10px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pd-foot-btn:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent-high);
+  }
+
+  /* --- Micro-interactions --- */
+  @property --p {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+  }
+
+  .pd-ring {
+    transition: --p 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes pd-bump {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.14); }
+    100% { transform: scale(1); }
+  }
+
+  .pd-bump {
+    animation: pd-bump 0.42s ease;
+  }
+
+  .pd-filter {
+    transition: all 0.15s ease, transform 0.12s ease;
+  }
+
+  .pd-filter:active {
+    transform: scale(0.94);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pd-ring,
+    .pd-bump,
+    .pd-filter {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Runtime-injected list rows. Scoped styles never reach innerHTML content, so
+     these rules live here, each pinned under #pd-overlay to avoid leaking. */
+  #pd-overlay .pd-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.4rem;
+    border-radius: 10px;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-hairline);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  #pd-overlay .pd-group {
+    margin: 0.9rem 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sl-color-gray-3);
+  }
+
+  #pd-overlay .pd-group:first-child {
+    margin-top: 0;
+  }
+
+  #pd-overlay .pd-group.hidden {
+    display: none;
+  }
+
+  #pd-overlay .pd-item:hover {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
+  }
+
+  #pd-overlay .pd-item.hidden {
+    display: none;
+  }
+
+  #pd-overlay .pd-item.done-item {
+    border-left: 3px solid var(--sl-color-accent);
+    background: color-mix(in srgb, var(--sl-color-gray-6) 55%, color-mix(in srgb, var(--sl-color-accent) 14%, transparent));
+  }
+
+  #pd-overlay .pd-item-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--sl-color-white);
+    line-height: 1.4;
+  }
+
+  #pd-overlay .pd-item-label svg {
+    flex-shrink: 0;
+    color: var(--sl-color-accent);
+  }
+
+  #pd-overlay .pd-item-note {
+    font-size: 0.775rem;
+    color: var(--sl-color-gray-3);
+    line-height: 1.5;
+    padding-left: 0.6rem;
+    border-left: 2px solid var(--sl-color-gray-4);
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  #pd-overlay .pd-item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  #pd-overlay .pd-edit-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  #pd-overlay .pd-edit-box textarea {
+    width: 100%;
+    padding: 0.5rem 0.625rem;
+    background: var(--sl-color-gray-5);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    color: var(--sl-color-white);
+    font-family: inherit;
+    font-size: 0.8rem;
+    resize: vertical;
+    min-height: 56px;
+  }
+
+  #pd-overlay .pd-edit-box textarea:focus {
+    outline: none;
+    border-color: var(--sl-color-accent);
+  }
+
+  #pd-overlay .pd-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+  }
+
+  #pd-overlay .pd-mini {
+    padding: 0.34rem 0.7rem;
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 8px;
+    color: var(--sl-color-gray-2);
+    font-size: 0.73rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  #pd-overlay .pd-mini:hover {
+    border-color: var(--sl-color-gray-2);
+    color: var(--sl-color-white);
+  }
+
+  #pd-overlay .pd-mini.primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--sl-color-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  #pd-overlay .pd-mini.primary:hover {
+    background: var(--sl-color-accent-high);
+  }
+
+  #pd-overlay .pd-danger {
+    margin-right: auto;
+    color: var(--sl-color-red, #f87171);
+    border-color: color-mix(in srgb, var(--sl-color-red, #f87171) 45%, transparent);
+  }
+
+  #pd-overlay .pd-danger:hover {
+    color: var(--sl-color-red, #f87171);
+    border-color: var(--sl-color-red, #f87171);
+    background: color-mix(in srgb, var(--sl-color-red, #f87171) 12%, transparent);
+  }
+
+  #pd-overlay .pd-empty {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--sl-color-gray-3);
+    font-size: 0.85rem;
+  }
+
+  /* --- Micro-interactions for injected rows --- */
+  @keyframes pd-item-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  #pd-overlay .pd-item--enter {
+    animation: pd-item-in 0.32s ease both;
+  }
+
+  @keyframes pd-item-flash {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sl-color-accent) 55%, transparent); }
+    100% { box-shadow: 0 0 0 12px transparent; }
+  }
+
+  #pd-overlay .pd-item--flash {
+    animation: pd-item-flash 0.6s ease;
+  }
+
+  @keyframes pd-check-pop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+
+  #pd-overlay .pd-item--flash .pd-item-label svg,
+  #pd-overlay .pd-item--flash .pd-mini.primary svg {
+    animation: pd-check-pop 0.4s ease;
+  }
+
+  #pd-overlay .pd-mini {
+    transition: all 0.15s ease, transform 0.12s ease;
+  }
+
+  #pd-overlay .pd-mini:active {
+    transform: scale(0.93);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #pd-overlay .pd-item--enter,
+    #pd-overlay .pd-item--flash,
+    #pd-overlay .pd-item--flash .pd-item-label svg,
+    #pd-overlay .pd-item--flash .pd-mini.primary svg,
+    #pd-overlay .pd-mini {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    getMaterialProgress,
+    getMaterialStats,
+    toggleCompleted,
+    setNote,
+    importProgress,
+    downloadExport,
+    downloadProgressCard,
+    buildStepListFromUnits,
+    parseImportFile,
+  } from '../lib/progress';
+
+  interface TrackedUnit {
+    id: string;
+    label: string;
+    section: string;
+  }
+
+  let currentSlug = '';
+  let currentTitle = '';
+  let unitsList: TrackedUnit[] = [];
+  let stepIdsList: string[] = [];
+  let activeFilter = 'all';
+  let lastPct = -1;
+  let pendingFlash = '';
+  let enterAnim = false;
+
+  function initDialog() {
+    const overlay = document.getElementById('pd-overlay');
+    if (!overlay) return;
+
+    // Read the material and its tracked-unit manifest from the floating widget.
+    const widget = document.getElementById('pw');
+    currentSlug = widget?.getAttribute('data-material-slug') || '';
+    currentTitle = widget?.getAttribute('data-material-title') || currentSlug;
+    try {
+      unitsList = JSON.parse(widget?.dataset.steps || '[]') as TrackedUnit[];
+    } catch {
+      unitsList = [];
+    }
+    stepIdsList = unitsList.map((u) => u.id);
+
+    const btnClose = document.getElementById('btn-pd-close');
+    const btnExport = document.getElementById('btn-pd-export');
+    const btnExportImg = document.getElementById('btn-pd-export-img');
+    const btnImport = document.getElementById('btn-pd-import');
+    const importInput = document.getElementById('pd-import-input');
+    const list = document.getElementById('pd-list');
+    const filterBtns = document.querySelectorAll('.pd-filter');
+
+    const CHECK_SVG =
+      '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    function render() {
+      if (!list) return;
+      const progress = getMaterialProgress(currentSlug);
+      const stats = getMaterialStats(currentSlug, stepIdsList);
+
+      const ring = document.getElementById('pd-ring');
+      const ringLabel = document.getElementById('pd-ring-label');
+      const count = document.getElementById('pd-count');
+      const caption = document.getElementById('pd-caption');
+      if (ring) ring.style.setProperty('--p', String(stats.percentage));
+      if (ringLabel) ringLabel.textContent = `${stats.percentage}%`;
+      if (count) count.textContent = `${stats.completed} of ${stats.total} steps`;
+
+      // Pulse the summary when the percentage actually moves.
+      if (lastPct !== -1 && lastPct !== stats.percentage) {
+        [ring, ringLabel, count].forEach((el) => {
+          if (!el) return;
+          el.classList.remove('pd-bump');
+          void el.offsetWidth;
+          el.classList.add('pd-bump');
+        });
+      }
+      lastPct = stats.percentage;
+      if (caption) {
+        caption.textContent =
+          stats.completed === stats.total && stats.total > 0
+            ? 'All done — great work!'
+            : 'Keep going — every step counts.';
+      }
+
+      if (unitsList.length === 0) {
+        list.innerHTML = '<div class="pd-empty">No steps available for this material yet.</div>';
+        return;
+      }
+
+      let lastSection = '';
+      list.innerHTML =
+        unitsList
+          .map((unit, i) => {
+            const step = unit.id;
+            const entry = progress[step];
+            const done = entry?.completed ?? false;
+            const note = entry?.note?.trim() ?? '';
+            const hasNote = !!note;
+            let header = '';
+            if (unit.section !== lastSection) {
+              lastSection = unit.section;
+              header = `<div class="pd-group">${escapeHtml(unit.section)}</div>`;
+            }
+            const cls = [
+              'pd-item',
+              done ? 'done-item' : '',
+              enterAnim ? 'pd-item--enter' : '',
+              step === pendingFlash ? 'pd-item--flash' : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
+            const delay = enterAnim ? ` style="animation-delay:${Math.min(i * 22, 320)}ms"` : '';
+            return `${header}
+            <div class="${cls}"${delay} data-step="${step}" data-done="${done}" data-note="${hasNote}">
+              <div class="pd-item-label">${done ? CHECK_SVG : ''}${escapeHtml(unit.label)}</div>
+              ${hasNote ? `<div class="pd-item-note">${escapeHtml(note)}</div>` : ''}
+              <div class="pd-item-actions">
+                <button class="pd-mini ${done ? 'primary' : ''}" data-action="toggle">${
+                  done ? `${CHECK_SVG}Learned` : 'Mark as learned'
+                }</button>
+                <button class="pd-mini" data-action="edit">${hasNote ? 'Edit note' : 'Add note'}</button>
+              </div>
+            </div>
+          `;
+          })
+          .join('') + '<div class="pd-empty" id="pd-filter-empty" hidden>Nothing matches this filter.</div>';
+
+      pendingFlash = '';
+      enterAnim = false;
+
+      list.querySelectorAll('[data-action="toggle"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const item = (e.currentTarget as HTMLElement).closest('.pd-item');
+          const step = item?.getAttribute('data-step');
+          if (step) {
+            toggleCompleted(currentSlug, step);
+            pendingFlash = step;
+            window.dispatchEvent(new CustomEvent('progress-updated'));
+            render();
+          }
+        });
+      });
+
+      list.querySelectorAll('[data-action="edit"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const item = (e.currentTarget as HTMLElement).closest('.pd-item');
+          const step = item?.getAttribute('data-step');
+          if (!step) return;
+          openNoteEditor(item as HTMLElement, step, progress[step]?.note ?? '');
+        });
+      });
+
+      applyFilter(activeFilter);
+    }
+
+    function openNoteEditor(item: HTMLElement, step: string, currentNote: string) {
+      // Close any other open editor first.
+      list?.querySelectorAll('.pd-edit-box').forEach((box) => box.remove());
+
+      const box = document.createElement('div');
+      box.className = 'pd-edit-box';
+      box.innerHTML = `
+        <textarea placeholder="Add a note..."></textarea>
+        <div class="pd-edit-actions">
+          ${currentNote.trim() ? '<button class="pd-mini pd-danger" data-clear>Clear</button>' : ''}
+          <button class="pd-mini" data-cancel>Cancel</button>
+          <button class="pd-mini primary" data-save>Save</button>
+        </div>
+      `;
+      item.appendChild(box);
+
+      const textarea = box.querySelector('textarea') as HTMLTextAreaElement;
+      textarea.value = currentNote;
+      textarea.focus();
+
+      box.querySelector('[data-cancel]')?.addEventListener('click', () => box.remove());
+      box.querySelector('[data-clear]')?.addEventListener('click', () => {
+        setNote(currentSlug, step, '');
+        pendingFlash = step;
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+        render();
+      });
+      box.querySelector('[data-save]')?.addEventListener('click', () => {
+        setNote(currentSlug, step, textarea.value.trim());
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+        render();
+      });
+    }
+
+    function escapeHtml(text: string): string {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function open() {
+      activeFilter = 'all';
+      lastPct = -1;
+      enterAnim = true;
+      filterBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-filter') === 'all'));
+      render();
+      overlay!.removeAttribute('hidden');
+    }
+
+    function close() {
+      overlay!.setAttribute('hidden', '');
+    }
+
+    btnClose?.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+
+    btnExport?.addEventListener('click', () => downloadExport());
+
+    btnExportImg?.addEventListener('click', () => {
+      const stats = getMaterialStats(currentSlug, stepIdsList);
+      const progress = getMaterialProgress(currentSlug);
+      const notes = Object.values(progress).filter((e) => e.note?.trim()).length;
+      downloadProgressCard({
+        materialTitle: currentTitle,
+        completed: stats.completed,
+        total: stats.total,
+        notes,
+        steps: buildStepListFromUnits(currentSlug, unitsList),
+      });
+    });
+
+    btnImport?.addEventListener('click', () => importInput?.click());
+
+    importInput?.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const data = await parseImportFile(file);
+      if (!data) {
+        alert('Invalid import file');
+        return;
+      }
+      const result = importProgress(data, 'merge');
+      alert(result.message);
+      render();
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+      (e.target as HTMLInputElement).value = '';
+    });
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.getAttribute('data-filter') || 'all';
+        applyFilter(activeFilter);
+      });
+    });
+
+    function applyFilter(filter: string) {
+      let visible = 0;
+      list?.querySelectorAll('.pd-item').forEach((el) => {
+        const done = el.getAttribute('data-done') === 'true';
+        const note = el.getAttribute('data-note') === 'true';
+        let show = true;
+        if (filter === 'completed') show = done;
+        else if (filter === 'with-notes') show = note;
+        el.classList.toggle('hidden', !show);
+        if (show) visible += 1;
+      });
+      // Drop a section header when everything under it is filtered out.
+      list?.querySelectorAll('.pd-group').forEach((group) => {
+        let anyVisible = false;
+        let el = group.nextElementSibling;
+        while (el && !el.classList.contains('pd-group')) {
+          if (el.classList.contains('pd-item') && !el.classList.contains('hidden')) {
+            anyVisible = true;
+            break;
+          }
+          el = el.nextElementSibling;
+        }
+        group.classList.toggle('hidden', !anyVisible);
+      });
+      const empty = document.getElementById('pd-filter-empty');
+      if (empty) empty.hidden = visible > 0;
+    }
+
+    window.addEventListener('open-progress-dialog', ((e: CustomEvent) => {
+      if (e.detail?.materialSlug) currentSlug = e.detail.materialSlug;
+      open();
+    }) as EventListener);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  }
+
+  initDialog();
+</script>

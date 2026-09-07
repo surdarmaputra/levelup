@@ -14,7 +14,7 @@ sidebar:
 **Why now:** Everything downstream depends on a fast, reliable feedback signal. An agent is only as good as the loop it can run unsupervised — if it can't verify its own work in one command, it will confidently hand you broken code. This is also the cheapest possible moment to add quality gates; retrofitting Error Prone onto 20k lines means fixing 400 warnings at once, and you won't.
 
 **Concepts:**
-- **Loop engineering**: the agent's effectiveness is bounded by its feedback signal, not its intelligence. Fast, deterministic, single-command verification is the whole game.
+- **Loop engineering**: the agent's effectiveness is bounded by its feedback signal, not its intelligence. Fast, deterministic, single-command verification is what matters most.
 - Why formatting must be auto-fixed, not argued about
 - **Error Prone** — compile-time bug detection, distinct from style linting. It catches defects, not preferences.
 - **NullAway** — null-safety enforcement without adopting Kotlin
@@ -25,13 +25,13 @@ sidebar:
 
 **Libraries:** Gradle (Kotlin DSL), Spotless + Palantir Java Format, Error Prone, NullAway, Lefthook, Docker + Compose
 
-**Build:**
+**Expected outcome:**
 - Gradle project with Spotless, Error Prone, NullAway wired in
 - `Makefile` (or Gradle task) exposing `make verify`, `make fmt`, `make up`, `make test`
-- `.lefthook.yml` — format + fast checks on commit
+- `.lefthook.yml` — format and fast checks on commit
 - `AGENTS.md` v1 + `CLAUDE.md` symlink
 - `docs/adr/0001-record-architecture-decisions.md`
-- `docker-compose.yml` with Postgres (the rest arrives as needed)
+- `docker-compose.yml` with Postgres (the rest is added as needed)
 - `.gitignore`, `.editorconfig`, `.git-blame-ignore-revs`
 
 **Verification**
@@ -55,10 +55,10 @@ sidebar:
 
 **Mode:** `BUILD` — Scaffolding and config. Let the agent generate; you read and question every line.
 
-**Why now:** Everything else assumes you understand what a bean is and when it's created. Skipping this is why people find Spring "magic."
+**Why now:** Everything else assumes you understand what a bean is and when it's created. Skip it and Spring feels like magic.
 
 **Concepts:**
-- Spring's actual value proposition: inversion of control, and why it exists
+- What Spring actually gives you: inversion of control, and why it exists
 - ApplicationContext, bean lifecycle, `@Component` vs `@Bean` vs `@Configuration`
 - Constructor injection and why field injection (`@Autowired` on a field) is wrong
 - Auto-configuration: what `spring-boot-starter-*` actually does, how to inspect it
@@ -67,7 +67,19 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-web`, `spring-boot-starter-actuator`, `spring-boot-starter-validation`, Lombok (optional), Spotless
 
-**Build:** Empty modular package structure. One `GET /api/v1/ping`. Actuator health exposed. Profiles for `local` / `test` / `prod`.
+**Expected outcome:** One `GET /api/v1/ping` endpoint, Actuator health exposed, and profiles for `local` / `test` / `prod`. The package layout is an empty modular monolith — one package per module, filled in over the rest of the roadmap:
+
+```text
+com.ticketflow
+├── catalog/        events, showtimes, venues, seat maps
+├── ordering/       orders, holds, tickets
+├── payments/       gateway adapters, webhooks
+├── identity/       users, roles, auth
+├── notification/   email / SMS dispatch
+└── shared/         errors, config, correlation, base types
+```
+
+Decide the sub-package convention inside a module (by layer, or by feature) yourself — just be consistent.
 
 **Verification**
 
@@ -99,7 +111,7 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-data-jpa`, `flyway-core`, `postgresql`, `spring-boot-testcontainers`, `testcontainers:postgresql`
 
-**Build:** `Event`, `Venue`, `Organizer` entities. Flyway V1 migration. Repositories. `@DataJpaTest` slice tests against Testcontainers Postgres.
+**Expected outcome:** `Event`, `Venue`, `Organizer` entities. Flyway V1 migration. Repositories. `@DataJpaTest` slice tests against Testcontainers Postgres.
 
 **Verification**
 
@@ -118,11 +130,11 @@ sidebar:
 
 **Mode:** `LEARN` — Error-model design is a judgement skill. Agent reviews your choices, doesn't make them.
 
-**Why now:** The error model must exist before you have many endpoints. Retrofitting it across 40 endpoints is miserable.
+**Why now:** The error model must exist before you have many endpoints. Adding it across 40 endpoints later is miserable.
 
 **Concepts:**
 - **Never expose entities as JSON.** Why: lazy-loading serialization explosions, accidental field leaks, and your DB schema becoming your public contract
-- Java records as DTOs; explicit mapping (MapStruct or hand-written — prefer hand-written until it hurts)
+- Java records as DTOs; explicit mapping (MapStruct or hand-written — prefer hand-written until it becomes painful)
 - Bean Validation: `@Valid`, `@NotBlank`, custom validators, validation groups
 - `@RestControllerAdvice` and **RFC 9457 Problem Details** (`ProblemDetail`, built into Spring 6)
 - HTTP status discipline: 400 vs 404 vs 409 vs 422
@@ -131,7 +143,7 @@ sidebar:
 
 **Libraries:** `springdoc-openapi-starter-webmvc-ui`, MapStruct (optional)
 
-**Build:** Request/response records for Event CRUD. Global exception handler producing Problem Details. Domain exception hierarchy. `@WebMvcTest` slice tests. CI pipeline turns on here.
+**Expected outcome:** Request/response records for Event CRUD. Global exception handler producing Problem Details. Domain exception hierarchy. `@WebMvcTest` slice tests. CI pipeline turns on here.
 
 **Verification**
 
@@ -152,11 +164,11 @@ sidebar:
 
 **Mode:** `LEARN` — Trace the filter chain yourself. Generated security config you don't understand is a liability.
 
-**Why now:** Before any UI exists. Building screens first and bolting auth on afterwards produces authorization holes at every endpoint you forgot.
+**Why now:** Before any UI exists. Building screens first and adding auth afterwards leaves authorization holes at every endpoint you forgot.
 
 **Concepts:**
 - The **filter chain** — the single most important thing to understand in Spring Security. Trace a request through it.
-- `SecurityFilterChain` bean configuration (the modern lambda DSL; `WebSecurityConfigurerAdapter` is long dead)
+- `SecurityFilterChain` bean configuration (the modern lambda DSL; `WebSecurityConfigurerAdapter` was removed years ago)
 - `UserDetailsService`, `PasswordEncoder`, BCrypt work factor
 - Session management, session fixation protection
 - **CSRF: what it is, why session auth needs it, why it's the default and you should not disable it**
@@ -166,7 +178,7 @@ sidebar:
 
 **Libraries:** `spring-boot-starter-security`, `spring-security-test`
 
-**Build:** User/Role entities. Form login. Roles `CUSTOMER` / `ORGANIZER` / `ADMIN`. Method-level authorization. Ownership rule: organizers only touch their own events.
+**Expected outcome:** User/Role entities. Form login. Roles `CUSTOMER` / `ORGANIZER` / `ADMIN`. Method-level authorization. Ownership rule: organizers only touch their own events.
 
 **Verification**
 
@@ -176,7 +188,3 @@ sidebar:
 | **L2 — Manual checks** | (a) Inspect the DB — passwords are BCrypt hashes, not plaintext, not MD5 <br>(b) Submit a form without a CSRF token, confirm rejection |
 | **L4 — Anti-patterns** | `AP-04-a`, `AP-04-b`, `AP-04-c`, `AP-04-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-04` green, every non-public endpoint has an explicit authorization rule |
-
----
-
-## Phase B — Domain depth (5–8)

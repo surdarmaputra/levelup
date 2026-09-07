@@ -1,0 +1,70 @@
+---
+import StarlightPageFrame from '@astrojs/starlight/components/PageFrame.astro';
+import ProgressTracker from './ProgressTracker.astro';
+import ProgressDialog from './ProgressDialog.astro';
+import RoadmapStepControls from './RoadmapStepControls.astro';
+import TocProgress from './TocProgress.astro';
+import MobilePageName from './MobilePageName.astro';
+import SiteFooter from './SiteFooter.astro';
+import { publishedMaterials } from '../catalog';
+import { getTrackedUnits, getRoadmapStepsForSection } from '../lib/roadmapSteps';
+
+const starlightRoute = Astro.locals.starlightRoute;
+const id = starlightRoute.id ?? '';
+// `id` is the content-collection id, e.g. `java-spring-boot/setup/agent-harness`.
+const currentSlug = id.split('/').filter(Boolean)[0] || '';
+const currentMaterial = publishedMaterials.find((m) => m.slug === currentSlug);
+const isMaterialPage = !!currentMaterial;
+// The current page's path relative to the material, e.g. `setup/agent-harness`.
+const currentStepId = isMaterialPage ? id.split('/').slice(1).join('/') : '';
+
+// The ordered list of trackable units for this material: each Setup page, then
+// every roadmap step. This is the single denominator for the progress percentage.
+const units = isMaterialPage ? await getTrackedUnits(currentSlug) : [];
+
+// Roadmap section pages (`roadmap/foundations`, …) carry their steps as `## Step N`
+// headings; the overview page does not.
+const isRoadmapSection =
+  isMaterialPage &&
+  currentStepId.startsWith('roadmap/') &&
+  currentStepId !== 'roadmap/overview';
+const sectionSteps = isRoadmapSection
+  ? await getRoadmapStepsForSection(currentSlug, currentStepId)
+  : [];
+
+// How the floating tracker treats the current page:
+//   'step'    — a Setup page: show its own mark-learned / note control
+//   'section' — a roadmap section page: steps are marked inline, show progress only
+//   'lookup'  — reference / overview / material index: not tracked
+let pageKind: 'step' | 'section' | 'lookup' = 'lookup';
+if (isRoadmapSection) pageKind = 'section';
+else if (currentStepId.startsWith('setup/')) pageKind = 'step';
+---
+
+<StarlightPageFrame>
+  <slot name="header" slot="header" />
+  <slot name="sidebar" slot="sidebar" />
+  <slot />
+
+  {isMaterialPage && (
+    <>
+      <ProgressTracker
+        materialSlug={currentSlug}
+        materialTitle={currentMaterial.title}
+        currentStepId={currentStepId}
+        pageKind={pageKind}
+        units={units}
+      />
+      <ProgressDialog />
+      <MobilePageName title={starlightRoute.entry.data.title} />
+      {isRoadmapSection && (
+        <>
+          <RoadmapStepControls materialSlug={currentSlug} steps={sectionSteps} />
+          <TocProgress materialSlug={currentSlug} steps={sectionSteps} />
+        </>
+      )}
+    </>
+  )}
+
+  <SiteFooter />
+</StarlightPageFrame>

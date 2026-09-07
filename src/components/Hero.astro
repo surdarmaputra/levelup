@@ -1,0 +1,157 @@
+---
+/**
+ * Hero override — mirrors Starlight's default Hero, but when the page defines a
+ * hero with no `image`, it renders the hand-built animated `HeroIllustration`
+ * instead of leaving the media column empty.
+ *
+ * Everything else (title, tagline, actions) is unchanged from upstream.
+ */
+import { Image } from 'astro:assets';
+import DraftContentNotice from '@astrojs/starlight/components/DraftContentNotice.astro';
+import { LinkButton } from '@astrojs/starlight/components';
+import HeroIllustration from './HeroIllustration.astro';
+
+// Upstream imports this from '../constants'; value is stable ('_top').
+const PAGE_TITLE_ID = '_top';
+
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline, image, actions = [] } = data.hero || {};
+
+const imageAttrs = {
+  loading: 'eager' as const,
+  decoding: 'async' as const,
+  width: 400,
+  height: 400,
+  alt: image?.alt || '',
+};
+
+let darkImage: ImageMetadata | undefined;
+let lightImage: ImageMetadata | undefined;
+let rawHtml: string | undefined;
+if (image) {
+  if ('file' in image) {
+    darkImage = image.file;
+  } else if ('dark' in image) {
+    darkImage = image.dark;
+    lightImage = image.light;
+  } else {
+    rawHtml = image.html;
+  }
+}
+
+const hasImage = Boolean(darkImage || lightImage || rawHtml);
+---
+
+<div class="hero">
+  {
+    darkImage && (
+      <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />
+    )
+  }
+  {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
+  {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
+  {!hasImage && <HeroIllustration />}
+  <div class="sl-flex stack">
+    <div class="sl-flex copy">
+      <h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+      {data.draft && <DraftContentNotice />}
+      {tagline && <div class="tagline" set:html={tagline} />}
+    </div>
+    {
+      actions.length > 0 && (
+        <div class="sl-flex actions">
+          {actions.map(
+            ({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+              <LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
+                {text}
+                {icon?.html && <Fragment set:html={icon.html} />}
+              </LinkButton>
+            )
+          )}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .hero {
+      display: grid;
+      grid-template-columns: 100%;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .hero > img,
+    .hero > .hero-html,
+    .hero > :global(.hero-illustration) {
+      object-fit: contain;
+      width: min(75%, 22rem);
+      height: auto;
+      margin-inline: auto;
+    }
+
+    .stack {
+      flex-direction: column;
+      gap: clamp(1.5rem, calc(1.5rem + 1vw), 2rem);
+      text-align: center;
+    }
+
+    .copy {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .copy > * {
+      max-width: 50ch;
+    }
+
+    h1 {
+      font-size: clamp(var(--sl-text-3xl), calc(0.25rem + 5vw), var(--sl-text-6xl));
+      line-height: var(--sl-line-height-headings);
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+
+    .tagline {
+      font-size: clamp(var(--sl-text-base), calc(0.0625rem + 2vw), var(--sl-text-xl));
+      color: var(--sl-color-gray-2);
+    }
+
+    .actions {
+      gap: 1rem 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    @media (min-width: 50rem) {
+      .hero {
+        grid-template-columns: 6fr 5fr;
+        gap: 5%;
+        padding-block: clamp(3.5rem, calc(1rem + 12vmin), 11rem);
+      }
+
+      .hero > img,
+      .hero > .hero-html,
+      .hero > :global(.hero-illustration) {
+        order: 2;
+        width: min(100%, 30rem);
+      }
+
+      .stack {
+        text-align: start;
+      }
+
+      .copy {
+        align-items: flex-start;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+  }
+</style>

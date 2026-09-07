@@ -1,9 +1,151 @@
 /* LevelUp theme overrides. Keep this file small — prefer Starlight's own
    CSS custom properties over new component styles. */
 
+/* Self-hosted variable fonts (no CDN, no external request). */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/bricolage-grotesque';
+
+/* ------------------------------------------------------------------ *
+ * Typography
+ * ------------------------------------------------------------------ */
+
 :root {
+  --sl-font:
+    'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  /* Display face — headings, hero title, site title. */
+  --lu-font-display:
+    'Bricolage Grotesque Variable', 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+
   --sl-content-width: 50rem;
+  --sl-line-height-headings: 1.15;
+
+  /* Flat reading surface: the nav sidebar (a material's table of contents)
+     shares the page background instead of its own panel colour. */
+  --sl-color-bg-sidebar: var(--sl-color-bg);
 }
+
+body {
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.006em;
+}
+
+/* Display face + tighter tracking for a clear step-down in the hierarchy. */
+:is(h1, h2, h3),
+[data-page-title],
+.site-title {
+  font-family: var(--lu-font-display);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+
+.sl-markdown-content :is(h4, h5, h6) {
+  letter-spacing: -0.012em;
+}
+
+/* Roomier heading rhythm in body copy — but not for headings inside components
+   like the catalog cards, which do their own spacing. */
+.sl-markdown-content :is(h2, h3):not(:where(.not-content *, .material-catalog *)) {
+  margin-top: 2.5em;
+}
+
+/* ------------------------------------------------------------------ *
+ * Header — background matches the page, no divider line
+ * ------------------------------------------------------------------ */
+
+header.header {
+  background-color: var(--sl-color-bg);
+  border-bottom: 1px solid transparent;
+}
+
+/* Theme switcher: icon only, no label text or caret — keeps the header clean. */
+.header starlight-theme-select {
+  --sl-select-width: 0px;
+}
+.header starlight-theme-select .caret {
+  display: none;
+}
+.header starlight-theme-select select {
+  width: 1.5rem;
+  padding-inline: 0;
+  margin-inline: 0;
+  color: transparent;
+}
+.header starlight-theme-select .label-icon {
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+}
+
+/* Mobile menu button blends with the page instead of a white circle. */
+starlight-menu-button button {
+  background-color: var(--sl-color-bg);
+  color: var(--sl-color-white);
+  border: 1px solid var(--sl-color-gray-6);
+  box-shadow: none;
+}
+starlight-menu-button[aria-expanded='true'] button {
+  background-color: var(--sl-color-gray-6);
+}
+
+/* ------------------------------------------------------------------ *
+ * Flat sidebars — no panel background, no divider lines
+ * ------------------------------------------------------------------ */
+
+@media (min-width: 50rem) {
+  .sidebar-pane {
+    border-inline-end: 0;
+  }
+}
+
+.right-sidebar {
+  border-inline-start: 0;
+}
+
+/* Mobile "On this page" bar matches the page background. */
+mobile-starlight-toc nav {
+  background-color: var(--sl-color-bg);
+}
+
+/* ------------------------------------------------------------------ *
+ * Landing page — more air between sections
+ * (`data-has-hero` is only set on the splash landing page)
+ * ------------------------------------------------------------------ */
+
+/* Starlight wraps every heading in `.sl-heading-wrapper`, so target that.
+   No divider line — space alone separates the sections. */
+:root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2 {
+  margin-top: 13rem;
+}
+
+:root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2:first-child {
+  margin-top: 6rem;
+}
+
+:root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2 h2 {
+  margin: 0;
+  font-size: var(--sl-text-2xl);
+}
+
+/* Extra breathing room around the catalog listing itself. */
+:root[data-has-hero] .sl-markdown-content .material-catalog {
+  margin-block: 3.5rem 5rem;
+}
+
+:root[data-has-hero] .sl-markdown-content > ul:not(.material-catalog) {
+  margin-top: 1.75rem;
+}
+
+:root[data-has-hero] .sl-markdown-content > ul:not(.material-catalog) > li + li {
+  margin-top: 0.9rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reading surface
+ * ------------------------------------------------------------------ */
 
 /* Slightly denser tables: the roadmap pages lean on them heavily. */
 .sl-markdown-content table {
@@ -20,3 +162,133 @@
   margin-block: 2.5rem;
   border-color: var(--sl-color-gray-5);
 }
+
+/* ------------------------------------------------------------------ *
+ * Micro-interactions — all opt out under reduced motion
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Smooth-scroll every in-page jump: hero CTA, TOC links, heading anchors.
+     `scroll-padding-top` is already set by Starlight to clear the fixed nav. */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  a.sl-link-button {
+    transition:
+      transform 0.16s ease,
+      box-shadow 0.16s ease,
+      background-color 0.16s ease;
+  }
+  a.sl-link-button:hover {
+    transform: translateY(-2px);
+  }
+  a.sl-link-button.primary:hover {
+    box-shadow: 0 10px 28px -12px var(--sl-color-accent);
+  }
+
+  .sl-markdown-content a:not(.sl-link-button) {
+    text-underline-offset: 0.18em;
+    transition:
+      color 0.15s ease,
+      text-underline-offset 0.15s ease;
+  }
+  .sl-markdown-content a:not(.sl-link-button):hover {
+    text-underline-offset: 0.3em;
+  }
+
+  #starlight__sidebar a {
+    transition: color 0.15s ease;
+  }
+
+  .sl-markdown-content h2,
+  .sl-markdown-content h3 {
+    scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+  }
+}
+
+/* Keep the focus ring crisp on the centred search button. */
+.header .search-slot button:focus-visible {
+  outline: 2px solid var(--sl-color-accent-high);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Landing hero — animated border on the "Browse the catalog" CTA
+ * ------------------------------------------------------------------ */
+
+@property --lu-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+:root[data-has-hero] .hero .actions .sl-link-button.primary {
+  position: relative;
+  isolation: isolate;
+}
+
+:root[data-has-hero] .hero .actions .sl-link-button.primary::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--lu-angle),
+    var(--sl-color-accent),
+    var(--sl-color-accent-high),
+    var(--sl-color-white),
+    var(--sl-color-accent-high),
+    var(--sl-color-accent)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: lu-cta-rotate 3.2s linear infinite;
+}
+
+@keyframes lu-cta-rotate {
+  to {
+    --lu-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-has-hero] .hero .actions .sl-link-button.primary::before {
+    animation: none;
+  }
+}
+
+/* Completed-step cue in the on-this-page table of contents (see TocProgress.astro). */
+starlight-toc a.toc-step-done > span::before,
+mobile-starlight-toc a.toc-step-done > span::before {
+  content: "✓";
+  margin-inline-end: 0.35em;
+  color: var(--sl-color-accent);
+  font-weight: 700;
+}
+
+/* Current page name in the sticky mobile "On this page" bar (see MobilePageName.astro). */
+mobile-starlight-toc summary .lu-page-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--sl-color-white);
+}
+
+mobile-starlight-toc summary .lu-page-name + .toggle {
+  flex-shrink: 0;
+}
+
+/* The page name replaces the scroll-position readout on mobile. */
+mobile-starlight-toc summary:has(.lu-page-name) .display-current {
+  display: none;
+}
+

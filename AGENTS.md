@@ -66,8 +66,8 @@ src/
     ├── index.mdx               landing page — catalog listing
     ├── 404.mdx
     └── <material-slug>/        one directory per learning material
-        ├── index.md            material overview
-        └── <section>/          one directory per sidebar group
+        ├── index.md            the Getting Started page (what / why / how / structure)
+        └── <section>/          one dir per sidebar group; stepped material = setup/ roadmap/ reference/
 
 scripts/                        bootstrap, verify, link check
 docs/rfcs/                      design decisions, newest wins
@@ -87,10 +87,24 @@ docs/rfcs/                      design decisions, newest wins
 - Frontmatter `title` and `description` on every page. `description` is what search and
   social cards show.
 - **No `<h1>` in the body** — Starlight renders it from `title`.
-- `sidebar.order` is scoped to the page's directory, starting at 1.
+- `sidebar.order` is scoped to the page's directory, starting at 1. The material's `index.md`
+  is `sidebar.order: 0`, `label: Getting Started` — it *is* the Getting Started page (what /
+  why / structure / how to read a step / start here); there is no separate `getting-started.md`.
 - One `##` per top-level unit (step, chapter) so the right-hand TOC is a real table of contents.
+  A roadmap step heading is `## Step N — Title` (`N` parseable; a sub-step is `5b`). The per-step
+  progress tracker builds its unit list from these headings under `roadmap/` — see
+  `src/lib/roadmapSteps.ts` and RFC 0002 amendment A2.
+- Step anatomy, in order: **Story** (user-story format) · **Mode** (`LEARN`/`BUILD`) ·
+  **Why now** · **Concepts** · **Libraries** · **Expected outcome** (the pieces to build; add a
+  *high-level* structure sketch where "where does this go" is open — never `**Build:**`) ·
+  **Verification** (L1/L2/L4/Done-when table) · optional **Harness impact**. Rubrics live in
+  `reference/rubrics.md` as `ACC-NN` + `AP-NN-x`, one section per step, a lookup not a checklist.
+  Setup pages use `## The goal, and the end state` / `## Why` / `## How`.
+- Prose is plain, common English for a non-native reader — short sentences, no AI-slop idioms
+  ("the whole game", "cargo cult", "under the hood"). Terse is fine; fragments are fine.
 - Content is the author's voice. Fix broken links, frontmatter, and structure — **do not
-  rewrite prose** unless asked.
+  rewrite prose** unless asked; when asked, keep the register and every technical claim.
+- Use the `add-material` skill for a new material or a structural restructure.
 
 **Links**
 - Internal links in Markdown are **relative**, never absolute. The site is served from `/` on a

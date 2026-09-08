@@ -22,3 +22,27 @@ Things a Go roadmap of this kind usually includes that were left out on purpose:
 | OpenTelemetry tracing | Correlation IDs plus Prometheus answer this system's questions. Tracing earns its setup cost when a request crosses several services. |
 
 If someone tells you a Go roadmap is incomplete without these, ask them which user story requires it.
+
+## On the missing web framework, for a portfolio
+
+The one omission that gets questioned is the router, so it is worth being clear about what it
+costs you.
+
+A senior Go engineer reading the code sees standard `http.Handler` values, middleware they can
+read, and timeouts set by hand. That reads well. A recruiter running a keyword search does not
+see the word "Gin", and in some markets most listings name a router. Both are true at once.
+
+What is *not* true is that the standard library leaves a large gap. Since Go 1.22 `http.ServeMux`
+routes by method and path pattern, which is most of what a router was for. What remains is route
+groups and sub-router mounting — real, but small, and not needed by four dashboard pages and one
+API.
+
+So: build it on the standard library, because that is what teaches you the interfaces. Then write
+the choice down as a decision, with the Go 1.22 reason next to it. An absence with a reason reads
+as judgement; an absence without one reads as not knowing the alternative existed.
+
+If you want the keyword as well, `chi` is the one to take — it takes an `http.Handler` and returns
+one, so swapping it in is an hour's work rather than a rewrite, and the roadmap suggests it as an
+exercise in [Production](../../roadmap/production/#after-the-roadmap). `gin` and `echo` replace the
+handler signature with their own, and `fiber` replaces `net/http` itself with `fasthttp`, which
+takes you out of the standard ecosystem entirely.

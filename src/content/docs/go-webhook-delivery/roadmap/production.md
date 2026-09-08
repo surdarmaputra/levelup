@@ -83,7 +83,7 @@ repository into something a stranger can run and judge.
 ## After the roadmap
 
 You have a Go service with a real concurrency model, a test suite that proves it, and a
-dashboard that shows it working. That is a portfolio piece. Three directions from here, in
+dashboard that shows it working. That is a portfolio piece. Four directions from here, in
 order of how much they teach:
 
 - **Replace the Postgres queue with NATS JetStream or Redis Streams** behind the same interface
@@ -94,6 +94,13 @@ order of how much they teach:
   more than one entry point.
 - **Publish the subscriber-side verification helper** as its own small module with its own tests
   and README. Writing a library for other people is a different skill from writing a service.
+- **Swap the router for `chi`, in one commit, and write the ADR comparing them.** `chi` takes an
+  `http.Handler` and returns one, so this is a substitution rather than a rewrite — an hour of
+  work. Do it if job listings in your market ask for a router by name, or if you want the
+  comparison: what you gain is sub-router mounting and route groups, what you lose is one less
+  dependency. The ADR is the deliverable, not the swap. An engineer who can say *"stdlib mux,
+  because Go 1.22 gave it method routing and I did not need groups; I would take chi the moment I
+  wanted to mount a sub-router"* is answering a question a framework choice made for you.
 
 What not to do next: rewrite the dashboard in React, add Kubernetes, or introduce gRPC. None of
 them teaches you anything this project has not already, and each makes the repository harder for

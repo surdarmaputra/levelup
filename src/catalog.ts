@@ -113,6 +113,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'fastapi-support-assistant',
+    title: 'FastAPI — Grounded Support Assistant',
+    description:
+      'Go from "I know Python, new to FastAPI" to an AI feature you can prove works — grounded answers, real citations, refusal when the documents do not say, and an evaluation report to show for it.',
+    tagline:
+      'Eighteen steps, one real domain. Retrieval, refusal and evaluation — the half of an AI product that separates a demo from something a clinic will use.',
+    level: 'Intermediate',
+    size: '18 steps',
+    tags: ['Python 3.13', 'FastAPI', 'PostgreSQL + pgvector', 'Claude API', 'Evaluation'],
+    status: 'available',
+    entry: 'fastapi-support-assistant',
+    links: [{ label: 'Getting Started', slug: 'fastapi-support-assistant' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

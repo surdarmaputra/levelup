@@ -113,6 +113,63 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'laravel-integration-hub',
+    title: 'Laravel — Business Operations Integration Hub',
+    description:
+      'Go from "I can build a Laravel app" to the integration work businesses pay a retainer for: webhooks that arrive twice, supplier files that arrive half-written, and money that has to reconcile.',
+    tagline:
+      'Twenty-two steps, one real domain. Idempotency, ordering, partial failure and reconciliation — the work that keeps paying after launch.',
+    level: 'Advanced',
+    size: '22 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'PostgreSQL', 'Redis + Horizon', 'Webhooks + SFTP'],
+    status: 'available',
+    entry: 'laravel-integration-hub',
+    links: [{ label: 'Getting Started', slug: 'laravel-integration-hub' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'fastapi-support-assistant',
+    title: 'FastAPI — Grounded Support Assistant',
+    description:
+      'Go from "I know Python, new to FastAPI" to an AI feature you can prove works — grounded answers, real citations, refusal when the documents do not say, and an evaluation report to show for it.',
+    tagline:
+      'Eighteen steps, one real domain. Retrieval, refusal and evaluation — the half of an AI product that separates a demo from something a clinic will use.',
+    level: 'Intermediate',
+    size: '18 steps',
+    tags: ['Python 3.13', 'FastAPI', 'PostgreSQL + pgvector', 'Claude API', 'Evaluation'],
+    status: 'available',
+    entry: 'fastapi-support-assistant',
+    links: [{ label: 'Getting Started', slug: 'fastapi-support-assistant' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'laravel-spreadsheet-migration',
+    title: 'Laravel — Off the Spreadsheet Back Office',
+    description:
+      'Go from "I can build a Laravel app" to the job small businesses actually hire for: moving a living business off its spreadsheets — discovery, messy import, entity resolution, reconciliation and cutover — without stopping it for a day.',
+    tagline:
+      'Sixteen steps, one real domain. The requirements are a spreadsheet nobody has written down, and the client can check your numbers.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'Filament', 'PostgreSQL', 'Spreadsheet import'],
+    status: 'available',
+    entry: 'laravel-spreadsheet-migration',
+    links: [{ label: 'Getting Started', slug: 'laravel-spreadsheet-migration' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

@@ -131,8 +131,8 @@ from your database, which is the moment they start believing you.
 **Ship and switch — steps 8–15.** The application people use every day, permissions, history,
 and the cutover that moves a working business onto it without a lost day.
 
-The second path is where most freelance projects of this shape actually fail, and it is the
-half nobody teaches.
+The second path is where most projects of this shape actually fail, and it is the half nobody
+teaches.
 
 ## How to read a roadmap step
 

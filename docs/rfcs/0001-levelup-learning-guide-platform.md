@@ -517,7 +517,7 @@ to seven. Between them they made three things explicit that the slug convention 
 
 **A stack is reused deliberately, and a material may build on another.** The catalog now holds
 three Laravel materials. That is the design, not drift: a reader who has finished one starts the
-next already productive, which is also how repeat freelance work actually rewards depth. Two
+next already productive, which is also how depth in one stack pays off on repeat work. Two
 consequences:
 
 - A material may **assume a prior material's stack knowledge** rather than teaching it again.

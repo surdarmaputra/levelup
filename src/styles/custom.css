@@ -29,6 +29,7 @@
 
   /* The single chromatic action colour. */
   --lu-lime: #e4f222;
+  --lu-lime-bright: var(--lu-lime-bright);
   --lu-lime-dim: #b9c611;
 
   /* Supporting accents — content semantics only, never actions. */
@@ -128,6 +129,19 @@
   --lu-surface-faint: rgba(255, 255, 255, 0.02);
   --lu-surface-hover: rgba(255, 255, 255, 0.05);
   --lu-input-border: rgba(255, 255, 255, 0.08);
+
+  /* Glass: a translucent pane over the ambient field, edged by a hairline and
+     a one-pixel top highlight. Falls back to a solid surface where
+     `backdrop-filter` is unsupported. */
+  --lu-glass-bg: rgba(18, 19, 21, 0.55);
+  --lu-glass-bg-strong: rgba(15, 16, 17, 0.82);
+  --lu-glass-border: rgba(255, 255, 255, 0.08);
+  --lu-glass-border-hover: rgba(255, 255, 255, 0.16);
+  --lu-glass-highlight: rgba(255, 255, 255, 0.09);
+  --lu-glass-blur: 16px;
+
+  /* Small lime marks (nav indicator, done ticks) need a darker mix on paper. */
+  --lu-marker: var(--lu-lime);
 }
 
 /* Light theme — the same geometry on paper: ink on white, hairlines, one lime
@@ -182,6 +196,15 @@
   --lu-surface-faint: rgba(8, 9, 10, 0.02);
   --lu-surface-hover: rgba(8, 9, 10, 0.04);
   --lu-input-border: rgba(8, 9, 10, 0.12);
+
+  --lu-glass-bg: rgba(255, 255, 255, 0.6);
+  --lu-glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --lu-glass-border: rgba(8, 9, 10, 0.09);
+  --lu-glass-border-hover: rgba(8, 9, 10, 0.2);
+  --lu-glass-highlight: rgba(255, 255, 255, 0.9);
+  --lu-glass-blur: 16px;
+
+  --lu-marker: var(--sl-color-accent-high);
 }
 
 /* ------------------------------------------------------------------ *
@@ -195,6 +218,86 @@ body {
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.011em;
   background-color: var(--sl-color-bg);
+}
+
+/* ------------------------------------------------------------------ *
+ * Ambient field + glass
+ *
+ * A fixed, very low-contrast wash behind the page. It carries no meaning; it
+ * exists so the translucent surfaces below have something to sample — glass
+ * over a flat fill just looks like a flat fill.
+ * ------------------------------------------------------------------ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58rem 38rem at 82% -8%, color-mix(in srgb, var(--lu-lime) 7%, transparent), transparent 62%),
+    radial-gradient(46rem 32rem at 4% 6%, color-mix(in srgb, var(--lu-teal) 6%, transparent), transparent 66%),
+    radial-gradient(64rem 46rem at 50% 108%, color-mix(in srgb, var(--lu-mist) 5%, transparent), transparent 60%);
+}
+
+:root[data-theme='light'] body::before {
+  background:
+    radial-gradient(58rem 38rem at 82% -8%, color-mix(in srgb, var(--lu-lime) 7%, transparent), transparent 62%),
+    radial-gradient(46rem 32rem at 4% 6%, color-mix(in srgb, var(--lu-teal) 4%, transparent), transparent 66%),
+    radial-gradient(64rem 46rem at 50% 108%, color-mix(in srgb, var(--lu-iris) 3%, transparent), transparent 60%);
+}
+
+/* The glass recipe, in one place. Anything that wants a pane opts in. */
+.lu-glass {
+  position: relative;
+  background: var(--lu-glass-bg);
+  border: 1px solid var(--lu-glass-border);
+  -webkit-backdrop-filter: blur(var(--lu-glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--lu-glass-blur)) saturate(150%);
+}
+
+/* Top-edge sheen — the band that reads as "pane" rather than "panel". */
+.lu-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5rem;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(var(--lu-glass-highlight), transparent);
+  opacity: 0.4;
+}
+
+.lu-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Panes that sit over text — dialogs, popovers — take the opaque mix so the
+   page underneath cannot be read through them. */
+.lu-glass--strong {
+  background: var(--lu-glass-bg-strong);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lu-glass,
+  .lu-glass--strong {
+    background: var(--lu-surface-1);
+  }
+}
+
+/* Nav and the mobile table-of-contents bar float over the page as glass. */
+header.header {
+  background-color: color-mix(in srgb, var(--sl-color-bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+}
+
+mobile-starlight-toc nav {
+  background-color: color-mix(in srgb, var(--sl-color-bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
 }
 
 /* Weights stay in the 400–590 band — no heavy display type. */
@@ -246,7 +349,7 @@ body {
  * ------------------------------------------------------------------ */
 
 header.header {
-  background-color: var(--sl-color-bg);
+  /* Fill and blur are set with the glass rules above. */
   border-bottom: 1px solid var(--sl-color-hairline);
 }
 
@@ -356,7 +459,7 @@ starlight-menu-button[aria-expanded='true'] button {
   inset-inline-start: -1px;
   width: 2px;
   border-radius: var(--lu-radius-pill);
-  background-color: var(--lu-lime);
+  background-color: var(--lu-marker);
 }
 
 #starlight__sidebar .large,
@@ -384,7 +487,6 @@ starlight-toc a[aria-current='true']:focus {
 
 /* Mobile "On this page" bar matches the page background. */
 mobile-starlight-toc nav {
-  background-color: var(--sl-color-bg);
   border-bottom: 1px solid var(--sl-color-hairline);
 }
 
@@ -419,8 +521,37 @@ mobile-starlight-toc nav {
 }
 
 .sl-link-button.primary:hover {
-  background: #edfa4a;
-  border-color: #edfa4a;
+  background: var(--lu-lime-bright);
+  border-color: var(--lu-lime-bright);
+}
+
+/* A single sheen crosses the primary button on hover — the one flourish. */
+.sl-link-button.primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sl-link-button.primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transform: translateX(-130%);
+  background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.6) 50%, transparent 75%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sl-link-button.primary:hover::after {
+    animation: lu-sheen 0.7s ease;
+  }
+}
+
+@keyframes lu-sheen {
+  to {
+    transform: translateX(130%);
+  }
 }
 
 .sl-link-button.secondary {
@@ -533,17 +664,19 @@ mobile-starlight-toc nav {
   --ec-codeFontSize: var(--sl-text-xs);
 }
 
-/* Prev / next pagination reads as two cards. */
+/* Prev / next pagination reads as two glass cards. */
 .pagination-links a {
-  background-color: var(--lu-surface-faint);
-  border: 1px solid var(--sl-color-hairline);
+  background-color: var(--lu-glass-bg);
+  border: 1px solid var(--lu-glass-border);
   border-radius: var(--lu-radius-card);
   box-shadow: none;
   padding: 1rem;
+  -webkit-backdrop-filter: blur(var(--lu-glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--lu-glass-blur)) saturate(150%);
 }
 
 .pagination-links a:hover {
-  border-color: var(--sl-color-gray-5);
+  border-color: var(--lu-glass-border-hover);
 }
 
 .pagination-links a > span {
@@ -555,6 +688,11 @@ mobile-starlight-toc nav {
  * Micro-interactions — all opt out under reduced motion
  * ------------------------------------------------------------------ */
 
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+  scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Smooth-scroll every in-page jump: hero CTA, TOC links, heading anchors.
      `scroll-padding-top` is already set by Starlight to clear the fixed nav. */
@@ -564,20 +702,76 @@ mobile-starlight-toc nav {
 
   a.sl-link-button,
   .pagination-links a,
-  #starlight__sidebar a {
+  #starlight__sidebar a,
+  starlight-toc a {
     transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease,
-      color 0.15s ease;
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.18s ease;
   }
 
   .sl-markdown-content a:not(.sl-link-button) {
     transition: text-decoration-color 0.15s ease;
   }
 
-  .sl-markdown-content h2,
-  .sl-markdown-content h3 {
-    scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+  /* Buttons lift on hover and take the press on click. */
+  a.sl-link-button:hover {
+    transform: translateY(-1px);
+  }
+
+  a.sl-link-button:active {
+    transform: translateY(0);
+  }
+
+  .pagination-links a:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Nav rows slide a hair towards the reader. */
+  #starlight__sidebar a:hover,
+  starlight-toc a:hover {
+    transform: translateX(2px);
+  }
+
+  /* The lime marker on the current page grows into place. */
+  #starlight__sidebar a[aria-current='page']::before {
+    animation: lu-marker-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* The reading column arrives instead of appearing. */
+  .sl-markdown-content {
+    animation: lu-page-in 0.4s ease both;
+  }
+
+  /* Search reads as a field that focuses. */
+  .header .search-slot button[data-open-modal] {
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+}
+
+@keyframes lu-marker-in {
+  from {
+    transform: scaleY(0.2);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes lu-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -592,7 +786,7 @@ starlight-toc a.toc-step-done > span::before,
 mobile-starlight-toc a.toc-step-done > span::before {
   content: "✓";
   margin-inline-end: 0.35em;
-  color: var(--lu-lime);
+  color: var(--lu-marker);
   font-weight: 590;
 }
 

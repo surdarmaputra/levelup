@@ -11,8 +11,8 @@ function href(slug: string) {
 
 <ul class="material-catalog">
   {
-    materials.map((material) => (
-      <li class="material-card" data-status={material.status}>
+    materials.map((material, index) => (
+      <li class="material-card lu-glass" data-status={material.status} style={`--lu-i:${index}`}>
         <h3 class="material-card__title">
           {material.status === 'planned' ? (
             material.title
@@ -52,26 +52,40 @@ function href(slug: string) {
     grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
   }
 
+  /* Fill, hairline and blur come from the shared `.lu-glass` recipe. */
   .material-card {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1.5rem;
-    border: 1px solid var(--sl-color-hairline);
     border-radius: var(--lu-radius-card);
-    background: var(--lu-surface-1);
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .material-card {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: card-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: calc(var(--lu-i, 0) * 70ms);
+      transition:
+        transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.2s ease;
+    }
+
+    .material-card:not([data-status='planned']):hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes card-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .material-card:not([data-status='planned']):hover {
-    border-color: var(--sl-color-gray-5);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .material-card {
-      transition: none;
-    }
+    border-color: var(--lu-glass-border-hover);
   }
 
   .material-card[data-status='planned'] {

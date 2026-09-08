@@ -26,7 +26,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   data-page-kind={pageKind}
   data-steps={JSON.stringify(units)}
 >
-  <button class="pw-fab" id="pw-fab" aria-label="Progress" aria-expanded="false">
+  <button class="pw-fab lu-glass lu-glass--strong" id="pw-fab" aria-label="Progress" aria-expanded="false">
     <svg class="pw-ring" id="pw-ring" viewBox="0 0 48 48">
       <circle class="pw-ring-track" cx="24" cy="24" r="20" fill="none" stroke-width="4" />
       <circle class="pw-ring-fill" id="pw-ring-fill" cx="24" cy="24" r="20" fill="none" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
@@ -34,7 +34,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     <span class="pw-fab-label" id="pw-fab-label">0%</span>
   </button>
 
-  <div class="pw-card" id="pw-card" hidden>
+  <div class="pw-card lu-glass lu-glass--strong" id="pw-card" hidden>
     <div class="pw-head">
       <span class="pw-title">Your progress</span>
       <button class="pw-close" id="pw-close" aria-label="Close progress panel">
@@ -133,8 +133,6 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: var(--lu-surface-1);
-    border: 1px solid var(--sl-color-hairline);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
@@ -144,7 +142,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-fab:hover {
-    border-color: var(--sl-color-gray-5);
+    border-color: var(--lu-glass-border-hover);
   }
 
   .pw-ring {
@@ -161,7 +159,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-ring-fill {
-    stroke: var(--sl-color-accent);
+    stroke: var(--lu-marker);
     transition: stroke-dashoffset 0.5s ease;
   }
 
@@ -179,8 +177,6 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     right: 0;
     width: 248px;
     padding: 0.9rem 0.9rem 0.7rem;
-    background: var(--lu-surface-1);
-    border: 1px solid var(--sl-color-hairline);
     border-radius: var(--lu-radius-card);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     color: var(--sl-color-white);
@@ -333,8 +329,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--sl-color-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+    background: var(--lu-marker);
   }
 
   .pw-note-dot[hidden] {
@@ -357,7 +352,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     margin-bottom: 0.5rem;
     padding: 0.45rem 0.55rem;
     background: var(--lu-surface-hover);
-    border-left: 2px solid var(--lu-lime);
+    border-left: 2px solid var(--lu-marker);
     border-radius: var(--lu-radius-control);
     font-size: 0.74rem;
     line-height: 1.45;
@@ -418,8 +413,8 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-mini.primary:hover {
-    background: #edfa4a;
-    border-color: #edfa4a;
+    background: var(--lu-lime-bright);
+    border-color: var(--lu-lime-bright);
     color: var(--lu-void);
   }
 

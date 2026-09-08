@@ -1,5 +1,5 @@
 <div class="pd-overlay" id="pd-overlay" hidden>
-  <div class="pd-dialog" role="dialog" aria-modal="true" aria-label="Progress details">
+  <div class="pd-dialog lu-glass lu-glass--strong" role="dialog" aria-modal="true" aria-label="Progress details">
     <header class="pd-head">
       <h2 class="pd-title">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -87,8 +87,6 @@
     max-height: 84vh;
     display: flex;
     flex-direction: column;
-    background: var(--lu-surface-1);
-    border: 1px solid var(--sl-color-hairline);
     border-radius: var(--lu-radius-card);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     font-family: inherit;
@@ -114,7 +112,7 @@
   }
 
   .pd-title svg {
-    color: var(--lu-lime);
+    color: var(--lu-marker);
   }
 
   .pd-head-actions {
@@ -337,7 +335,7 @@
   }
 
   #pd-overlay .pd-item.done-item {
-    border-left: 2px solid var(--lu-lime);
+    border-left: 2px solid var(--lu-marker);
     background: var(--lu-surface-hover);
   }
 
@@ -353,7 +351,7 @@
 
   #pd-overlay .pd-item-label svg {
     flex-shrink: 0;
-    color: var(--lu-lime);
+    color: var(--lu-marker);
   }
 
   #pd-overlay .pd-item-note {
@@ -430,8 +428,8 @@
   }
 
   #pd-overlay .pd-mini.primary:hover {
-    background: #edfa4a;
-    border-color: #edfa4a;
+    background: var(--lu-lime-bright);
+    border-color: var(--lu-lime-bright);
   }
 
   #pd-overlay .pd-danger {

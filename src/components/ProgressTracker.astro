@@ -125,7 +125,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     bottom: 1.25rem;
     right: 1.25rem;
     z-index: 900;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: inherit;
   }
 
   .pw-fab {
@@ -133,9 +133,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: var(--sl-color-bg-sidebar);
+    background: var(--lu-surface-1);
     border: 1px solid var(--sl-color-hairline);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,8 +144,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-fab:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
+    border-color: var(--sl-color-gray-5);
   }
 
   .pw-ring {
@@ -170,8 +169,8 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     position: relative;
     z-index: 1;
     font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--sl-color-accent-high);
+    font-weight: 510;
+    color: var(--sl-color-white);
   }
 
   .pw-card {
@@ -180,10 +179,10 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     right: 0;
     width: 248px;
     padding: 0.9rem 0.9rem 0.7rem;
-    background: var(--sl-color-bg-sidebar);
+    background: var(--lu-surface-1);
     border: 1px solid var(--sl-color-hairline);
-    border-radius: 16px;
-    box-shadow: 0 20px 52px rgba(0, 0, 0, 0.5);
+    border-radius: var(--lu-radius-card);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     color: var(--sl-color-white);
     transform-origin: bottom right;
     animation: pw-pop 0.18s cubic-bezier(0.4, 0, 0.2, 1);
@@ -206,9 +205,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--sl-color-gray-2);
+    font-size: 0.7rem;
+    font-weight: 510;
+    color: var(--sl-color-gray-3);
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
@@ -240,11 +239,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
 
   .pw-percent {
     font-size: 1.4rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--sl-color-accent), var(--sl-color-accent-high));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-weight: 510;
+    letter-spacing: -0.022em;
+    color: var(--sl-color-white);
   }
 
   .pw-count {
@@ -263,7 +260,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   .pw-fill {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high));
+    background: var(--lu-lime);
     transition: width 0.5s ease;
   }
 
@@ -294,25 +291,25 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     justify-content: center;
     gap: 0.4rem;
     padding: 0.5rem 0.6rem;
-    background: var(--sl-color-gray-6);
+    background: var(--lu-surface-faint);
     border: 1px solid var(--sl-color-hairline);
-    border-radius: 10px;
-    color: var(--sl-color-gray-1);
+    border-radius: var(--lu-radius-control);
+    color: var(--sl-color-gray-2);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 510;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .pw-action:hover {
-    border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+    border-color: var(--sl-color-gray-5);
     color: var(--sl-color-white);
   }
 
   .pw-action.done {
-    background: linear-gradient(135deg, var(--sl-color-accent), color-mix(in srgb, var(--sl-color-accent) 78%, #000));
-    border-color: transparent;
-    color: white;
+    background: var(--lu-lime);
+    border-color: var(--lu-lime);
+    color: var(--lu-void);
   }
 
   .pw-learn-done {
@@ -328,8 +325,8 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   }
 
   .pw-action.has-note {
-    color: var(--sl-color-accent-high);
-    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    color: var(--sl-color-white);
+    border-color: var(--sl-color-gray-5);
   }
 
   .pw-note-dot {
@@ -347,9 +344,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   .pw-note-panel {
     margin-top: 0.5rem;
     padding: 0.6rem;
-    background: var(--sl-color-gray-6);
+    background: var(--lu-surface-faint);
     border: 1px solid var(--sl-color-hairline);
-    border-radius: 10px;
+    border-radius: var(--lu-radius-control);
   }
 
   .pw-note-panel[hidden] {
@@ -359,9 +356,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   .pw-note-view {
     margin-bottom: 0.5rem;
     padding: 0.45rem 0.55rem;
-    background: color-mix(in srgb, var(--sl-color-gray-5) 80%, transparent);
-    border-left: 2px solid var(--sl-color-accent);
-    border-radius: 6px;
+    background: var(--lu-surface-hover);
+    border-left: 2px solid var(--lu-lime);
+    border-radius: var(--lu-radius-control);
     font-size: 0.74rem;
     line-height: 1.45;
     color: var(--sl-color-gray-1);
@@ -375,9 +372,9 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   .pw-note-panel textarea {
     width: 100%;
     padding: 0.45rem 0.55rem;
-    background: var(--sl-color-gray-5);
-    border: 1px solid var(--sl-color-hairline);
-    border-radius: 8px;
+    background: var(--lu-surface-faint);
+    border: 1px solid var(--lu-input-border);
+    border-radius: var(--lu-radius-control);
     color: var(--sl-color-white);
     font-family: inherit;
     font-size: 0.78rem;
@@ -387,7 +384,7 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
 
   .pw-note-panel textarea:focus {
     outline: none;
-    border-color: var(--sl-color-accent);
+    border-color: var(--sl-color-gray-2);
   }
 
   .pw-note-btns {
@@ -400,28 +397,30 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   .pw-mini {
     padding: 0.32rem 0.65rem;
     background: transparent;
-    border: 1px solid var(--sl-color-gray-4);
-    border-radius: 8px;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-control);
     color: var(--sl-color-gray-2);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 510;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .pw-mini:hover {
-    border-color: var(--sl-color-gray-2);
+    border-color: var(--sl-color-gray-5);
     color: var(--sl-color-white);
   }
 
   .pw-mini.primary {
-    background: var(--sl-color-accent);
-    border-color: transparent;
-    color: white;
+    background: var(--lu-lime);
+    border-color: var(--lu-lime);
+    color: var(--lu-void);
   }
 
   .pw-mini.primary:hover {
-    background: var(--sl-color-accent-high);
+    background: #edfa4a;
+    border-color: #edfa4a;
+    color: var(--lu-void);
   }
 
   .pw-mini.pw-danger {
@@ -455,13 +454,13 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
     border: none;
     color: var(--sl-color-gray-3);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 510;
     cursor: pointer;
     transition: color 0.15s ease;
   }
 
   .pw-link:hover {
-    color: var(--sl-color-accent-high);
+    color: var(--sl-color-white);
   }
 
   .pw-link:active {
@@ -471,11 +470,11 @@ const { materialSlug, materialTitle, currentStepId, pageKind, units } = Astro.pr
   /* --- Micro-interactions --- */
   @keyframes pw-pulse {
     0% {
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4),
-        0 0 0 0 color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4),
+        0 0 0 0 color-mix(in srgb, var(--lu-lime) 45%, transparent);
     }
     100% {
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 18px transparent;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 18px transparent;
     }
   }
 

@@ -14,13 +14,13 @@
   <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="lu-glow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="var(--sl-color-accent)" stop-opacity="0.5" />
-        <stop offset="55%" stop-color="var(--sl-color-accent)" stop-opacity="0.12" />
-        <stop offset="100%" stop-color="var(--sl-color-accent)" stop-opacity="0" />
+        <stop offset="0%" stop-color="var(--sl-color-gray-2)" stop-opacity="0.14" />
+        <stop offset="55%" stop-color="var(--sl-color-gray-2)" stop-opacity="0.04" />
+        <stop offset="100%" stop-color="var(--sl-color-gray-2)" stop-opacity="0" />
       </radialGradient>
       <linearGradient id="lu-step" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="var(--sl-color-accent)" stop-opacity="0.16" />
-        <stop offset="100%" stop-color="var(--sl-color-accent)" stop-opacity="0.02" />
+        <stop offset="0%" stop-color="var(--sl-color-gray-2)" stop-opacity="0.05" />
+        <stop offset="100%" stop-color="var(--sl-color-gray-2)" stop-opacity="0.01" />
       </linearGradient>
     </defs>
 
@@ -89,7 +89,7 @@
 
   .grid circle {
     fill: var(--sl-color-gray-5);
-    opacity: 0.35;
+    opacity: 0.7;
   }
 
   .ground {
@@ -100,8 +100,8 @@
   }
 
   .step {
-    stroke: var(--sl-color-accent);
-    stroke-opacity: 0.45;
+    stroke: var(--sl-color-gray-5);
+    stroke-opacity: 1;
     stroke-width: 1.5;
     transform-box: fill-box;
     transform-origin: bottom center;
@@ -114,7 +114,7 @@
   .step:nth-child(3) { animation-delay: 0.45s; }
 
   .track {
-    stroke: var(--sl-color-accent-high);
+    stroke: var(--sl-color-gray-2);
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -141,18 +141,18 @@
     animation: node-in 0.5s ease 1.9s forwards;
   }
   .node-halo {
-    fill: var(--sl-color-accent);
-    opacity: 0.25;
+    fill: var(--lu-lime);
+    opacity: 0.22;
     transform-box: fill-box;
     transform-origin: center;
     animation: pulse 2.6s ease-in-out 2.4s infinite;
   }
   .node-core {
-    fill: var(--sl-color-white);
+    fill: var(--lu-lime);
   }
 
   .spark {
-    stroke: var(--sl-color-accent-high);
+    stroke: var(--sl-color-gray-3);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;

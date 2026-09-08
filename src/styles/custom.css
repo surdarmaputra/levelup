@@ -1,49 +1,218 @@
-/* LevelUp theme overrides. Keep this file small — prefer Starlight's own
-   CSS custom properties over new component styles. */
+/* LevelUp theme — "midnight precision instrument".
+   A Linear-style dark system laid over Starlight's tokens: near-black surfaces,
+   paper-white type at tight tracking, hairline borders instead of shadows, and
+   one acid-lime accent reserved for the primary action.
+
+   Keep this file to the token layer plus the few chrome overrides Starlight
+   does not expose as a custom property. */
 
 /* Self-hosted variable fonts (no CDN, no external request). */
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/bricolage-grotesque';
 
 /* ------------------------------------------------------------------ *
- * Typography
+ * Palette + tokens
  * ------------------------------------------------------------------ */
 
 :root {
+  /* Surfaces and greys, dark → light. */
+  --lu-void: #08090a;
+  --lu-carbon: #0f1011;
+  --lu-obsidian: #161718;
+  --lu-graphite: #23252a;
+  --lu-smoke: #383b3f;
+  --lu-ash: #62666d;
+  --lu-fog: #8a8f98;
+  --lu-mist: #d0d6e0;
+  --lu-bone: #e5e5e6;
+  --lu-paper: #ffffff;
+
+  /* The single chromatic action colour. */
+  --lu-lime: #e4f222;
+  --lu-lime-dim: #b9c611;
+
+  /* Supporting accents — content semantics only, never actions. */
+  --lu-teal: #02b8cc;
+  --lu-iris: #6366f1;
+  --lu-green: #27a644;
+  --lu-coral: #eb5757;
+
+  /* Radius vocabulary — three values, nothing else. */
+  --lu-radius-card: 12px;
+  --lu-radius-control: 6px;
+  --lu-radius-badge: 4px;
+  --lu-radius-pill: 9999px;
+
+  /* Typefaces. Kept from the previous theme. */
   --sl-font:
     'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, sans-serif;
+  --sl-font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
   /* Display face — headings, hero title, site title. */
   --lu-font-display:
     'Bricolage Grotesque Variable', 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
 
   --sl-content-width: 50rem;
-  --sl-line-height-headings: 1.15;
+  --sl-line-height: 1.65;
+  --sl-line-height-headings: 1.1;
 
-  /* Flat reading surface: the nav sidebar (a material's table of contents)
-     shares the page background instead of its own panel colour. */
-  --sl-color-bg-sidebar: var(--sl-color-bg);
+  /* Heading scale — display 40px down to 17px. Declared unlayered so it holds
+     at every breakpoint, where Starlight steps its own scale up. */
+  --sl-text-h1: 2.5rem;
+  --sl-text-h2: 1.75rem;
+  --sl-text-h3: 1.25rem;
+  --sl-text-h4: 1.0625rem;
+  --sl-text-h5: 1rem;
 }
+
+/* Dark is the reference theme. */
+:root,
+::backdrop {
+  --sl-color-white: var(--lu-paper);
+  --sl-color-gray-1: var(--lu-bone);
+  --sl-color-gray-2: var(--lu-mist);
+  --sl-color-gray-3: var(--lu-fog);
+  --sl-color-gray-4: var(--lu-ash);
+  --sl-color-gray-5: var(--lu-smoke);
+  --sl-color-gray-6: var(--lu-graphite);
+  --sl-color-black: var(--lu-void);
+
+  --sl-color-accent-low: #2a2f05;
+  --sl-color-accent: var(--lu-lime);
+  --sl-color-accent-high: #eef78a;
+
+  --sl-color-text: var(--lu-mist);
+  /* Links stay in the grey scale — lime is for the primary action only. */
+  --sl-color-text-accent: var(--lu-paper);
+  --sl-color-text-invert: var(--lu-void);
+
+  --sl-color-bg: var(--lu-void);
+  --sl-color-bg-nav: var(--lu-void);
+  --sl-color-bg-sidebar: var(--lu-void);
+  --sl-color-bg-inline-code: rgba(255, 255, 255, 0.06);
+  --sl-color-bg-accent: var(--lu-lime);
+
+  --sl-color-hairline: var(--lu-graphite);
+  --sl-color-hairline-light: var(--lu-graphite);
+  --sl-color-hairline-shade: var(--lu-obsidian);
+
+  --sl-color-backdrop-overlay: rgba(8, 9, 10, 0.72);
+
+  /* Elevation comes from borders, not shadow stacks. */
+  --sl-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sl-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --sl-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* Aside hues, retuned to the supporting accents. */
+  --sl-color-blue: var(--lu-teal);
+  --sl-color-blue-high: #7fe4ef;
+  --sl-color-blue-low: rgba(2, 184, 204, 0.08);
+  --sl-color-purple: var(--lu-iris);
+  --sl-color-purple-high: #b9bbf8;
+  --sl-color-purple-low: rgba(99, 102, 241, 0.08);
+  --sl-color-green: var(--lu-green);
+  --sl-color-green-high: #8fdca3;
+  --sl-color-green-low: rgba(39, 166, 68, 0.08);
+  --sl-color-orange: #d7a13a;
+  --sl-color-orange-high: #e8cd97;
+  --sl-color-orange-low: rgba(215, 161, 58, 0.08);
+  --sl-color-red: var(--lu-coral);
+  --sl-color-red-high: #f5abab;
+  --sl-color-red-low: rgba(235, 87, 87, 0.08);
+
+  /* Surface fills used by components below. */
+  --lu-surface-1: var(--lu-carbon);
+  --lu-surface-2: var(--lu-obsidian);
+  --lu-code-bg: var(--lu-carbon);
+  --lu-surface-faint: rgba(255, 255, 255, 0.02);
+  --lu-surface-hover: rgba(255, 255, 255, 0.05);
+  --lu-input-border: rgba(255, 255, 255, 0.08);
+}
+
+/* Light theme — the same geometry on paper: ink on white, hairlines, one lime
+   action. It is a counterpart, not a second design. */
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
+  --sl-color-white: #08090a;
+  --sl-color-gray-1: #16181a;
+  --sl-color-gray-2: #2f3237;
+  --sl-color-gray-3: #62666d;
+  --sl-color-gray-4: #8a8f98;
+  --sl-color-gray-5: #d3d7de;
+  --sl-color-gray-6: #e7e9ee;
+  --sl-color-gray-7: #f4f5f7;
+  --sl-color-black: #ffffff;
+
+  --sl-color-accent-low: #f2f7bd;
+  --sl-color-accent: var(--lu-lime);
+  --sl-color-accent-high: #5f6a06;
+
+  --sl-color-text: #2f3237;
+  --sl-color-text-accent: #08090a;
+  --sl-color-text-invert: #08090a;
+
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: #ffffff;
+  --sl-color-bg-sidebar: #ffffff;
+  --sl-color-bg-inline-code: rgba(8, 9, 10, 0.06);
+  --sl-color-bg-accent: var(--lu-lime);
+
+  --sl-color-hairline: #e7e9ee;
+  --sl-color-hairline-light: #e7e9ee;
+  --sl-color-hairline-shade: #e7e9ee;
+
+  --sl-color-backdrop-overlay: rgba(8, 9, 10, 0.4);
+
+  --sl-color-blue-high: #076c78;
+  --sl-color-blue-low: rgba(2, 184, 204, 0.1);
+  --sl-color-purple-high: #3c3fb0;
+  --sl-color-purple-low: rgba(99, 102, 241, 0.1);
+  --sl-color-green-high: #1a6b2d;
+  --sl-color-green-low: rgba(39, 166, 68, 0.1);
+  --sl-color-orange: #b07d13;
+  --sl-color-orange-high: #7a5607;
+  --sl-color-orange-low: rgba(215, 161, 58, 0.14);
+  --sl-color-red-high: #a52626;
+  --sl-color-red-low: rgba(235, 87, 87, 0.1);
+
+  --lu-surface-1: #ffffff;
+  --lu-surface-2: #f7f8fa;
+  --lu-code-bg: #f7f8fa;
+  --lu-surface-faint: rgba(8, 9, 10, 0.02);
+  --lu-surface-hover: rgba(8, 9, 10, 0.04);
+  --lu-input-border: rgba(8, 9, 10, 0.12);
+}
+
+/* ------------------------------------------------------------------ *
+ * Typography
+ * ------------------------------------------------------------------ */
 
 body {
   font-optical-sizing: auto;
+  font-feature-settings: 'cv01' on, 'ss03' on, 'zero' on;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.006em;
+  letter-spacing: -0.011em;
+  background-color: var(--sl-color-bg);
 }
 
-/* Display face + tighter tracking for a clear step-down in the hierarchy. */
+/* Weights stay in the 400–590 band — no heavy display type. */
 :is(h1, h2, h3),
 [data-page-title],
 .site-title {
   font-family: var(--lu-font-display);
-  font-weight: 600;
+  font-weight: 590;
   letter-spacing: -0.022em;
 }
 
 .sl-markdown-content :is(h4, h5, h6) {
+  font-weight: 590;
   letter-spacing: -0.012em;
+}
+
+.sl-markdown-content :is(strong, b) {
+  font-weight: 590;
 }
 
 /* Roomier heading rhythm in body copy — but not for headings inside components
@@ -52,13 +221,64 @@ body {
   margin-top: 2.5em;
 }
 
+/* Body links: grey scale plus an underline. The lime is not a link colour. */
+.sl-markdown-content a:not(.sl-link-button, .not-content *) {
+  color: var(--sl-color-white);
+  text-decoration-color: var(--sl-color-gray-4);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.sl-markdown-content a:not(.sl-link-button, .not-content *):hover {
+  text-decoration-color: var(--sl-color-white);
+}
+
+/* Inline code and other monospaced metadata. */
+.sl-markdown-content code:not(:where(pre code)) {
+  border-radius: var(--lu-radius-badge);
+  padding: 0.15em 0.35em;
+  font-size: 0.875em;
+  letter-spacing: -0.013em;
+}
+
 /* ------------------------------------------------------------------ *
- * Header — background matches the page, no divider line
+ * Header — flat nav on the page canvas, one hairline underneath
  * ------------------------------------------------------------------ */
 
 header.header {
   background-color: var(--sl-color-bg);
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+.site-title {
+  font-size: var(--sl-text-base);
+  font-weight: 510;
+  letter-spacing: -0.01em;
+  color: var(--sl-color-white);
+}
+
+/* Search reads as a text input, not a button. */
+.header .search-slot button[data-open-modal] {
+  background-color: var(--lu-surface-faint);
+  border: 1px solid var(--lu-input-border);
+  border-radius: var(--lu-radius-control);
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+  padding-block: 0.5rem;
+}
+
+.header .search-slot button[data-open-modal]:hover {
+  border-color: var(--sl-color-gray-5);
+  color: var(--sl-color-gray-2);
+}
+
+.header .search-slot button[data-open-modal] kbd {
+  background-color: var(--lu-surface-hover);
+  border-radius: var(--lu-radius-badge);
+  color: var(--sl-color-gray-3);
+  font-family: var(--sl-font-mono);
+  font-size: var(--sl-text-2xs);
+  letter-spacing: -0.013em;
 }
 
 /* Theme switcher: icon only, no label text or caret — keeps the header clean. */
@@ -84,15 +304,16 @@ header.header {
 starlight-menu-button button {
   background-color: var(--sl-color-bg);
   color: var(--sl-color-white);
-  border: 1px solid var(--sl-color-gray-6);
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: var(--lu-radius-control);
   box-shadow: none;
 }
 starlight-menu-button[aria-expanded='true'] button {
-  background-color: var(--sl-color-gray-6);
+  background-color: var(--lu-surface-hover);
 }
 
 /* ------------------------------------------------------------------ *
- * Flat sidebars — no panel background, no divider lines
+ * Sidebars — flat, compact, lime only on the current page
  * ------------------------------------------------------------------ */
 
 @media (min-width: 50rem) {
@@ -105,9 +326,111 @@ starlight-menu-button[aria-expanded='true'] button {
   border-inline-start: 0;
 }
 
+#starlight__sidebar a {
+  border-radius: var(--lu-radius-control);
+  color: var(--sl-color-gray-2);
+  font-size: var(--sl-text-xs);
+  font-weight: 400;
+}
+
+#starlight__sidebar a:hover,
+#starlight__sidebar a:focus {
+  background-color: var(--lu-surface-faint);
+  color: var(--sl-color-white);
+}
+
+/* Active nav indicator: a lime rule, not a filled block. */
+#starlight__sidebar a[aria-current='page'],
+#starlight__sidebar a[aria-current='page']:hover,
+#starlight__sidebar a[aria-current='page']:focus {
+  position: relative;
+  background-color: var(--lu-surface-hover);
+  color: var(--sl-color-white);
+  font-weight: 510;
+}
+
+#starlight__sidebar a[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.25rem;
+  inset-inline-start: -1px;
+  width: 2px;
+  border-radius: var(--lu-radius-pill);
+  background-color: var(--lu-lime);
+}
+
+#starlight__sidebar .large,
+#starlight__sidebar .group-label > span {
+  font-family: var(--sl-font);
+  font-size: var(--sl-text-2xs);
+  font-weight: 510;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sl-color-gray-3);
+}
+
+/* On-this-page list: same compact treatment. */
+starlight-toc a {
+  border-radius: var(--lu-radius-control);
+  font-size: var(--sl-text-xs);
+}
+
+starlight-toc a[aria-current='true'],
+starlight-toc a[aria-current='true']:hover,
+starlight-toc a[aria-current='true']:focus {
+  color: var(--sl-color-white);
+  font-weight: 510;
+}
+
 /* Mobile "On this page" bar matches the page background. */
 mobile-starlight-toc nav {
   background-color: var(--sl-color-bg);
+  border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+/* ------------------------------------------------------------------ *
+ * Buttons — one filled chromatic control, everything else neutral
+ * ------------------------------------------------------------------ */
+
+.sl-link-button {
+  border-radius: var(--lu-radius-control);
+  font-size: var(--sl-text-sm);
+  font-weight: 510;
+  letter-spacing: -0.011em;
+  padding: 0.625rem 1rem;
+}
+
+@media (min-width: 50rem) {
+  .sl-link-button {
+    font-size: var(--sl-text-sm);
+    padding: 0.6875rem 1.125rem;
+  }
+}
+
+.sl-link-button.primary,
+.sl-link-button.primary:hover {
+  background: var(--lu-lime);
+  border-color: var(--lu-lime);
+  color: var(--lu-void);
+  box-shadow:
+    inset 0 5px 2px rgba(255, 255, 255, 0.1),
+    inset 0 3px 2px rgba(255, 255, 255, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.14);
+}
+
+.sl-link-button.primary:hover {
+  background: #edfa4a;
+  border-color: #edfa4a;
+}
+
+.sl-link-button.secondary {
+  border-color: var(--sl-color-hairline);
+  color: var(--sl-color-gray-2);
+}
+
+.sl-link-button.secondary:hover {
+  border-color: var(--sl-color-gray-5);
+  color: var(--sl-color-white);
 }
 
 /* ------------------------------------------------------------------ *
@@ -118,29 +441,30 @@ mobile-starlight-toc nav {
 /* Starlight wraps every heading in `.sl-heading-wrapper`, so target that.
    No divider line — space alone separates the sections. */
 :root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2 {
-  margin-top: 13rem;
+  margin-top: 6rem;
 }
 
 :root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2:first-child {
-  margin-top: 6rem;
+  margin-top: 2rem;
 }
 
 :root[data-has-hero] .sl-markdown-content > .sl-heading-wrapper.level-h2 h2 {
   margin: 0;
   font-size: var(--sl-text-2xl);
+  letter-spacing: -0.012em;
 }
 
 /* Extra breathing room around the catalog listing itself. */
 :root[data-has-hero] .sl-markdown-content .material-catalog {
-  margin-block: 3.5rem 5rem;
+  margin-block: 2rem 4rem;
 }
 
 :root[data-has-hero] .sl-markdown-content > ul:not(.material-catalog) {
-  margin-top: 1.75rem;
+  margin-top: 1.5rem;
 }
 
 :root[data-has-hero] .sl-markdown-content > ul:not(.material-catalog) > li + li {
-  margin-top: 0.9rem;
+  margin-top: 0.75rem;
 }
 
 /* ------------------------------------------------------------------ *
@@ -149,18 +473,82 @@ mobile-starlight-toc nav {
 
 /* Slightly denser tables: the roadmap pages lean on them heavily. */
 .sl-markdown-content table {
-  font-size: var(--sl-text-sm);
+  font-size: var(--sl-text-xs);
+  border-collapse: collapse;
 }
 
 .sl-markdown-content th,
 .sl-markdown-content td {
   vertical-align: top;
+  border-color: var(--sl-color-hairline);
+}
+
+.sl-markdown-content th {
+  font-size: var(--sl-text-2xs);
+  font-weight: 510;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sl-color-gray-3);
 }
 
 /* The step pages use `---` between steps; make the break readable. */
 .sl-markdown-content hr {
-  margin-block: 2.5rem;
+  margin-block: 3rem;
+  border: 0;
+  border-top: 1px solid var(--sl-color-hairline);
+}
+
+.sl-markdown-content blockquote {
+  border-inline-start: 1px solid var(--sl-color-gray-5);
+  color: var(--sl-color-gray-3);
+}
+
+/* Asides: a tinted panel with a hairline, not a thick coloured bar. */
+.starlight-aside {
+  border-radius: var(--lu-radius-control);
+  border: 1px solid var(--sl-color-hairline);
+  border-inline-start: 2px solid var(--sl-color-asides-border);
+  padding: 1rem 1.25rem;
+  color: var(--sl-color-gray-2);
+}
+
+.starlight-aside__title {
+  font-size: var(--sl-text-sm);
+  font-weight: 510;
+  letter-spacing: -0.011em;
+}
+
+/* Code blocks: carbon surface, hairline edge, card radius. */
+.expressive-code {
+  --ec-brdRad: var(--lu-radius-card);
+  --ec-brdCol: var(--sl-color-hairline);
+  --ec-brdWd: 1px;
+  --ec-frm-edBg: var(--lu-code-bg);
+  --ec-frm-trmBg: var(--lu-code-bg);
+  --ec-frm-edTabBarBg: var(--sl-color-bg);
+  --ec-frm-edActTabBg: var(--lu-code-bg);
+  --ec-frm-trmTtbBg: var(--sl-color-bg);
+  --ec-frm-edActTabIndTopCol: var(--lu-lime);
+  --ec-frm-frameBoxShdCssVal: none;
+  --ec-codeFontSize: var(--sl-text-xs);
+}
+
+/* Prev / next pagination reads as two cards. */
+.pagination-links a {
+  background-color: var(--lu-surface-faint);
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: var(--lu-radius-card);
+  box-shadow: none;
+  padding: 1rem;
+}
+
+.pagination-links a:hover {
   border-color: var(--sl-color-gray-5);
+}
+
+.pagination-links a > span {
+  color: var(--sl-color-white);
+  font-weight: 510;
 }
 
 /* ------------------------------------------------------------------ *
@@ -174,31 +562,17 @@ mobile-starlight-toc nav {
     scroll-behavior: smooth;
   }
 
-  a.sl-link-button {
+  a.sl-link-button,
+  .pagination-links a,
+  #starlight__sidebar a {
     transition:
-      transform 0.16s ease,
-      box-shadow 0.16s ease,
-      background-color 0.16s ease;
-  }
-  a.sl-link-button:hover {
-    transform: translateY(-2px);
-  }
-  a.sl-link-button.primary:hover {
-    box-shadow: 0 10px 28px -12px var(--sl-color-accent);
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
   }
 
   .sl-markdown-content a:not(.sl-link-button) {
-    text-underline-offset: 0.18em;
-    transition:
-      color 0.15s ease,
-      text-underline-offset 0.15s ease;
-  }
-  .sl-markdown-content a:not(.sl-link-button):hover {
-    text-underline-offset: 0.3em;
-  }
-
-  #starlight__sidebar a {
-    transition: color 0.15s ease;
+    transition: text-decoration-color 0.15s ease;
   }
 
   .sl-markdown-content h2,
@@ -209,58 +583,8 @@ mobile-starlight-toc nav {
 
 /* Keep the focus ring crisp on the centred search button. */
 .header .search-slot button:focus-visible {
-  outline: 2px solid var(--sl-color-accent-high);
+  outline: 2px solid var(--sl-color-gray-2);
   outline-offset: 2px;
-}
-
-/* ------------------------------------------------------------------ *
- * Landing hero — animated border on the "Browse the catalog" CTA
- * ------------------------------------------------------------------ */
-
-@property --lu-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-:root[data-has-hero] .hero .actions .sl-link-button.primary {
-  position: relative;
-  isolation: isolate;
-}
-
-:root[data-has-hero] .hero .actions .sl-link-button.primary::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  z-index: -1;
-  border-radius: inherit;
-  padding: 2px;
-  background: conic-gradient(
-    from var(--lu-angle),
-    var(--sl-color-accent),
-    var(--sl-color-accent-high),
-    var(--sl-color-white),
-    var(--sl-color-accent-high),
-    var(--sl-color-accent)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: lu-cta-rotate 3.2s linear infinite;
-}
-
-@keyframes lu-cta-rotate {
-  to {
-    --lu-angle: 360deg;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root[data-has-hero] .hero .actions .sl-link-button.primary::before {
-    animation: none;
-  }
 }
 
 /* Completed-step cue in the on-this-page table of contents (see TocProgress.astro). */
@@ -268,8 +592,8 @@ starlight-toc a.toc-step-done > span::before,
 mobile-starlight-toc a.toc-step-done > span::before {
   content: "✓";
   margin-inline-end: 0.35em;
-  color: var(--sl-color-accent);
-  font-weight: 700;
+  color: var(--lu-lime);
+  font-weight: 590;
 }
 
 /* Current page name in the sticky mobile "On this page" bar (see MobilePageName.astro). */
@@ -279,7 +603,7 @@ mobile-starlight-toc summary .lu-page-name {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-weight: 600;
+  font-weight: 510;
   color: var(--sl-color-white);
 }
 
@@ -291,4 +615,3 @@ mobile-starlight-toc summary .lu-page-name + .toggle {
 mobile-starlight-toc summary:has(.lu-page-name) .display-current {
   display: none;
 }
-

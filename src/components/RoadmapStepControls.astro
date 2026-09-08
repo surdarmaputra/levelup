@@ -66,12 +66,12 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
     gap: 0.35rem;
     margin: 0;
     padding: 0.28rem 0.7rem;
-    background: transparent;
-    border: 1px solid var(--sl-color-gray-4);
-    border-radius: 999px;
+    background: var(--lu-surface-faint);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-pill);
     color: var(--sl-color-gray-2);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1;
     cursor: pointer;
     transition:
@@ -82,8 +82,8 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
 
   .rsc-toggle:hover,
   .rsc-note-btn:hover {
-    border-color: var(--sl-color-accent);
-    color: var(--sl-color-accent-high);
+    border-color: var(--sl-color-gray-5);
+    color: var(--sl-color-white);
   }
 
   .rsc-ic {
@@ -92,12 +92,14 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
 
   .rsc-ic-done {
     display: none;
-    color: var(--sl-color-accent);
+    color: var(--lu-void);
   }
 
   .rsc.is-done .rsc-toggle {
-    border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
-    color: var(--sl-color-accent-high);
+    background: var(--lu-lime);
+    border-color: var(--lu-lime);
+    color: var(--lu-void);
+    font-weight: 510;
   }
 
   .rsc.is-done .rsc-ic-todo {
@@ -109,16 +111,15 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
   }
 
   .rsc-note-btn.has-note {
-    color: var(--sl-color-accent-high);
-    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    color: var(--sl-color-white);
+    border-color: var(--sl-color-gray-5);
   }
 
   .rsc-note-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--sl-color-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+    background: var(--lu-lime);
   }
 
   .rsc-note-dot[hidden] {
@@ -130,9 +131,9 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
     max-width: 32rem;
     margin-top: 0.15rem;
     padding: 0.7rem;
-    background: var(--sl-color-gray-6);
+    background: var(--lu-surface-faint);
     border: 1px solid var(--sl-color-hairline);
-    border-radius: 12px;
+    border-radius: var(--lu-radius-card);
   }
 
   .rsc-note-panel[hidden] {
@@ -142,9 +143,9 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
   .rsc-note-panel textarea {
     width: 100%;
     padding: 0.5rem 0.6rem;
-    background: var(--sl-color-gray-5);
-    border: 1px solid var(--sl-color-hairline);
-    border-radius: 8px;
+    background: var(--lu-surface-faint);
+    border: 1px solid var(--lu-input-border);
+    border-radius: var(--lu-radius-control);
     color: var(--sl-color-white);
     font: inherit;
     font-size: 0.8rem;
@@ -154,7 +155,7 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
 
   .rsc-note-panel textarea:focus {
     outline: none;
-    border-color: var(--sl-color-accent);
+    border-color: var(--sl-color-gray-2);
   }
 
   .rsc-note-actions {
@@ -167,28 +168,29 @@ const payload = steps.map((s) => ({ slug: s.slug, stepId: s.stepId }));
   .rsc-mini {
     padding: 0.32rem 0.7rem;
     background: transparent;
-    border: 1px solid var(--sl-color-gray-4);
-    border-radius: 8px;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-control);
     color: var(--sl-color-gray-2);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 510;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .rsc-mini:hover {
-    border-color: var(--sl-color-gray-2);
+    border-color: var(--sl-color-gray-5);
     color: var(--sl-color-white);
   }
 
   .rsc-mini.rsc-primary {
-    background: var(--sl-color-accent);
-    border-color: transparent;
-    color: white;
+    background: var(--lu-lime);
+    border-color: var(--lu-lime);
+    color: var(--lu-void);
   }
 
   .rsc-mini.rsc-primary:hover {
-    background: var(--sl-color-accent-high);
+    background: #edfa4a;
+    border-color: #edfa4a;
   }
 
   .rsc-mini.rsc-danger {

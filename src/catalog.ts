@@ -95,6 +95,25 @@ export const materials: Material[] = [
     ],
   },
   {
+    slug: 'go-webhook-delivery',
+    title: 'Go — Webhook Delivery Platform',
+    description:
+      'Go from "I can program, I have never written Go" to a production-grade Go service, built around one real system: a webhook delivery platform with retries, signing, ordering and a replay dashboard.',
+    tagline:
+      'Twenty steps. Six on the language, fourteen on a service that delivers events to other people’s servers and keeps working when they stop answering.',
+    level: 'Beginner',
+    size: '20 steps',
+    tags: ['Go 1.25', 'net/http', 'PostgreSQL', 'htmx', 'Docker'],
+    status: 'available',
+    entry: 'go-webhook-delivery',
+    links: [{ label: 'Getting Started', slug: 'go-webhook-delivery' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
     slug: 'laravel-integration-hub',
     title: 'Laravel — Business Operations Integration Hub',
     description:

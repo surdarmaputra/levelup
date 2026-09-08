@@ -27,6 +27,21 @@ This material starts where a first Laravel roadmap ends. If you are new to Larav
 through [Laravel — Multi-Tenant Booking SaaS](../laravel-booking-saas/) first and come back;
 the two share a stack on purpose, so nothing here will be spent re-learning Eloquent.
 
+**If you have done [Go — Webhook Delivery Platform](../go-webhook-delivery/), read this
+first.** The two materials share a core — idempotency, retry with backoff, dead-letter and
+replay, rate limiting, circuit breaking — because those are the same problems on both sides of
+a webhook. They are not the same material. That one builds the platform that *sends* events to
+servers it does not control; this one builds the hub that *receives* them from systems it does
+not control, and then does the work that has no webhook at all:
+
+| Only there | Shared | Only here |
+|---|---|---|
+| Learning Go; ordered delivery and what it costs; running a multi-tenant delivery platform; the subscriber-facing dashboard | Idempotency · retry and backoff · dead-letter and replay · rate limits · circuit breaking | Scheduled batch and SFTP ingestion that resumes mid-file · mapping and schema drift · quarantine with a human review screen · freshness and silence detection · out-of-order money events · nightly reconciliation |
+
+Roughly five of these twenty-two steps will feel familiar. Work them anyway — the same
+mechanism fails differently when you are the receiver — or skim them and spend the time on
+steps 13 to 19, which have no equivalent there.
+
 ## What you are building, concretely
 
 Conduit sits between the systems a business already pays for. Orders arrive from one place,

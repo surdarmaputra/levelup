@@ -51,10 +51,19 @@ import LanguageSelect from '@astrojs/starlight/components/LanguageSelect.astro';
     }
     .search-slot > :global(*) {
       width: 100%;
-      max-width: 34rem;
+      max-width: 42rem;
     }
 
     @media (min-width: 50rem) {
+      /* Pages with no sidebar (landing, 404) centre their content in a fixed
+         column. Match that column so the logo and the theme control sit on the
+         content's edges rather than the viewport's. Pages with a sidebar keep
+         Starlight's grid, which already lines the logo up with the sidebar. */
+      :global(:root:not([data-has-sidebar])) .header {
+        max-width: var(--sl-content-width);
+        margin-inline: auto;
+      }
+
       :global(:root[data-has-sidebar]) {
         --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
       }

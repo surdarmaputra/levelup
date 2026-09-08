@@ -94,6 +94,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'laravel-integration-hub',
+    title: 'Laravel — Business Operations Integration Hub',
+    description:
+      'Go from "I can build a Laravel app" to the integration work businesses pay a retainer for: webhooks that arrive twice, supplier files that arrive half-written, and money that has to reconcile.',
+    tagline:
+      'Twenty-two steps, one real domain. Idempotency, ordering, partial failure and reconciliation — the work that keeps paying after launch.',
+    level: 'Advanced',
+    size: '22 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'PostgreSQL', 'Redis + Horizon', 'Webhooks + SFTP'],
+    status: 'available',
+    entry: 'laravel-integration-hub',
+    links: [{ label: 'Getting Started', slug: 'laravel-integration-hub' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

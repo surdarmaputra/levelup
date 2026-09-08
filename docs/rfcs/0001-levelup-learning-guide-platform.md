@@ -445,6 +445,70 @@ whole-site and atomic, so there is no partial state to recover from.
 
 ## 📝 Amendments
 
+### 2026-09-08 — Visual system: dark precision instrument, glass surfaces, brand mark
+
+The site looked like Starlight with a different accent colour. This pass replaces the look
+with a named system so later changes have something to be consistent with. Nothing about the
+content model, routing, or build changes; the whole thing lives in the token layer plus the
+component styles that were already there.
+
+**The system.** Near-black surfaces (`#08090a` canvas → `#0f1011` card → `#161718` panel),
+paper-white type at tight tracking, hairline borders instead of shadow stacks, and one
+chromatic accent — acid lime `#e4f222` — reserved for the primary action, the active-page
+marker, and completed-step states. Reference points: Linear, Vercel, Raycast. Rules that
+follow from it and are meant to hold:
+
+| Rule | Value |
+|---|---|
+| Weights | 400–590. No 700+ anywhere, including `strong`. |
+| Radius vocabulary | 12px cards · 6px controls · 9999px pills · 4px badges. Nothing else. |
+| Separation | Hairline borders (`--sl-color-hairline`), not shadows. Shadows only under modals and the floating tracker. |
+| Accent | Lime is an action colour. Links stay in the grey scale with an underline. |
+| Body text | `#d0d6e0` on dark, `#2f3237` on light. Never chromatic. |
+| Heading scale | 40 / 28 / 20 / 17px, declared unlayered so it holds at every breakpoint. |
+
+**Both themes stay.** The theme switcher was kept and the light theme is the same geometry on
+paper — ink on white, the same hairlines, the same lime action. It is a counterpart, not a
+second design. Dropping light mode to match the dark-only reference was considered and
+rejected: it removes a working feature for style reasons.
+
+**Glass, and the ambient field it needs.** Catalog cards, the floating progress tracker, the
+progress dialog, the nav bar, the mobile "On this page" bar, and the prev/next pagination are
+translucent panes: `backdrop-filter: blur(16px) saturate(150%)`, a hairline edge, and a 5rem
+top sheen. Two supporting decisions:
+
+- Glass over a flat fill looks like a flat fill, so `body::before` paints a fixed,
+  very-low-contrast wash (lime / teal / mist radials, 5–7% on dark) for the panes to sample.
+  It carries no meaning and never sits above content.
+- `.lu-glass` is a global recipe in `src/styles/custom.css`; components add the class and stop
+  declaring their own fill. `.lu-glass--strong` is the opaque mix for panes that sit over text
+  (dialog, tracker popover) — a modal you can read the page through is a bug, not an effect.
+  `@supports not (backdrop-filter: …)` falls back to the solid surface.
+
+**Motion.** All of it is CSS, all of it opts out under `prefers-reduced-motion: reduce`, and
+none of it blocks reading: catalog cards rise in on a 70ms stagger; cards and pagination lift
+on hover; buttons lift and take the press; sidebar and TOC rows slide 2px; the lime
+current-page marker grows into place; the reading column fades in; one sheen crosses the
+primary button on hover. No animation library — the static-only constraint stands.
+
+**Brand mark.** `src/assets/logo.svg` and `public/favicon.svg` (identical files) become a lime
+chip with a void-coloured arrow, at the system's 6px control radius. The old indigo `#4f46e5`
+chip belonged to no palette. One file, not a light/dark pair: the lime chip holds its contrast
+on both themes.
+
+**Where this lives.** `src/styles/custom.css` remains the only global stylesheet and now holds
+the palette, both theme maps, the glass recipe, the ambient field, chrome overrides, and the
+motion block. Components keep their scoped styles but take colour, radius, and glass from the
+tokens — this pass removed their gradients, glows, and ad-hoc 8/10/16/18px radii. Expressive
+Code is themed through its `--ec-*` custom properties rather than a config-level theme
+override, because a theme's own `styleOverrides` win over the config's.
+
+**Not done, deliberately.** No third-party design system, no CSS framework, no runtime — the
+AGENTS.md "never add" list is unchanged and unchallenged.
+
+**Constraints held.** Static output, no client framework, both base paths build, `npm run
+verify` green.
+
 ### 2026-09-07 — Material slug and title convention, and how a rename is handled
 
 A second material (`laravel-booking-saas`) made the naming ad hoc: the first was named after

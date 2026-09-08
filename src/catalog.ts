@@ -75,6 +75,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'adonisjs-delivery-dispatch',
+    title: 'AdonisJS — Last-Mile Delivery Dispatch',
+    description:
+      'Go from "I know TypeScript, new to AdonisJS" to a production-grade delivery platform, built around one real domain: the last-mile dispatch system a food stall, a pharmacy and a hardware store all run their deliveries on.',
+    tagline:
+      'Twenty-four steps, one real domain. Dispatch under concurrency, state machines, real time and money you cannot fake with a CRUD app.',
+    level: 'Intermediate',
+    size: '24 steps',
+    tags: ['TypeScript 5.9', 'AdonisJS 7', 'PostgreSQL + PostGIS', 'Edge', 'Inertia + React'],
+    status: 'available',
+    entry: 'adonisjs-delivery-dispatch',
+    links: [{ label: 'Getting Started', slug: 'adonisjs-delivery-dispatch' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

@@ -9,7 +9,7 @@ Things a roadmap of this kind usually includes that were left out on purpose:
 
 | Omitted | Reason |
 |---|---|
-| Filament or Nova for the back-office | They would build step 8 in an afternoon and teach you nothing about Livewire, forms, or authorisation. Reach for one on a paid project, after you can write the screens yourself. |
+| Filament or Nova for the back-office | They would build step 8 in an afternoon and teach you nothing about Livewire, forms, or authorisation. Reach for one on a paid project, after you can write the screens yourself. [Laravel — Off the Spreadsheet Back Office](../../../laravel-spreadsheet-migration/roadmap/overview/#why-filament-when-the-booking-material-refuses-it) makes the opposite call on purpose, and explains when each one is right. |
 | A permissions package (`spatie/laravel-permission`) | Roles here are three values. Adding a package to model three values hides how gates and policies actually work. Adopt it when you have per-tenant custom roles. |
 | Event sourcing on bookings | A genuinely good fit for this domain, and a roadmap of its own. The audit trail in step 11 covers the practical need. |
 | Multi-region and read replicas | Solves a problem you get with real traffic in several continents. The index work in step 13 is what you actually need first. |

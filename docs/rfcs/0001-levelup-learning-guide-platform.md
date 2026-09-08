@@ -445,6 +445,48 @@ whole-site and atomic, so there is no partial state to recover from.
 
 ## 📝 Amendments
 
+### 2026-09-08 — One stack across many use cases, and tooling choices that contradict each other
+
+Three materials were added in one pass (`laravel-integration-hub`, `fastapi-support-assistant`,
+`laravel-spreadsheet-migration`), taking the catalog to six and making two things explicit that
+the slug convention only implied.
+
+**A stack is reused deliberately, and a material may build on another.** The catalog now holds
+three Laravel materials. That is the design, not drift: a reader who has finished one starts the
+next already productive, which is also how repeat freelance work actually rewards depth. Two
+consequences:
+
+- A material may **assume a prior material's stack knowledge** rather than teaching it again.
+  `laravel-integration-hub` assumes Laravel and is therefore `Advanced`;
+  `laravel-spreadsheet-migration` assumes it and is `Intermediate` only because its difficulty
+  is in the domain rather than the framework. `level` describes the whole material, not the
+  framework.
+- When it does, its **Who this is for** section links the prerequisite material with a relative
+  link and says plainly what will be skipped. No material silently assumes another.
+
+The slug convention already anticipated this ("the catalog is expected to hold more than one
+Laravel material"); this records that it is now true, and that the framework in a slug no longer
+implies the material teaches that framework from scratch.
+
+**Two materials may make opposite tooling calls, and each must say why.**
+`laravel-booking-saas` omits Filament on purpose — it would build that material's back-office
+step in an afternoon and teach nothing about Livewire, forms or authorisation.
+`laravel-spreadsheet-migration` uses it on purpose, because there the lesson is discovery,
+entity resolution, reconciliation and cutover, and hand-building CRUD would spend half the
+roadmap re-teaching the other material's content.
+
+Both are correct, and a reader who meets them in either order must be able to see that. The rule
+that resolves them, stated in the second material's overview and linked from the first material's
+omissions page:
+
+> Reach for the tool that removes work you already know how to do, and never for one that
+> removes the work you are being paid to understand.
+
+A contradiction between two materials is therefore allowed, on one condition: **the material
+making the later call names the earlier one, links it, and explains the difference.** An
+unexplained contradiction reads as a mistake in one of them and costs the catalog its
+credibility.
+
 ### 2026-09-07 — Material slug and title convention, and how a rename is handled
 
 A second material (`laravel-booking-saas`) made the naming ad hoc: the first was named after

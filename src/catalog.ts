@@ -132,6 +132,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'laravel-spreadsheet-migration',
+    title: 'Laravel — Off the Spreadsheet Back Office',
+    description:
+      'Go from "I can build a Laravel app" to the job small businesses actually hire for: moving a living business off its spreadsheets — discovery, messy import, entity resolution, reconciliation and cutover — without stopping it for a day.',
+    tagline:
+      'Sixteen steps, one real domain. The requirements are a spreadsheet nobody has written down, and the client can check your numbers.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['PHP 8.5', 'Laravel 13', 'Filament', 'PostgreSQL', 'Spreadsheet import'],
+    status: 'available',
+    entry: 'laravel-spreadsheet-migration',
+    links: [{ label: 'Getting Started', slug: 'laravel-spreadsheet-migration' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

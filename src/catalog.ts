@@ -170,6 +170,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'fastapi-document-intake',
+    title: 'FastAPI — Document Intake Pipeline',
+    description:
+      'Go from "I know Python" to the most boring and most sellable AI product there is: invoices and delivery notes turned into validated rows, with confidence scores, a human review queue, and an accuracy number anyone can check.',
+    tagline:
+      'Eighteen steps, one real domain. The correct answer already exists and the client knows it — so measurement, not a demo, is the deliverable.',
+    level: 'Intermediate',
+    size: '18 steps',
+    tags: ['Python 3.13', 'FastAPI', 'PostgreSQL', 'Claude API', 'htmx', 'Accuracy'],
+    status: 'available',
+    entry: 'fastapi-document-intake',
+    links: [{ label: 'Getting Started', slug: 'fastapi-document-intake' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

@@ -202,8 +202,8 @@
 
   --lu-glass-bg: rgba(255, 255, 255, 0.6);
   --lu-glass-bg-strong: rgba(255, 255, 255, 0.86);
-  --lu-glass-border: rgba(8, 9, 10, 0.09);
-  --lu-glass-border-hover: rgba(8, 9, 10, 0.2);
+  --lu-glass-border: rgba(8, 9, 10, 0.14);
+  --lu-glass-border-hover: rgba(8, 9, 10, 0.26);
   --lu-glass-highlight: rgba(255, 255, 255, 0.9);
   --lu-glass-blur: 16px;
 
@@ -765,7 +765,8 @@ mobile-starlight-toc nav {
     transition:
       border-color 0.18s ease,
       background-color 0.18s ease,
-      color 0.18s ease;
+      color 0.18s ease,
+      box-shadow 0.18s ease;
   }
 }
 

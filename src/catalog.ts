@@ -246,6 +246,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'livekit-voice-intake',
+    title: 'LiveKit — Voice Intake Agent',
+    description:
+      'Go from "I have built a chatbot" to a phone number that answers — a latency budget, a confirmation strategy for names and numbers, a warm handoff to a person, and ten recorded hostile callers that prove how it behaves.',
+    tagline:
+      'Eighteen steps. The hardest material here to get running and the only one whose demo is a number you hand someone and they dial.',
+    level: 'Advanced',
+    size: '18 steps',
+    tags: ['Python 3.13', 'LiveKit', 'Telephony', 'Claude API', 'Real-time', 'Latency'],
+    status: 'available',
+    entry: 'livekit-voice-intake',
+    links: [{ label: 'Getting Started', slug: 'livekit-voice-intake' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

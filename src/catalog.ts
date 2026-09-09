@@ -170,6 +170,101 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'fastapi-document-intake',
+    title: 'FastAPI — Document Intake Pipeline',
+    description:
+      'Go from "I know Python" to the most boring and most sellable AI product there is: invoices and delivery notes turned into validated rows, with confidence scores, a human review queue, and an accuracy number anyone can check.',
+    tagline:
+      'Eighteen steps, one real domain. The correct answer already exists and the client knows it — so measurement, not a demo, is the deliverable.',
+    level: 'Intermediate',
+    size: '18 steps',
+    tags: ['Python 3.13', 'FastAPI', 'PostgreSQL', 'Claude API', 'htmx', 'Accuracy'],
+    status: 'available',
+    entry: 'fastapi-document-intake',
+    links: [{ label: 'Getting Started', slug: 'fastapi-document-intake' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'mcp-operations-agent',
+    title: 'MCP — Action-Taking Operations Agent',
+    description:
+      'Go from "I have built a chatbot" to an agent that takes real actions in real systems — authority limits, approval gates, idempotent writes, compensation for what cannot be undone, and a suite that proves what it refuses.',
+    tagline:
+      'Eighteen steps, one real domain. The world an agent changes has no undo button, which forces every topic a demo never reaches.',
+    level: 'Advanced',
+    size: '18 steps',
+    tags: ['TypeScript 5.9', 'MCP', 'PostgreSQL', 'Claude API', 'Idempotency', 'Evaluation'],
+    status: 'available',
+    entry: 'mcp-operations-agent',
+    links: [{ label: 'Getting Started', slug: 'mcp-operations-agent' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'n8n-ai-operations',
+    title: 'n8n — AI Operations Automation',
+    description:
+      'Go from "I can write code" to the work businesses pay a retainer for: AI steps inside a real daily process, with replay, human sign-off, a confidentiality answer a solicitor accepts, and a cost dashboard the client reads.',
+    tagline:
+      'Sixteen steps, three real clients. A step whose output you cannot predict, inside a process that needs guarantees — which is the part no no-code build has.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['n8n', 'TypeScript 5.9', 'PostgreSQL', 'Claude API', 'Self-hosted', 'Integration'],
+    status: 'available',
+    entry: 'n8n-ai-operations',
+    links: [{ label: 'Getting Started', slug: 'n8n-ai-operations' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'playwright-legacy-rpa',
+    title: 'Playwright — Legacy System Automation',
+    description:
+      'Go from "I know TypeScript" to automating the systems that have no API and never will — a resilience ladder, evidence for every run, a vision model only where selectors fail, and a vendor update that breaks your bot on purpose.',
+    tagline:
+      'Sixteen steps against a portal built to fight back. Enterprises run a thousand applications and integrate a minority; this is the work that bridges the rest.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['TypeScript 5.9', 'Playwright', 'PostgreSQL', 'Claude API', 'RPA', 'Evidence'],
+    status: 'available',
+    entry: 'playwright-legacy-rpa',
+    links: [{ label: 'Getting Started', slug: 'playwright-legacy-rpa' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
+  {
+    slug: 'livekit-voice-intake',
+    title: 'LiveKit — Voice Intake Agent',
+    description:
+      'Go from "I have built a chatbot" to a phone number that answers — a latency budget, a confirmation strategy for names and numbers, a warm handoff to a person, and ten recorded hostile callers that prove how it behaves.',
+    tagline:
+      'Eighteen steps. The hardest material here to get running and the only one whose demo is a number you hand someone and they dial.',
+    level: 'Advanced',
+    size: '18 steps',
+    tags: ['Python 3.13', 'LiveKit', 'Telephony', 'Claude API', 'Real-time', 'Latency'],
+    status: 'available',
+    entry: 'livekit-voice-intake',
+    links: [{ label: 'Getting Started', slug: 'livekit-voice-intake' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

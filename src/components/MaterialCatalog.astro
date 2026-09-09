@@ -48,8 +48,20 @@ function href(slug: string) {
     padding: 0;
     margin-top: 2rem;
     display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 34rem) {
+    .material-catalog {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 50rem) {
+    .material-catalog {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   /* Fill, hairline and blur come from the shared `.lu-glass` recipe. */
@@ -57,7 +69,7 @@ function href(slug: string) {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1.5rem;
+    padding: 1.25rem;
     border-radius: var(--lu-radius-card);
   }
 
@@ -69,6 +81,7 @@ function href(slug: string) {
       animation-delay: calc(var(--lu-i, 0) * 70ms);
       transition:
         transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.25s ease,
         border-color 0.2s ease;
     }
 
@@ -85,7 +98,71 @@ function href(slug: string) {
   }
 
   .material-card:not([data-status='planned']):hover {
-    border-color: var(--lu-glass-border-hover);
+    border-color: transparent;
+    /* The glow that makes the edge below read as neon rather than a hairline. */
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--lu-lime) 12%, transparent),
+      0 0 26px -6px color-mix(in srgb, var(--lu-lime) 34%, transparent),
+      0 0 18px -8px color-mix(in srgb, var(--lu-teal) 34%, transparent);
+  }
+
+  /* Neon edge — a conic gradient the width of the card's border, revealed on
+     hover and rotated by animating `--lu-neon-angle`. The mask keeps only the
+     one-pixel ring, so the card's own fill shows through the middle.
+
+     Where `@property` is unsupported the angle stays unregistered, the gradient
+     is dropped, and the card falls back to its hairline border. */
+  @property --lu-neon-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  .material-card:not([data-status='planned'])::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: 2;
+    padding: 1px;
+    border-radius: calc(var(--lu-radius-card) + 1px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    background: conic-gradient(
+      from var(--lu-neon-angle),
+      transparent 0turn,
+      var(--lu-lime) 0.13turn,
+      var(--lu-teal) 0.25turn,
+      transparent 0.38turn,
+      transparent 0.5turn,
+      var(--lu-lime) 0.63turn,
+      var(--lu-teal) 0.75turn,
+      transparent 0.88turn
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .material-card:not([data-status='planned']):hover::before {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .material-card:not([data-status='planned']):hover::before {
+      animation: lu-neon-spin 3s linear infinite;
+    }
+  }
+
+  @keyframes lu-neon-spin {
+    to {
+      --lu-neon-angle: 360deg;
+    }
   }
 
   .material-card[data-status='planned'] {

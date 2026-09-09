@@ -10,10 +10,12 @@ where it does, what you should be able to explain afterwards, and how to verify 
 
 ## Materials
 
-| Material | Level | Size | Status |
-|---|---|---|---|
-| [Spring Boot — Event Ticketing Marketplace](src/content/docs/spring-boot-ticketing/) — production roadmap around an event ticketing marketplace | Intermediate | 26 steps | Available |
-| [Laravel — Multi-Tenant Booking SaaS](src/content/docs/laravel-booking-saas/) — a booking platform a barbershop, a dental clinic and a yoga studio all run on | Intermediate | 24 steps | Available |
+The materials themselves live in [`src/content/docs/`](src/content/docs/) — one directory per
+material, named `<framework>-<use-case>`. Their titles, levels, sizes, tags and status are in
+[`src/catalog.ts`](src/catalog.ts), which is what the landing page and the sidebar read.
+
+Browse the rendered catalog on the [live site](https://surdarmaputra.github.io/levelup/); it is
+always current, so this file does not repeat the list.
 
 ## Quick start
 
@@ -42,14 +44,15 @@ src/
     ├── index.mdx               landing page — the catalog
     └── <framework>-<use-case>/ one directory per learning material
         ├── index.md            the Getting Started page
-        ├── setup/              agent harness, reviewer prompt
-        ├── roadmap/            the sequenced steps, split into sections
-        └── reference/          rubrics, AGENTS.md template, omissions
+        └── <section>/          one directory per sidebar group
 
 docs/rfcs/                      design decisions
 scripts/                        bootstrap, verify, link check
-.claude/skills/                 agent skills
+.claude/skills/                 agent skills — see .claude/skills/README.md
 ```
+
+What the sections are called, how a step is laid out, and every other content convention live in
+[`AGENTS.md`](AGENTS.md). That file is the source of truth; this one only describes the repo.
 
 ### Adding a material
 

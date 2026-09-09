@@ -189,6 +189,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'mcp-operations-agent',
+    title: 'MCP — Action-Taking Operations Agent',
+    description:
+      'Go from "I have built a chatbot" to an agent that takes real actions in real systems — authority limits, approval gates, idempotent writes, compensation for what cannot be undone, and a suite that proves what it refuses.',
+    tagline:
+      'Eighteen steps, one real domain. The world an agent changes has no undo button, which forces every topic a demo never reaches.',
+    level: 'Advanced',
+    size: '18 steps',
+    tags: ['TypeScript 5.9', 'MCP', 'PostgreSQL', 'Claude API', 'Idempotency', 'Evaluation'],
+    status: 'available',
+    entry: 'mcp-operations-agent',
+    links: [{ label: 'Getting Started', slug: 'mcp-operations-agent' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

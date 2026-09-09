@@ -29,7 +29,7 @@
 
   /* The single chromatic action colour. */
   --lu-lime: #e4f222;
-  --lu-lime-bright: var(--lu-lime-bright);
+  --lu-lime-bright: #eeff4d;
   --lu-lime-dim: #b9c611;
 
   /* Supporting accents — content semantics only, never actions. */
@@ -37,6 +37,9 @@
   --lu-iris: #6366f1;
   --lu-green: #27a644;
   --lu-coral: #eb5757;
+
+  /* Every control in the header is this tall — the logo included. */
+  --lu-header-control-h: 2.5rem;
 
   /* Radius vocabulary — three values, nothing else. */
   --lu-radius-card: 12px;
@@ -360,14 +363,16 @@ header.header {
   color: var(--sl-color-white);
 }
 
-/* Search reads as a text input, not a button. */
+/* Search reads as a text input, not a button. Its height is the shared header
+   control height, so it lines up with the logo and the theme switcher. */
 .header .search-slot button[data-open-modal] {
   background-color: var(--lu-surface-faint);
   border: 1px solid var(--lu-input-border);
   border-radius: var(--lu-radius-control);
   color: var(--sl-color-gray-3);
   font-size: var(--sl-text-sm);
-  padding-block: 0.5rem;
+  height: var(--lu-header-control-h);
+  padding-block: 0;
 }
 
 .header .search-slot button[data-open-modal]:hover {
@@ -393,6 +398,8 @@ header.header {
 }
 .header starlight-theme-select select {
   width: 1.5rem;
+  height: var(--lu-header-control-h);
+  padding-block: 0;
   padding-inline: 0;
   margin-inline: 0;
   color: transparent;
@@ -700,7 +707,6 @@ mobile-starlight-toc nav {
     scroll-behavior: smooth;
   }
 
-  a.sl-link-button,
   .pagination-links a,
   #starlight__sidebar a,
   starlight-toc a {
@@ -711,17 +717,27 @@ mobile-starlight-toc nav {
       color 0.18s ease;
   }
 
+  a.sl-link-button {
+    /* The easing overshoots the target scale and settles back — the bounce. */
+    transition:
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1),
+      color 0.18s ease;
+  }
+
   .sl-markdown-content a:not(.sl-link-button) {
     transition: text-decoration-color 0.15s ease;
   }
 
-  /* Buttons lift on hover and take the press on click. */
+  /* Buttons lift and grow on hover, and take the press on click. */
   a.sl-link-button:hover {
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.045);
   }
 
   a.sl-link-button:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.985);
+    transition-duration: 0.09s;
   }
 
   .pagination-links a:hover {
@@ -775,10 +791,12 @@ mobile-starlight-toc nav {
   }
 }
 
-/* Keep the focus ring crisp on the centred search button. */
+/* Focus reads on the field itself — an accent edge and a soft glow — rather than
+   a detached outline drawn around it. */
 .header .search-slot button:focus-visible {
-  outline: 2px solid var(--sl-color-gray-2);
-  outline-offset: 2px;
+  outline: none;
+  border-color: var(--sl-color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sl-color-accent) 28%, transparent);
 }
 
 /* Completed-step cue in the on-this-page table of contents (see TocProgress.astro). */

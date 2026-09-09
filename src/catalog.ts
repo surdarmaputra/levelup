@@ -227,6 +227,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'playwright-legacy-rpa',
+    title: 'Playwright — Legacy System Automation',
+    description:
+      'Go from "I know TypeScript" to automating the systems that have no API and never will — a resilience ladder, evidence for every run, a vision model only where selectors fail, and a vendor update that breaks your bot on purpose.',
+    tagline:
+      'Sixteen steps against a portal built to fight back. Enterprises run a thousand applications and integrate a minority; this is the work that bridges the rest.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['TypeScript 5.9', 'Playwright', 'PostgreSQL', 'Claude API', 'RPA', 'Evidence'],
+    status: 'available',
+    entry: 'playwright-legacy-rpa',
+    links: [{ label: 'Getting Started', slug: 'playwright-legacy-rpa' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

@@ -208,6 +208,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'n8n-ai-operations',
+    title: 'n8n — AI Operations Automation',
+    description:
+      'Go from "I can write code" to the work businesses pay a retainer for: AI steps inside a real daily process, with replay, human sign-off, a confidentiality answer a solicitor accepts, and a cost dashboard the client reads.',
+    tagline:
+      'Sixteen steps, three real clients. A step whose output you cannot predict, inside a process that needs guarantees — which is the part no no-code build has.',
+    level: 'Intermediate',
+    size: '16 steps',
+    tags: ['n8n', 'TypeScript 5.9', 'PostgreSQL', 'Claude API', 'Self-hosted', 'Integration'],
+    status: 'available',
+    entry: 'n8n-ai-operations',
+    links: [{ label: 'Getting Started', slug: 'n8n-ai-operations' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

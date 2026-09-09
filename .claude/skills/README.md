@@ -45,5 +45,6 @@ Written for this repo, maintained here.
 
 | Skill | What it does |
 |---|---|
+| `brainstorm` | Generate and pressure-test ideas for new materials — evidence, a verifiable artefact, a cost and go-live check, three disagreeing examples. Runs *before* `add-material`. |
 | `add-material` | Scaffold a new learning material: content directories, index page, catalog entry, sidebar wiring |
 | `verify-site` | Run the verify loop and interpret its failures |

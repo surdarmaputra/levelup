@@ -11,7 +11,10 @@ GitHub Pages today and a VPS later.
 The content is the product. The code exists to render it, stay out of its way, and make adding
 the next material cheap.
 
-Current release: **v0.2** — two materials, `spring-boot-ticketing` and `laravel-booking-saas`.
+Current release: **v0.3** — twelve materials. Six of them are the AI and automation set
+(`fastapi-support-assistant`, `fastapi-document-intake`, `mcp-operations-agent`,
+`n8n-ai-operations`, `playwright-legacy-rpa`, `livekit-voice-intake`), which carry two extra
+conventions — see *AI materials* below.
 
 ---
 
@@ -130,6 +133,23 @@ docs/rfcs/                      design decisions, newest wins
   rewrite prose** unless asked; when asked, keep the register and every technical claim.
 - Use the `add-material` skill for a new material or a structural restructure.
 
+**AI materials** — anything whose product calls a model at runtime. Two extra rules, both
+non-negotiable, both recorded in [RFC 0003](docs/rfcs/0003-ai-material-conventions.md).
+
+- **Theory lives inside the roadmap, and it comes first.** A reader who can build the thing but
+  cannot say what it costs a business, what it replaces, or when it is the wrong answer, has
+  half a skill. So the first roadmap section is `concepts.md`: numbered `LEARN` steps covering
+  the problem in business terms, how the technique works, what you could buy instead, when
+  *not* to build it, and how to scope it with a client. They are real steps — numbered,
+  tracked, with their own `ACC-NN` — and their deliverable is a written document, not code.
+  There is **no separate `concepts/` sidebar section**: a reader who can skip the theory does.
+- **Every AI material has a cost monitoring and optimisation section.** Not a paragraph in an
+  operations step — its own roadmap section, with at minimum: where the spend is visible
+  (provider console, the usage fields on each response, your own per-request ledger), how to
+  attribute it per customer and per stage, the order the levers are pulled in (free wins before
+  anything that trades quality), and a decision the reader has to write down and defend. A
+  material that teaches someone to build a thing whose bill they cannot explain is not finished.
+
 **Links**
 - Internal links in Markdown are **relative**, never absolute. The site is served from `/` on a
   VPS and `/levelup/` on GitHub Pages; an absolute link works on exactly one of them.
@@ -187,6 +207,7 @@ Reach for them rather than improvising:
 
 | Task | Skill |
 |---|---|
+| Deciding *what* material to build next | `brainstorm` |
 | Adding or restructuring a learning material | `add-material` |
 | Checking the site before saying done | `verify-site` |
 | Reviewing a diff | `code-review-enhanced` |

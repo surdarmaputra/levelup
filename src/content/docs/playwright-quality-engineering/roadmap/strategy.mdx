@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import TestLevels from '../../../../components/diagrams/TestLevels.astro';
+
 No code in this section. Four documents, and every later argument about what to automate is
 settled with them.
 
@@ -35,7 +37,7 @@ settled with them.
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-00` — every product has at least six failure modes with all five columns filled and a stated source for each number; the ranking is across products, not within them; at least three failure modes appear on an explicit "accepted, not tested" list with reasons. |
-| **L2 — Manual checks** | (a) Show the ranking to someone who works on one of these products and ask what is missing. The first thing they say is usually the thing your suite would never have caught. <br>(b) Cover the cost column and try to rank from memory. If your ranking matches, you ranked by feel and wrote the numbers to fit. |
+| **L2 — Manual checks** | (a) Show the ranking to someone who works on one of these products and ask what is missing. The first thing they say is usually the thing your suite would never have caught. <br />(b) Cover the cost column and try to rank from memory. If your ranking matches, you ranked by feel and wrote the numbers to fit. |
 | **L4 — Anti-patterns** | `AP-00-a`, `AP-00-b`, `AP-00-c` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-00` green, and you can say which product gets the most of your time and why |
 
@@ -58,6 +60,8 @@ settled with them.
 - **Where exploratory testing sits.** Automation only checks the things you already thought of. Step 12 covers the practice; the strategy has to reserve time for it now, or it never happens.
 - **Coverage is not detection.** A line executed is not a line checked. Step 16 measures the real thing; the strategy has to stop the team reporting the fake one.
 
+<TestLevels />
+
 **Libraries:** none
 
 **Expected outcome:** `docs/test-strategy.md` — per product, a table of *risk → the level it is tested at → why not a cheaper level*. A stated target shape for the suite. A "not automated" list with reasons. A statement of the oracle for the three hardest checks. Time reserved for exploratory testing.
@@ -67,7 +71,7 @@ settled with them.
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-01` — every strategy entry references a failure mode ID from `docs/risk-model.md`; each entry names why the next-cheaper level cannot answer the question; the "not automated" list has at least five entries with reasons; the oracle is stated for Trailhead's totals, Beechwood's letters and Polaris's allocation. |
-| **L2 — Manual checks** | (a) Take the five most important risks and ask, for each, what would still have to be true for the test to pass while the risk happened anyway. That gap is your real coverage. <br>(b) Give the strategy to a developer on the team and ask what they would add tests for anyway. Their answer tells you what the document fails to say clearly. |
+| **L2 — Manual checks** | (a) Take the five most important risks and ask, for each, what would still have to be true for the test to pass while the risk happened anyway. That gap is your real coverage. <br />(b) Give the strategy to a developer on the team and ask what they would add tests for anyway. Their answer tells you what the document fails to say clearly. |
 | **L4 — Anti-patterns** | `AP-01-a`, `AP-01-b`, `AP-01-c`, `AP-01-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-01` green, and you can defend one deliberate gap out loud without hedging |
 
@@ -99,7 +103,7 @@ settled with them.
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-02` — the document forbids production copies without exception and says what replaces them for each product; the isolation model states what a worker owns; the third-party position covers the payment provider and both carriers; the environment matrix says which environments may be shared and what breaks when they are. |
-| **L2 — Manual checks** | (a) Describe your Beechwood test data to someone who works with patient data. If they hesitate, the schema is closer to real than you think. <br>(b) Write down what happens when two workers run the same test against the same clinic at the same time. If the answer is "it would be fine", check it again. |
+| **L2 — Manual checks** | (a) Describe your Beechwood test data to someone who works with patient data. If they hesitate, the schema is closer to real than you think. <br />(b) Write down what happens when two workers run the same test against the same clinic at the same time. If the answer is "it would be fine", check it again. |
 | **L4 — Anti-patterns** | `AP-02-a`, `AP-02-b`, `AP-02-c` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-02` green, and no part of your plan needs a production restore to work |
 
@@ -131,6 +135,6 @@ settled with them.
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-03` — every condition names its source and owner and is marked blocking or warning with a reason; the three products have different bars with the difference explained; there is a written accepted-failure path; the release record template fits on one page and contains no test-runner jargon. |
-| **L2 — Manual checks** | (a) Take last month's worst plausible release and walk it through the gate on paper. If it passes, your gate is decoration. <br>(b) Show the release record template to someone non-technical and ask what decision they would make from it. If they cannot answer, rewrite it. |
+| **L2 — Manual checks** | (a) Take last month's worst plausible release and walk it through the gate on paper. If it passes, your gate is decoration. <br />(b) Show the release record template to someone non-technical and ask what decision they would make from it. If they cannot answer, rewrite it. |
 | **L4 — Anti-patterns** | `AP-03-a`, `AP-03-b`, `AP-03-c`, `AP-03-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-03` green, and you could refuse a release on Friday and point at the line that says why |

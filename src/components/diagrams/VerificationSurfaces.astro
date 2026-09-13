@@ -1,0 +1,219 @@
+---
+/**
+ * VerificationSurfaces — the three example products, drawn by what you can
+ * actually observe in each: a screen, a screen plus an evidence trail, and
+ * no screen at all.
+ *
+ * The point of the picture is the third card: a strategy built around clicking
+ * has nothing to say about Polaris.
+ */
+---
+
+<figure class="lu-figure surfaces">
+  <div class="lu-figure__frame">
+    <ul class="cards">
+      <li class="card">
+        <svg viewBox="0 0 160 96" role="img" aria-label="A browser window with a pointer clicking a button">
+          <rect class="pane" x="24" y="12" width="112" height="72" rx="6" />
+          <line class="hair" x1="24" y1="28" x2="136" y2="28" />
+          <circle class="dot" cx="33" cy="20" r="2" />
+          <circle class="dot" cx="41" cy="20" r="2" />
+          <rect class="row" x="34" y="38" width="58" height="5" rx="2.5" />
+          <rect class="row" x="34" y="50" width="40" height="5" rx="2.5" />
+          <rect class="cta" x="34" y="64" width="36" height="12" rx="4" />
+          <path class="pointer" d="M92 60 l0 16 l4.5 -4.5 l3 6.5 l3 -1.5 l-3 -6.5 l6 0 z" />
+        </svg>
+        <h3>Trailhead Outfitters</h3>
+        <p>A screen, and money behind it. You can watch a person do the thing.</p>
+      </li>
+
+      <li class="card">
+        <svg viewBox="0 0 160 96" role="img" aria-label="A browser window with a keyboard focus ring, beside a stack of evidence documents">
+          <rect class="pane" x="10" y="12" width="92" height="72" rx="6" />
+          <line class="hair" x1="10" y1="28" x2="102" y2="28" />
+          <circle class="dot" cx="19" cy="20" r="2" />
+          <circle class="dot" cx="27" cy="20" r="2" />
+          <rect class="row" x="20" y="38" width="48" height="5" rx="2.5" />
+          <rect class="focus" x="16" y="50" width="58" height="18" rx="4" />
+          <rect class="row" x="20" y="56" width="34" height="5" rx="2.5" />
+          <g class="docs">
+            <rect class="doc" x="116" y="26" width="32" height="42" rx="3" />
+            <rect class="doc doc--front" x="110" y="34" width="32" height="42" rx="3" />
+            <line class="doc-line" x1="116" y1="44" x2="136" y2="44" />
+            <line class="doc-line" x1="116" y1="52" x2="132" y2="52" />
+            <line class="doc-line" x1="116" y1="60" x2="136" y2="60" />
+          </g>
+        </svg>
+        <h3>Beechwood Health</h3>
+        <p>A screen you must reach by keyboard, and a trail somebody signs.</p>
+      </li>
+
+      <li class="card">
+        <svg viewBox="0 0 160 96" role="img" aria-label="An empty dashed box with events entering, a carrier call leaving, and a webhook returning">
+          <rect class="pane pane--empty" x="46" y="26" width="68" height="44" rx="6" />
+          <text class="pane-label" x="80" y="52">no screen</text>
+          <path class="flow" d="M8 40 L44 40" marker-end="url(#vs-arrow)" />
+          <text class="flow-label" x="8" y="32">order</text>
+          <path class="flow" d="M116 40 L152 40" marker-end="url(#vs-arrow)" />
+          <text class="flow-label flow-label--end" x="152" y="32">carrier</text>
+          <path class="flow flow--back" d="M148 58 L116 58" marker-end="url(#vs-arrow-dim)" />
+          <text class="flow-label flow-label--end" x="152" y="76">webhook, twice</text>
+          <defs>
+            <marker id="vs-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path class="arrowhead" d="M0 0 L10 5 L0 10 z" />
+            </marker>
+            <marker id="vs-arrow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path class="arrowhead arrowhead--dim" d="M0 0 L10 5 L0 10 z" />
+            </marker>
+          </defs>
+        </svg>
+        <h3>Polaris Freight</h3>
+        <p>Nothing to click. Events in, carriers out, and answers that come back late.</p>
+      </li>
+    </ul>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Three products, three different things you are allowed to observe. A strategy
+    that only works on the first card is not a strategy.
+  </figcaption>
+</figure>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-surface-2);
+  }
+
+  .card svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 590;
+    line-height: 1.2;
+    color: var(--sl-color-white);
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--sl-color-gray-3);
+  }
+
+  .pane {
+    fill: var(--lu-surface-1);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .pane--empty {
+    fill: none;
+    stroke-dasharray: 4 4;
+  }
+
+  .pane-label {
+    fill: var(--sl-color-gray-4);
+    font-family: var(--sl-font-mono);
+    font-size: 9px;
+    text-anchor: middle;
+  }
+
+  .hair {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .dot {
+    fill: var(--sl-color-gray-5);
+  }
+
+  .row {
+    fill: var(--sl-color-gray-5);
+  }
+
+  .cta {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+
+  .pointer {
+    fill: var(--lu-marker);
+  }
+
+  .focus {
+    fill: none;
+    stroke: var(--lu-marker);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 3;
+  }
+
+  .doc {
+    fill: var(--lu-surface-1);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .doc-line {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .flow {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .flow--back {
+    stroke: var(--sl-color-gray-4);
+    stroke-dasharray: 3 3;
+  }
+
+  .arrowhead {
+    fill: var(--sl-color-gray-3);
+  }
+
+  .arrowhead--dim {
+    fill: var(--sl-color-gray-4);
+  }
+
+  .flow-label {
+    fill: var(--sl-color-gray-4);
+    font-family: var(--sl-font-mono);
+    font-size: 8px;
+  }
+
+  .flow-label--end {
+    text-anchor: end;
+  }
+
+  @media (max-width: 44rem) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+
+    .card svg {
+      max-width: 260px;
+    }
+  }
+</style>

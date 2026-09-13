@@ -6,6 +6,9 @@ sidebar:
   label: Overview
 ---
 
+import ProofRule from '../../../../components/diagrams/ProofRule.astro';
+import QualitySystem from '../../../../components/diagrams/QualitySystem.astro';
+
 ## Locked decisions
 
 | Decision | Value |
@@ -79,6 +82,8 @@ The centre of the material, and the thing that separates it from a tutorial abou
 
 **A suite is proven by the defects it catches, not by passing.**
 
+<ProofRule />
+
 The products ship with a **defect catalogue** — real bugs, each behind a named flag, each
 switchable from an environment variable or a seed:
 
@@ -106,18 +111,7 @@ Rules that keep the catalogue useful:
 
 ## The quality system (target state)
 
-```
-Strategy ──says──> what is tested, where, and what is deliberately not
-   │
-   ├──> Suite ──has──> UI journeys · API tests · contract tests · a11y checks · perf scenarios
-   │        │
-   │        ├──has──> Fixtures (data factories, per-worker isolation, a controlled clock)
-   │        └──has──> Results (pass/fail, duration, flake history, the defect it would catch)
-   │
-   ├──> Pipeline ──has──> selection, shards, a runtime budget, artefacts
-   │
-   └──> Gate ──produces──> a Release record (what ran, what failed, what was accepted, who signed)
-```
+<QualitySystem />
 
 - A **test** carries the risk it exists for. A test nobody can explain is deleted at step 16, not
   kept for comfort.

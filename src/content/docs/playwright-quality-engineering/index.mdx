@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import VerificationSurfaces from '../../../components/diagrams/VerificationSurfaces.astro';
+import RoadmapMap from '../../../components/diagrams/RoadmapMap.astro';
+
 A guided path from *"I write automated tests"* to owning the quality of a release — built around
 one real job: you are the quality engineer for three products that ship from one pipeline, every
 week, and somebody has to say whether they are safe to release.
@@ -43,6 +46,8 @@ the decision, plus a defect catalogue showing what your suite catches and what i
 
 Three products are the running examples. They disagree on the axis that matters here — **how you
 can verify them at all**:
+
+<VerificationSurfaces />
 
 | The product | What it is | What it forces you to handle |
 |---|---|---|
@@ -107,14 +112,7 @@ tick alone.
 | **[Roadmap](./roadmap/overview/)** | The 18 steps in six sections, plus the locked decisions, the products under test, and the proof rule. | Skim the overview, then work in order. |
 | **[Reference](./reference/rubrics/)** | Per-step rubrics, the `AGENTS.md` template, deliberate omissions. | One rubric section per step. |
 
-| Section | Steps | Focus |
-|---|---|---|
-| [Strategy](./roadmap/strategy/) | 0–3 | What a failure costs, what to test, where the data comes from, what "ready" means |
-| [Foundations](./roadmap/foundations/) | 4–7 | Tooling and the products under test, the first journey, a suite that survives, the API level |
-| [Depth](./roadmap/depth/) | 8–12 | The service with no UI, contracts and third parties, flake, regulated surfaces, exploratory testing |
-| [Non-functional](./roadmap/nonfunctional/) | 13–14 | Performance that answers a question, and permissions proved rather than assumed |
-| [Release](./roadmap/release/) | 15–16 | The pipeline inside a budget, and the gate that blocks a build |
-| [Operations](./roadmap/operations/) | 17 | After the release: synthetic checks, escaped defects, the report, handover |
+<RoadmapMap />
 
 **There is deliberately no implementation code in any of these documents.**
 

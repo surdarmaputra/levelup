@@ -5,6 +5,9 @@ sidebar:
   order: 5
 ---
 
+import Percentiles from '../../../../components/diagrams/Percentiles.astro';
+import PermissionGrid from '../../../../components/diagrams/PermissionGrid.astro';
+
 ## Step 13 — Performance testing that answers a question
 
 **Story:** *As Trailhead Outfitters, I know the checkout holds up on the first morning of the sale, because somebody asked that question and measured the answer.*
@@ -23,6 +26,8 @@ sidebar:
 - **Where the time goes.** A slow response is a database query, a third-party call, or waiting on a lock. Measure it inside the system, not only at the edge, or you will report "checkout is slow" and stop.
 - **Cost and duration.** Performance runs are long. Decide what runs per commit (a short smoke), per night (the full model), and per release.
 
+<Percentiles />
+
 **Libraries:** k6, with the Compose stack from step 4
 
 **Expected outcome:** One written question per product with a workload model, a scenario implementing it, and thresholds on p95 and error rate. Results stored per build so trends are visible. A short performance smoke for CI and a full nightly run. A written statement of what the environment does and does not tell you about production.
@@ -32,7 +37,7 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-13` — each product has a written question, a workload model with rates and think times, and a threshold that fails the run when breached; a deliberately introduced slow query makes the Trailhead scenario fail on p95, not on the average; results from at least five builds are stored and comparable. |
-| **L2 — Manual checks** | (a) Show a result to a developer and ask what they would change. If they cannot say, the report lacks the internal timings. <br>(b) Run the Trailhead model twice on the same build and compare. If the two runs disagree more than the threshold margin, the environment is too noisy to gate on. |
+| **L2 — Manual checks** | (a) Show a result to a developer and ask what they would change. If they cannot say, the report lacks the internal timings. <br />(b) Run the Trailhead model twice on the same build and compare. If the two runs disagree more than the threshold margin, the environment is too noisy to gate on. |
 | **L4 — Anti-patterns** | `AP-13-a`, `AP-13-b`, `AP-13-c`, `AP-13-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-13` green, and each number has a decision attached to it |
 
@@ -56,6 +61,8 @@ sidebar:
 - **Trailhead and Polaris have the same problem in smaller clothes**: another customer's order, another shipper's consignment. The matrix is shared, the resources differ.
 - **This is the security work a quality engineer genuinely owns.** Not penetration testing — the authorisation rules the team already wrote down and nobody proved.
 
+<PermissionGrid />
+
 **Libraries:** the API layer from step 7, the factories, a table-driven test generator
 
 **Expected outcome:** A role and resource matrix per product, generated into tests for every role, resource and action including the horizontal cases. Explicit expected status codes for denials, with the choice documented. The matrix as a readable artefact for the release record. Failures that name the role, resource and action.
@@ -65,6 +72,6 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-14` — with `BEECH-LETTER-LEAK` on, the matrix fails and names the role, the resource and the clinic; every role–resource–action combination is covered with an explicit allow or deny; adding a role to the matrix definition generates its cases without new test code; horizontal cases exist for all three products. |
-| **L2 — Manual checks** | (a) Take the three worst leaks you can imagine and find their row in the matrix. Any that is missing is a gap in the definition, not the tests. <br>(b) Ask a developer to add a resource. If they have to write test code, the generation is not finished. |
+| **L2 — Manual checks** | (a) Take the three worst leaks you can imagine and find their row in the matrix. Any that is missing is a gap in the definition, not the tests. <br />(b) Ask a developer to add a resource. If they have to write test code, the generation is not finished. |
 | **L4 — Anti-patterns** | `AP-14-a`, `AP-14-b`, `AP-14-c`, `AP-14-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-14` green, and every denial in the matrix is asserted rather than assumed |

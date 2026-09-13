@@ -5,6 +5,9 @@ sidebar:
   order: 4
 ---
 
+import PolarisTimeline from '../../../../components/diagrams/PolarisTimeline.astro';
+import FlakeCauses from '../../../../components/diagrams/FlakeCauses.astro';
+
 ## Step 8 — Polaris: testing a service with no interface
 
 **Story:** *As Polaris Freight, a consignment created at 15:59 goes out today and one created at 16:01 goes tomorrow, and I can prove it without waiting until four o'clock.*
@@ -23,6 +26,8 @@ sidebar:
 - **Asserting absence.** "No second consignment was created" has no event to wait for. You need a settling condition — a processed marker, a quiet period with a stated basis — and it must not be a sleep.
 - **Failure injection.** A carrier that times out, returns a 500, or answers after your deadline. Each has a correct behaviour, and each is a test.
 
+<PolarisTimeline />
+
 **Libraries:** Playwright request context, a broker client, a fake clock, the carrier stubs from step 4
 
 **Expected outcome:** A Polaris suite covering allocation, the cut-off boundary at exactly 16:00, duplicate webhook delivery, out-of-order delivery, and three carrier failure modes. A bounded-wait helper with deadline, interval and a state-revealing failure message. A controlled clock. An absence-assertion pattern with a defensible settling condition.
@@ -32,7 +37,7 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-08` — with `POLARIS-DOUBLE-BOOK` on, the duplicate-delivery test fails and reports two consignments; with `POLARIS-CUTOFF-OFF-BY-ONE` on, the boundary test fails and names the timestamp; no fixed sleep appears in the Polaris suite; the whole Polaris suite runs in under two minutes with no real waiting. |
-| **L2 — Manual checks** | (a) Force every bounded wait to time out at once and read the failures. Any message that does not say what the state was is not finished. <br>(b) Run the Polaris suite fifty times. Anything that fails once is step 10's problem, and you have just found it early. |
+| **L2 — Manual checks** | (a) Force every bounded wait to time out at once and read the failures. Any message that does not say what the state was is not finished. <br />(b) Run the Polaris suite fifty times. Anything that fails once is step 10's problem, and you have just found it early. |
 | **L4 — Anti-patterns** | `AP-08-a`, `AP-08-b`, `AP-08-c`, `AP-08-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-08` green, and no test in it depends on real time passing |
 
@@ -64,7 +69,7 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-09` — with `POLARIS-CONTRACT-DRIFT` on, provider verification fails and names the field, while the hand-written stub would have passed; removing a field a consumer uses fails the provider build; the scheduled recording check fails when the sandbox response shape changes. |
-| **L2 — Manual checks** | (a) Ask what happens if a carrier changes a field you do not use. Your contracts should not notice. If they do, they are too wide. <br>(b) Try to answer "can I deploy the orders service right now?" using only the contract results. If you cannot, the versioning is incomplete. |
+| **L2 — Manual checks** | (a) Ask what happens if a carrier changes a field you do not use. Your contracts should not notice. If they do, they are too wide. <br />(b) Try to answer "can I deploy the orders service right now?" using only the contract results. If you cannot, the versioning is incomplete. |
 | **L4 — Anti-patterns** | `AP-09-a`, `AP-09-b`, `AP-09-c`, `AP-09-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-09` green, and no stub in the repository was written by hand |
 
@@ -87,6 +92,8 @@ sidebar:
 - **A flaky test is a real report.** Sometimes the product is genuinely intermittent and the test is the only thing noticing. Rule that in or out before touching the test.
 - **Flake rate is a tracked number** with a target, reported in step 16 alongside detection rate.
 
+<FlakeCauses />
+
 **Libraries:** Playwright's repeat and retry options, the reporter from step 4
 
 **Expected outcome:** A nightly repeat run producing a per-test flake rate stored over time. A quarantine mechanism with an owner and an expiry, excluded from the gate and visible in the report. A written flake policy in `AGENTS.md`: detection, triage, the six causes with their fixes, when a retry is permitted and how it is reported. Every currently flaky test diagnosed by cause, not patched.
@@ -96,7 +103,7 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-10` — the full suite passes a hundred-run repeat with zero non-quarantined failures; every quarantined test has an owner and an expiry date, and the build warns when one expires; a retried test appears in the report as a flake rather than a pass; with `TRAIL-STOCK-OVERSELL` on, the race test fails consistently rather than intermittently. |
-| **L2 — Manual checks** | (a) For each flaky test you fixed, write down which of the six causes it was. Any you cannot classify, you have not diagnosed. <br>(b) Ask a developer whether they trust the pipeline. Ask again in a month. That answer is the real metric. |
+| **L2 — Manual checks** | (a) For each flaky test you fixed, write down which of the six causes it was. Any you cannot classify, you have not diagnosed. <br />(b) Ask a developer whether they trust the pipeline. Ask again in a month. That answer is the real metric. |
 | **L4 — Anti-patterns** | `AP-10-a`, `AP-10-b`, `AP-10-c`, `AP-10-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-10` green, and no test in the gate has an unexplained failure in its history |
 
@@ -130,7 +137,7 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-11` — with `BEECH-FOCUS-TRAP` on, the automated checks pass and the documented keyboard pass catches it, and this outcome is written down as the reason the manual pass exists; a new contrast violation fails the build; the release record generates from a run with no hand editing. |
-| **L2 — Manual checks** | (a) Book an appointment using only the keyboard, then again with a screen reader. Write down every point you were lost. <br>(b) Give the release record to someone non-technical and ask whether they would sign it. Their questions are the missing fields. |
+| **L2 — Manual checks** | (a) Book an appointment using only the keyboard, then again with a screen reader. Write down every point you were lost. <br />(b) Give the release record to someone non-technical and ask whether they would sign it. Their questions are the missing fields. |
 | **L4 — Anti-patterns** | `AP-11-a`, `AP-11-b`, `AP-11-c`, `AP-11-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-11` green, and the release record answers "was this tested?" without you in the room |
 
@@ -163,6 +170,6 @@ sidebar:
 | | |
 |---|---|
 | **L1 — Gating test** | `ACC-12` — six sessions with charters, time boxes and notes; at least three findings the automated suite missed, each with steps that reproduce from a stated starting state; each finding has a written automate-or-not decision with a reason. |
-| **L2 — Manual checks** | (a) Hand a bug report to someone else and have them reproduce it from the text alone. Every question they ask is a missing field. <br>(b) Re-read a session's notes a week later. If you cannot tell what you did not get to, the notes are too thin. |
+| **L2 — Manual checks** | (a) Hand a bug report to someone else and have them reproduce it from the text alone. Every question they ask is a missing field. <br />(b) Re-read a session's notes a week later. If you cannot tell what you did not get to, the notes are too thin. |
 | **L4 — Anti-patterns** | `AP-12-a`, `AP-12-b`, `AP-12-c`, `AP-12-d` — [full text](../../reference/rubrics/) |
 | **Done when** | `ACC-12` green, and at least one finding is a defect the suite could not have found |

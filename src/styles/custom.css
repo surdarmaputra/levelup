@@ -828,3 +828,42 @@ mobile-starlight-toc summary .lu-page-name + .toggle {
 mobile-starlight-toc summary:has(.lu-page-name) .display-current {
   display: none;
 }
+
+/* ------------------------------------------------------------------ *
+ * Content diagrams
+ *
+ * Figures embedded in learning material (see `src/components/diagrams/`).
+ * The shell only — each diagram carries its own geometry in a scoped
+ * <style> block. Ink, hairlines and one accent, like everything else.
+ * ------------------------------------------------------------------ */
+
+.sl-markdown-content .lu-figure {
+  margin: 2rem 0;
+}
+
+.lu-figure__frame {
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: var(--lu-radius-card);
+  background: var(--lu-surface-1);
+}
+
+.sl-markdown-content .lu-figure__caption {
+  margin-top: 0.75rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* A diagram whose geometry cannot compress below a readable width scrolls
+   inside its own frame rather than pushing the page sideways. */
+.lu-figure__scroll {
+  overflow-x: auto;
+}
+
+@media (max-width: 40rem) {
+  .lu-figure__frame {
+    padding: 1.25rem 0.875rem;
+  }
+}

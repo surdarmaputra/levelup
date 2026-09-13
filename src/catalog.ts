@@ -265,6 +265,25 @@ export const materials: Material[] = [
       { label: 'Reference', directory: 'reference' },
     ],
   },
+  {
+    slug: 'playwright-quality-engineering',
+    title: 'Playwright — Quality Engineering for a Release You Can Defend',
+    description:
+      'Go from "I write automated tests" to owning the quality of a release: a risk-based strategy, a suite proven by the defects it catches, flake treated as a defect, contract tests for the service with no UI, and a gate that blocks a build for a stated reason.',
+    tagline:
+      'Eighteen steps, three products, one release train. A suite that passes proves nothing — so every acceptance test here is a seeded defect your tests have to catch and name.',
+    level: 'Intermediate',
+    size: '18 steps',
+    tags: ['TypeScript 5.9', 'Playwright', 'Contract testing', 'k6', 'Accessibility', 'CI'],
+    status: 'available',
+    entry: 'playwright-quality-engineering',
+    links: [{ label: 'Getting Started', slug: 'playwright-quality-engineering' }],
+    sections: [
+      { label: 'Setup', directory: 'setup' },
+      { label: 'Roadmap', directory: 'roadmap' },
+      { label: 'Reference', directory: 'reference' },
+    ],
+  },
 ];
 
 export const publishedMaterials = materials.filter((m) => m.status !== 'planned');

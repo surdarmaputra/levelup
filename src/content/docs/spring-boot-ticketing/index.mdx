@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know Java, new to Spring"* to a production-grade backend and fullstack
 application — built around one real domain: **TicketFlow**, an event ticketing marketplace that
 sells seats for theatre runs, arena concerts and club gigs, on Java 21 and Spring Boot 3.5.
@@ -29,6 +32,30 @@ shipped Spring in production? Skim steps 0–6 as a checklist and start at step 
 TicketFlow is one application where organizers publish events against a venue, and customers
 buy seats for a given date. Three events run through the whole roadmap. They were picked
 because they disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Hamlet at the Lyric Theatre',
+    what: '380 seats · assigned seating · multiple showtimes',
+    forces: 'A seat map, per-showtime inventory, the N+1 trap on every seat render, and two browsers racing for the same seat.',
+    role: 'simple',
+  },
+  {
+    name: 'Riverside Arena',
+    what: '20 000 cap · GA + reserved · on-sale spikes',
+    forces: 'High-concurrency inventory, horizontal scaling, a hold timer that expires seats across instances, and a queue page at on-sale.',
+    role: 'constraint',
+  },
+  {
+    name: 'The Foundry',
+    what: 'Standing room only · no seat map · small capacity',
+    forces: 'No seats to assign, GA inventory only, no map to render — a strategy built around seat maps has nothing to say here.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three venues, one ticketing platform: each one exists to break a rule the others do not.'
+/>
 
 | The event | The setup | What it forces you to handle |
 |---|---|---|
@@ -107,6 +134,68 @@ The roadmap sections:
 | [Integration and Scale](./roadmap/integration/) | 9–14 | Hexagonal refactor, messaging, caching, horizontal scaling, observability, resilience |
 | [Fullstack](./roadmap/fullstack/) | 15–18 | React storefront, seat map, checkout, frontend production readiness |
 | [Advanced](./roadmap/advanced/) | 19–24 | OAuth2, service extraction, and the optional Kafka / Elasticsearch / event-sourcing track |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'Project skeleton and the Spring mental model', mode: 'build' },
+      { n: 2, title: 'Persistence and schema migration', mode: 'learn' },
+      { n: 3, title: 'API contract: DTOs, validation, error model', mode: 'learn' },
+      { n: 4, title: 'Security I: session auth, CSRF, RBAC', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Domain Depth',
+      href: './roadmap/domain-depth/',
+      steps: [
+      { n: 5, title: 'Admin back-office (Thymeleaf + HTMX)', mode: 'build' },
+      { n: '5b', title: 'Design system foundation', mode: 'build' },
+      { n: 6, title: 'Venues, seat maps, and bulk operations', mode: 'build' },
+      { n: 7, title: 'Read performance: N+1, projections, indexing', mode: 'learn' },
+      { n: 8, title: 'Concurrency: seat holds and the overselling problem', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Integration and Scale',
+      href: './roadmap/integration/',
+      steps: [
+      { n: 9, title: 'Hexagonal refactor and the payment adapter', mode: 'build' },
+      { n: 10, title: 'Async, webhooks, idempotency, the outbox pattern', mode: 'learn' },
+      { n: 11, title: 'Caching and the CQRS read model', mode: 'learn' },
+      { n: 12, title: 'Horizontal scaling: load balancing and distributed state', mode: 'learn' },
+      { n: 13, title: 'Observability', mode: 'build' },
+      { n: 14, title: 'Resilience and rate limiting', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Fullstack',
+      href: './roadmap/fullstack/',
+      steps: [
+      { n: 15, title: 'React storefront foundation and token auth', mode: 'build' },
+      { n: 16, title: 'Interactive seat map and hold timer', mode: 'learn' },
+      { n: 17, title: 'Checkout, payment, and the confirmation flow', mode: 'learn' },
+      { n: 18, title: 'Frontend production readiness', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Advanced',
+      href: './roadmap/advanced/',
+      steps: [
+      { n: 19, title: 'Security II: OAuth2 and Spring Authorization Server', mode: 'build' },
+      { n: 20, title: 'Service extraction and production deployment', mode: 'learn' },
+      { n: 21, title: 'Kafka: the event stream', mode: 'build' },
+      { n: 22, title: 'Elasticsearch: real search', mode: 'build' },
+      { n: 23, title: 'Event sourcing (scoped to Ticket only)', mode: 'learn' },
+      { n: 24, title: 'Kubernetes: conceptual only', mode: 'learn' },
+      ],
+    },
+  ]}
+  caption='Five sections, 25 steps: step 5b is an optional design-system extension within Domain Depth.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

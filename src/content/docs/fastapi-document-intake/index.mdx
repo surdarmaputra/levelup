@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know Python, I have called an LLM once"* to the most boring and most
 sellable AI product there is — built around one real system: **Intake**, a pipeline that reads
 a business's documents and writes validated rows into its database, on Python 3.13 and FastAPI.
@@ -42,6 +45,30 @@ trust you. They can read the number and check the labels.
 
 Three businesses are the running examples all the way through. They were picked because they
 disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Meridian Print Co',
+    what: 'Print supplier · standard invoices · clean digital layout',
+    forces: 'The control case: a well-structured PDF with a known format, done correctly — parse, extract, validate, record. If this is wrong, nothing harder will work.',
+    role: 'simple',
+  },
+  {
+    name: 'Coastline Freight',
+    what: 'Logistics · photographed documents · skewed text, embedded tables',
+    forces: 'Vision-based reading, deskewing, tables that span pages, and line items that do not align to columns in the way a parser expects.',
+    role: 'constraint',
+  },
+  {
+    name: 'Alder Health Clinic',
+    what: 'Medical practice · one document → up to 40 structured rows',
+    forces: 'One-to-many extraction: a single document produces a variable number of output records, and the accuracy metric is per-row, not per-document.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three document types, one intake pipeline: each one exists to break a rule the others do not.'
+/>
 
 | The business | Its documents | What it forces you to handle |
 |---|---|---|
@@ -120,6 +147,66 @@ The roadmap sections:
 | [Accuracy](./roadmap/accuracy/) | 11–13 | The gold set and the number, the human review queue, thresholds and routing |
 | [Cost](./roadmap/cost/) | 14–15 | Where the spend is and how to see it, then making it cost less without losing accuracy |
 | [Operations](./roadmap/operations/) | 16–17 | Deploy and hand-over, drift, new suppliers, the monthly accuracy report |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Concepts',
+      href: './roadmap/concepts/',
+      steps: [
+      { n: 0, title: 'What re-keying costs, and who pays it', mode: 'learn' },
+      { n: 1, title: 'How a document pipeline actually works', mode: 'learn' },
+      { n: 2, title: 'What you could buy instead', mode: 'learn' },
+      { n: 3, title: 'Scoping the job with a client', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 4, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 5, title: 'The FastAPI skeleton and the document store', mode: 'build' },
+      { n: 6, title: 'The extraction schema', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Extraction',
+      href: './roadmap/extraction/',
+      steps: [
+      { n: 7, title: 'Classification and the two reading paths', mode: 'learn' },
+      { n: 8, title: 'Structured extraction', mode: 'build' },
+      { n: 9, title: 'Line items and tables', mode: 'learn' },
+      { n: 10, title: 'Validation, confidence and what "unsure" means', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Accuracy',
+      href: './roadmap/accuracy/',
+      steps: [
+      { n: 11, title: 'The gold set and the accuracy number', mode: 'learn' },
+      { n: 12, title: 'The review queue', mode: 'build' },
+      { n: 13, title: 'Thresholds, routing, and what "done" means', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Cost',
+      href: './roadmap/cost/',
+      steps: [
+      { n: 14, title: 'Where the money goes, and how to see it', mode: 'learn' },
+      { n: 15, title: 'Making it cost less without losing accuracy', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 16, title: 'Deploy, run, and hand over', mode: 'build' },
+      { n: 17, title: 'Drift, new suppliers, and the monthly report', mode: 'learn' },
+      ],
+    },
+  ]}
+  caption='Six sections, 18 steps: four concept steps before any code, because the extraction schema is the whole contract.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

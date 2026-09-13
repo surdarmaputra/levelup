@@ -1,0 +1,115 @@
+---
+interface Example {
+  name: string;
+  what: string;
+  forces: string;
+  role: 'simple' | 'constraint' | 'exception';
+}
+
+interface Props {
+  examples: [Example, Example, Example];
+  caption?: string;
+}
+
+const { examples, caption } = Astro.props;
+
+const roleLabels: Record<string, string> = {
+  simple: 'the baseline',
+  constraint: 'the constraint',
+  exception: 'the exception',
+};
+---
+
+<figure class="lu-figure examples">
+  <div class="lu-figure__frame">
+    <ul class="cards">
+      {
+        examples.map((ex) => (
+          <li class={`card card--${ex.role}`}>
+            <span class="role">{roleLabels[ex.role]}</span>
+            <h3>{ex.name}</h3>
+            <p class="what">{ex.what}</p>
+            <p class="forces">{ex.forces}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  {caption && <figcaption class="lu-figure__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.875rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-surface-2);
+  }
+
+  .card--constraint {
+    border-left: 2px solid var(--sl-color-gray-5);
+  }
+
+  .card--exception {
+    border-left: 2px solid var(--lu-marker);
+  }
+
+  .role {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--lu-radius-badge);
+    font-family: var(--sl-font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-gray-4);
+    text-transform: uppercase;
+    width: fit-content;
+  }
+
+  .card--exception .role {
+    border-color: var(--lu-marker);
+    color: var(--lu-marker);
+  }
+
+  .card h3 {
+    margin: 0.125rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 590;
+    line-height: 1.2;
+    color: var(--sl-color-white);
+  }
+
+  .card .what {
+    margin: 0;
+    font-family: var(--sl-font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    color: var(--sl-color-gray-4);
+  }
+
+  .card .forces {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--sl-color-gray-3);
+  }
+
+  @media (max-width: 44rem) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

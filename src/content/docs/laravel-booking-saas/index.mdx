@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know PHP, new to Laravel"* to a production-grade multi-tenant SaaS —
 built around one real domain: **Bookline**, an appointment-booking platform that barbershops,
 dental clinics and yoga studios use to sell their own time, on PHP 8.5 and Laravel 13.
@@ -33,6 +36,30 @@ customers — who never see any other business on the platform.
 
 Three of them are used as the running examples all the way through the roadmap. They were
 picked because they disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Northside Barbershop',
+    what: '3 barbers · 30-min cuts · walk-ins',
+    forces: 'Per-staff schedules, a fast slot grid, and availability that must survive concurrent mobile requests.',
+    role: 'simple',
+  },
+  {
+    name: 'Bright Smile Dental',
+    what: '4 dentists · 45-min appointments · deposits',
+    forces: 'Cleanup buffers after each service, deposit and refund logic, a cancellation window, and day-before reminders.',
+    role: 'constraint',
+  },
+  {
+    name: 'Loft Yoga',
+    what: '2 instructors · group classes · weekly timetable',
+    forces: 'Capacity greater than one, recurring weekly rules, and DST — a Sunday 09:00 class must stay at 09:00 through the clock change.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three tenants, one codebase: each one is deliberately chosen to break a rule the others do not.'
+/>
 
 | The business | What it sells | What it forces you to handle |
 |---|---|---|
@@ -108,6 +135,66 @@ The roadmap sections:
 | [Booking and Availability](./roadmap/booking/) | 9–13 | The availability engine, time correctness, the booking state machine, double-booking, read performance |
 | [Money and Async](./roadmap/money/) | 14–18 | Subscriptions, webhooks, per-tenant payment credentials, deposits and refunds, queues |
 | [Scale and Migration](./roadmap/scale/) | 19–23 | The public booking page, the public API, Connect migration, database-per-tenant migration, deploy |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'Project skeleton and the Laravel mental model', mode: 'build' },
+      { n: 2, title: 'Eloquent, migrations, and the schema', mode: 'learn' },
+      { n: 3, title: 'The request contract: validation, resources, error model', mode: 'learn' },
+      { n: 4, title: 'Auth I: session auth, roles, policies', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Multi-Tenancy',
+      href: './roadmap/tenancy/',
+      steps: [
+      { n: 5, title: 'The tenant, and resolving it from the request', mode: 'build' },
+      { n: 6, title: 'Scoping every query, and the leak test', mode: 'learn' },
+      { n: 7, title: 'Tenant context outside the request', mode: 'learn' },
+      { n: 8, title: 'The tenant back-office (Livewire)', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Booking',
+      href: './roadmap/booking/',
+      steps: [
+      { n: 9, title: 'Working hours, staff schedules, and the availability engine', mode: 'learn' },
+      { n: 10, title: 'Time correctness: timezones, DST, recurrence', mode: 'learn' },
+      { n: 11, title: 'The booking flow and its state machine', mode: 'learn' },
+      { n: 12, title: 'Double-booking: locking vs an exclusion constraint', mode: 'learn' },
+      { n: 13, title: 'Read performance: N+1, eager loading, indexing', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Money and Async',
+      href: './roadmap/money/',
+      steps: [
+      { n: 14, title: 'Subscriptions: plans, trials, and plan limits', mode: 'build' },
+      { n: 15, title: 'Webhooks: idempotency, retries, dunning', mode: 'learn' },
+      { n: 16, title: 'Per-tenant payment credentials', mode: 'learn' },
+      { n: 17, title: 'Deposits, refunds, and the no-show policy', mode: 'learn' },
+      { n: 18, title: 'Queues, Horizon, and work that must not be lost', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Scale and Migration',
+      href: './roadmap/scale/',
+      steps: [
+      { n: 19, title: 'The public booking page (Inertia + React + Reverb)', mode: 'build' },
+      { n: 20, title: 'The public API and token authentication', mode: 'build' },
+      { n: 21, title: 'Payments migration: BYO keys → Stripe Connect', mode: 'learn' },
+      { n: 22, title: 'Tenancy migration: shared database → database per tenant', mode: 'learn' },
+      { n: 23, title: 'Observability and production deployment', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Five sections, 24 steps: four steps to know Laravel before touching tenancy, and the two migrations at the end are optional.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

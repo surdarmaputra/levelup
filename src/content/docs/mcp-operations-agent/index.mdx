@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I have built a chatbot"* to the half of agent work that almost nobody
 publishes — built around one real system: **Warden**, an operations agent that issues refunds,
 sets up payment plans and reschedules deliveries in a business's actual systems, on TypeScript
@@ -41,6 +44,30 @@ should not have issued.
 
 Three businesses are the running examples all the way through. They were picked because they
 disagree on the one axis that matters here — **what happens when the agent is wrong**:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Northwind Tools',
+    what: 'Tool distributor · stock adjustments · fully reversible',
+    forces: 'The control case: an agent that reads and writes, where every action can be undone. Authority, idempotency, and the ledger, done correctly.',
+    role: 'simple',
+  },
+  {
+    name: 'Lumen Energy',
+    what: 'Energy retailer · financial postings · approval gate required',
+    forces: 'Money: an action the agent must not take without explicit human sign-off, an approval flow that is part of the tool surface, and an audit trail that survives a crash.',
+    role: 'constraint',
+  },
+  {
+    name: 'Sable Logistics',
+    what: 'Freight broker · carrier bookings · cannot be recalled',
+    forces: 'Irreversibility: once the carrier confirms, the booking cannot be undone. The agent must refuse to proceed without confirmation, and the tool must record the point of no return.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three operations contexts, one agent: each one exists to break a rule the others do not.'
+/>
 
 | The business | What Warden does for them | What it forces you to handle |
 |---|---|---|
@@ -116,6 +143,66 @@ The roadmap sections:
 | [Safety](./roadmap/safety/) | 11–13 | Authority and approval gates, the scenario suite, traces |
 | [Cost](./roadmap/cost/) | 14–15 | Where the spend is and how to see it, then budgets and levers |
 | [Operations](./roadmap/operations/) | 16–17 | Deploy and credentials, the customer's surface, drift and the monthly report |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Concepts',
+      href: './roadmap/concepts/',
+      steps: [
+      { n: 0, title: 'What the manual process costs, and what a mistake costs', mode: 'learn' },
+      { n: 1, title: 'How an agent loop actually behaves', mode: 'learn' },
+      { n: 2, title: 'What you could buy instead', mode: 'learn' },
+      { n: 3, title: 'The authority model, and what you refuse to automate', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 4, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 5, title: 'The fake business system', mode: 'build' },
+      { n: 6, title: 'The action ledger', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Tools',
+      href: './roadmap/tools/',
+      steps: [
+      { n: 7, title: 'The MCP server and the first read-only tool', mode: 'build' },
+      { n: 8, title: 'Designing the tool surface', mode: 'learn' },
+      { n: 9, title: 'The first write, and idempotency', mode: 'learn' },
+      { n: 10, title: 'Actions that cannot be undone', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Safety',
+      href: './roadmap/safety/',
+      steps: [
+      { n: 11, title: 'The loop, authority, and the approval gate', mode: 'learn' },
+      { n: 12, title: 'The scenario suite', mode: 'learn' },
+      { n: 13, title: 'Traces, and answering "why did it do that?"', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Cost',
+      href: './roadmap/cost/',
+      steps: [
+      { n: 14, title: 'Where the money goes, and how to see it', mode: 'learn' },
+      { n: 15, title: 'Budgets, and making it cost less', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 16, title: "Deploy, credentials, and the customer's surface", mode: 'build' },
+      { n: 17, title: 'Drift, new tools, and the monthly report', mode: 'learn' },
+      ],
+    },
+  ]}
+  caption='Six sections, 18 steps: four concept steps before any code, because the authority model is the whole safety contract.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** The roadmap tells you
 what to build and how to prove it works; the building is yours.

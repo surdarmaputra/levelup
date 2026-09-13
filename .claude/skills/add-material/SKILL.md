@@ -81,7 +81,11 @@ The bar is that a reader can run the thing, not just read about it.
 Numbers must agree with what the steps already claim. If a step says "generate a 5,000-seat
 map", the arena has 5,000 seats.
 
-## The Getting Started page (`index.md`)
+## The Getting Started page (`index.mdx`)
+
+The Getting Started page must be `index.mdx` (not `.md`) so it can import Astro diagram
+components. Every material uses two embedded visuals: one before the examples table, one at the
+end of the structure section. See *Diagram components* below.
 
 Big-picture *what / why / how*, in this order. The reader should finish it knowing what they'll
 build, why this domain, and how to work a step.
@@ -90,14 +94,68 @@ build, why this domain, and how to work a step.
 |---|---|
 | Intro (no heading) | One paragraph: the path, the domain, step count, "sequence matters, pace doesn't" |
 | `## Who this is for` | Assumed knowledge; what's **not** assumed; who should skip ahead or stop |
-| `## What you are building, concretely` | The three named examples — see above. Table (instance → setup → what it forces), the questions to keep asking, the wider real-world list |
+| `## What you are building, concretely` | `<MaterialExamples>` first, then the table (instance → setup → what it forces), then the questions to keep asking, then the wider real-world list |
 | `## Why <the domain>` | Why this domain forces the hard topics — a table: *reality of the domain → what it makes you learn* |
 | `## What you'll learn` | A table grouped by area (language, framework, persistence, …) → concrete tech |
-| `## How this material is structured` | The Setup / Roadmap / Reference parts: what each is, when you read it. Then the roadmap-section table (section → step range → focus) |
+| `## How this material is structured` | The Setup / Roadmap / Reference parts: what each is, when you read it. Then the section table. Then `<MaterialRoadmapMap>`. |
 | `## The two paths` (if any) | Ordering variants through the steps |
 | `## How to read a <step/chapter>` | The part-by-part table (Story, Mode, Why now, Concepts, Libraries, Expected outcome, Verification) + the verification layers + the per-step loop |
 | `## How to use the rubrics` | What `ACC-NN` / `AP-NN-x` are; use it 3× per step; paste only one section to the reviewer |
 | `## Start here` | Numbered 1–5 kickoff |
+
+## Diagram components
+
+Two generic components live in `src/components/diagrams/`. Both accept data as props — all
+per-material data is inline in `index.mdx`; no per-material component file is needed.
+
+**`MaterialExamples`** — three example cards placed *before* the examples table in
+`## What you are building, concretely`.
+
+```mdx
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
+<MaterialExamples
+  examples={[
+    {
+      name: 'Northside Barbershop',
+      what: '3 barbers · 30-min cuts · walk-ins',
+      forces: 'Per-staff schedules, a fast slot grid...',
+      role: 'simple',
+    },
+    { name: 'Bright Smile Dental', what: '...', forces: '...', role: 'constraint' },
+    { name: 'Loft Yoga',           what: '...', forces: '...', role: 'exception' },
+  ]}
+  caption="Three tenants, one codebase: each one is deliberately chosen to break a rule the others do not."
+/>
+```
+
+`role` must be one of `'simple'` | `'constraint'` | `'exception'`. It controls the border
+colour on the card.
+
+**`MaterialRoadmapMap`** — all steps banded by section, placed *after* the section table in
+`## How this material is structured` (immediately before "There is deliberately no
+implementation code").
+
+```mdx
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+        { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+        { n: 1, title: 'Project skeleton and the framework mental model', mode: 'build' },
+      ],
+    },
+  ]}
+  caption="Five sections, 24 steps: four steps to know the framework before the domain."
+/>
+```
+
+`mode` is `'learn'` | `'build'`. `n` is a number or a string (e.g. `'5b'` for a sub-step).
+Band order matters — it reads top to bottom.
 
 ## Step anatomy (roadmap section files)
 
@@ -193,8 +251,9 @@ If source markdown already exists, derive answers from it and confirm.
 
 ### 2. Place the content
 
-- One `.md` per page. Frontmatter: `title`, `description`, `sidebar.order` (1..n **within its
-  directory**, not globally). `index.md` → `sidebar.order: 0`, `label: Getting Started`.
+- `index.mdx` for the Getting Started page (needs diagram component imports). All other pages
+  are `.md`. Frontmatter: `title`, `description`, `sidebar.order` (1..n **within its
+  directory**, not globally). `index.mdx` → `sidebar.order: 0`, `label: Getting Started`.
 - No `<h1>` in the body — Starlight renders it from `title`.
 - One `##` per step / chapter so the right-hand TOC is a real table of contents.
 - Internal links **relative**, never absolute. Count `../` from the page's **URL**, not its

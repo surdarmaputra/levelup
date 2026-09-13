@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I can program, I have never written Go"* to a production-grade Go service —
 built around one real system: **Relay**, a webhook delivery platform that takes events in and
 delivers them to customer HTTP endpoints, with retries, signing, rate limits and a replay
@@ -33,6 +36,30 @@ Relay accepts events over an HTTP API, works out which customer endpoints subscr
 and delivers each one — retrying, signing, rate-limiting and recording every attempt. Three
 customer endpoints run through the whole roadmap. They were picked because they disagree with
 each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Kirana Ledger',
+    what: 'Small accounting SaaS · stable endpoint · low volume',
+    forces: 'The control case: reliable delivery, idempotency, retries with backoff, and a dead-letter path when the endpoint is down.',
+    role: 'simple',
+  },
+  {
+    name: 'Meridian Bank Sandbox',
+    what: 'Fintech API · HMAC-signed payloads · per-minute rate limit',
+    forces: 'Signed delivery that the recipient verifies, rate limiting that is per-subscriber not global, and a retry window the bank controls.',
+    role: 'constraint',
+  },
+  {
+    name: 'Pixel Forge Studio',
+    what: 'Render farm · one event → many downstream services',
+    forces: "Fan-out from one inbound event to a variable set of subscribers, with ordered delivery required within each subscriber's stream.",
+    role: 'exception',
+  },
+  ]}
+  caption='Three subscribers, one delivery engine: each one exists to break a rule the others do not.'
+/>
 
 | The subscriber | The setup | What it forces you to handle |
 |---|---|---|
@@ -121,6 +148,62 @@ The roadmap sections:
 | [Correctness Under Load](./roadmap/correctness/) | 11–14 | Rate limits and fairness, ordering, circuit breaking, observability |
 | [The Dashboard](./roadmap/dashboard/) | 15–17 | Server-rendered UI with `html/template` and htmx, replay, authentication |
 | [Production](./roadmap/production/) | 18–19 | Two instances, graceful drain, Docker, load test, the README that sells the repository |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Go Foundations',
+      href: './roadmap/go-foundations/',
+      steps: [
+      { n: 0, title: 'Toolchain, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'The language: types, structs, slices, maps, zero values', mode: 'learn' },
+      { n: 2, title: 'Errors, interfaces, and package layout', mode: 'learn' },
+      { n: 3, title: 'An HTTP service with the standard library', mode: 'build' },
+      { n: 4, title: 'Goroutines, channels, context, and the race detector', mode: 'learn' },
+      { n: 5, title: 'Testing in Go, properly', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Delivery Core',
+      href: './roadmap/delivery-core/',
+      steps: [
+      { n: 6, title: 'Postgres, migrations, and the three subscribers', mode: 'learn' },
+      { n: 7, title: 'The ingest API and idempotency', mode: 'learn' },
+      { n: 8, title: 'The work queue: claiming deliveries safely', mode: 'learn' },
+      { n: 9, title: 'Signed HTTP delivery', mode: 'learn' },
+      { n: 10, title: 'Retries, backoff, and the dead-letter path', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Correctness Under Load',
+      href: './roadmap/correctness/',
+      steps: [
+      { n: 11, title: 'Rate limits and fairness', mode: 'learn' },
+      { n: 12, title: 'Ordered delivery, and what it costs', mode: 'learn' },
+      { n: 13, title: 'Endpoint health and circuit breaking', mode: 'learn' },
+      { n: 14, title: 'Observability: logs, metrics, profiles', mode: 'build' },
+      ],
+    },
+    {
+      label: 'The Dashboard',
+      href: './roadmap/dashboard/',
+      steps: [
+      { n: 15, title: 'Server-rendered pages with html/template', mode: 'build' },
+      { n: 16, title: 'htmx: live state and the replay button', mode: 'build' },
+      { n: 17, title: 'Authentication: sessions, CSRF, and API keys', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Production',
+      href: './roadmap/production/',
+      steps: [
+      { n: 18, title: 'Two instances', mode: 'learn' },
+      { n: 19, title: 'Ship it, and write the README', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Five sections, 20 steps: six to learn Go before touching the delivery problem.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

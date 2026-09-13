@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know Python, new to FastAPI"* to an AI feature you can put in front of a
 paying client and defend — built around one real domain: **Anchor**, a support assistant that
 answers from a business's own documents, cites where each answer came from, and refuses when
@@ -39,6 +42,30 @@ client who has been shown three chatbot demos will notice immediately.
 
 Three businesses are used as the running examples all the way through the roadmap. They were
 picked because they disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Ridgeline Cycles',
+    what: 'Bike shop · one 40-page PDF · updates twice a year',
+    forces: 'The control case: parse a real PDF, chunk it usefully, retrieve the right passage, and cite the page. If this is wrong, nothing else matters.',
+    role: 'simple',
+  },
+  {
+    name: 'Fairview Family Clinic',
+    what: 'Medical practice · FAQs · some questions must be refused',
+    forces: 'Refusal as the correct behaviour for a category of question, mandatory citation, and an escalation path to a human that the system must take even when it has an answer.',
+    role: 'constraint',
+  },
+  {
+    name: 'Ledgerly',
+    what: 'B2B SaaS · weekly changelog · two versions live at once',
+    forces: 'Freshness: a stale index answers confidently and wrongly. "Which version are you on?" changes the correct answer, and re-indexing must happen without downtime.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three document corpora, one assistant: each one exists to break a rule the others do not.'
+/>
 
 | The business | Its documents | What it forces you to handle |
 |---|---|---|
@@ -115,6 +142,60 @@ The roadmap sections:
 | [Generation](./roadmap/generation/) | 9–12 | The grounded prompt and citations, refusal and escalation, conversation state and token budget, streaming |
 | [Evaluation](./roadmap/evaluation/) | 13–15 | Building the eval set, retrieval vs. answer metrics, LLM-as-judge, regression gating in CI |
 | [Operations](./roadmap/operations/) | 16–17 | Cost control and caching, re-indexing, freshness, deploy and observability |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'FastAPI skeleton and the mental model', mode: 'build' },
+      { n: 2, title: 'Workspaces, policy, and the keys you must not leak', mode: 'learn' },
+      { n: 3, title: 'The corpus schema', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Retrieval',
+      href: './roadmap/retrieval/',
+      steps: [
+      { n: 4, title: 'Ingestion: real documents, not clean text', mode: 'build' },
+      { n: 5, title: 'Chunking', mode: 'learn' },
+      { n: 6, title: 'Embeddings and vector search', mode: 'learn' },
+      { n: 7, title: 'Hybrid search', mode: 'learn' },
+      { n: 8, title: 'Reranking and the retrieval contract', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Generation',
+      href: './roadmap/generation/',
+      steps: [
+      { n: 9, title: 'The grounded answer', mode: 'learn' },
+      { n: 10, title: 'Refusal and escalation', mode: 'learn' },
+      { n: 11, title: 'Conversation state and the token budget', mode: 'learn' },
+      { n: 12, title: 'Streaming and the interface', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Evaluation',
+      href: './roadmap/evaluation/',
+      steps: [
+      { n: 13, title: 'The eval set', mode: 'learn' },
+      { n: 14, title: 'Metrics, and judging an answer', mode: 'learn' },
+      { n: 15, title: 'The regression gate, and tuning against it', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 16, title: 'What it costs, and making it cost less', mode: 'learn' },
+      { n: 17, title: 'Re-indexing, freshness, and deploy', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Five sections, 18 steps: the eval set at step 13 is where the material diverges from a tutorial.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

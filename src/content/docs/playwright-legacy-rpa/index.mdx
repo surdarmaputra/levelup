@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know TypeScript"* to the work nobody wants and everybody needs — built
 around one real system: **Hinge**, a bot that operates business software through its own
 interface because there is no other way in, on Playwright and a vision model used only where a
@@ -42,6 +45,30 @@ changed the interface and the bot recovered instead of dying.
 
 Three businesses are the running examples. They disagree on the axis that matters here — **what
 the bot is allowed to do and what happens when it is wrong**:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Halden Timber',
+    what: 'Timber merchant · internal procurement portal · stable layout',
+    forces: 'The control case: write a baseline, prove it runs unattended, and establish the evidence store before touching anything harder.',
+    role: 'simple',
+  },
+  {
+    name: 'Marisol Foods',
+    what: 'Food distributor · supplier submission portal · one-shot only',
+    forces: 'Irreversibility: the form may be submitted exactly once. The automation must detect whether it has already run and refuse to replay, with evidence either way.',
+    role: 'constraint',
+  },
+  {
+    name: 'Kestrel Clinic',
+    what: 'Medical practice · read-only PHI portal · no write operations',
+    forces: 'Sensitive data that may never leave the environment, screen-scraping without logging what is on screen, and an evidence pack that proves the run happened without capturing the data.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three legacy portals, one automation layer: each one exists to break a rule the others do not.'
+/>
 
 | The business | What Hinge does | What it forces you to handle |
 |---|---|---|
@@ -114,6 +141,64 @@ is unglamorous, which is precisely why it pays.
 | [Resilience](./roadmap/resilience/) | 11–12 | The vendor update that breaks your bot on purpose, then unattended runs and the evidence pack |
 | [Cost](./roadmap/cost/) | 13–14 | Where the money actually is — it is not the model — and the levers |
 | [Operations](./roadmap/operations/) | 15 | Deploy, handover, drift, and the monthly report |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Concepts',
+      href: './roadmap/concepts/',
+      steps: [
+      { n: 0, title: 'What the clicking costs', mode: 'learn' },
+      { n: 1, title: 'Why RPA has a reputation for breaking', mode: 'learn' },
+      { n: 2, title: 'What you could buy instead', mode: 'learn' },
+      { n: 3, title: 'Authorisation, politeness, and what you refuse', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 4, title: 'Tooling, harness, and the legacy portal', mode: 'build' },
+      { n: 5, title: 'The run ledger and the evidence store', mode: 'learn' },
+      { n: 6, title: 'The first flow: log in, read, record', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Driving',
+      href: './roadmap/driving/',
+      steps: [
+      { n: 7, title: 'The resilience ladder', mode: 'learn' },
+      { n: 8, title: 'The first write, and idempotency you build yourself', mode: 'learn' },
+      { n: 9, title: 'The submission that cannot be undone', mode: 'learn' },
+      { n: 10, title: 'Screens full of personal data', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Resilience',
+      href: './roadmap/resilience/',
+      steps: [
+      { n: 11, title: 'The vendor update', mode: 'learn' },
+      { n: 12, title: 'Unattended runs, alerting, and the evidence pack', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Cost',
+      href: './roadmap/cost/',
+      steps: [
+      { n: 13, title: 'Where the money actually goes', mode: 'learn' },
+      { n: 14, title: 'Making it cost less', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 15, title: 'Deploy, handover, and knowing when to stop', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Six sections, 16 steps: four concept steps before any automation, because whose permission you need is decided before the first selector.'
+/>
 
 **There is deliberately no implementation code in any of these documents.**
 

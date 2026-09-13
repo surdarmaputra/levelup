@@ -101,10 +101,11 @@ docs/rfcs/                      design decisions, newest wins
   - Pick them so they **disagree** on the axes the material teaches. Each one exists to break a
     rule the others don't: one is the simple case, one carries the awkward constraint, one
     doesn't fit the obvious model at all. Write down, per example, which rule that is.
-  - They live in four places: a `## What you are building, concretely` section on `index.md`
-    (a table: the instance → its setup → what it forces you to handle), a
-    `## The three example <things>` section in `roadmap/overview.md`, the stories, expected
-    outcomes and gating tests of the steps, and the material's `AGENTS.md` template.
+  - They live in four places: a `## What you are building, concretely` section on `index.mdx`
+    (a `<MaterialExamples>` component followed by the table: the instance → its setup → what it
+    forces you to handle), a `## The three example <things>` section in `roadmap/overview.md`,
+    the stories, expected outcomes and gating tests of the steps, and the material's `AGENTS.md`
+    template.
   - **Seed them in the first step that creates data**, and keep them for the rest of the
     roadmap. A reader must be able to run the thing, not just read about it.
   - State the rule that they are never special-cased in code. `if ($tenant->slug === …)` means
@@ -114,7 +115,7 @@ docs/rfcs/                      design decisions, newest wins
 - Frontmatter `title` and `description` on every page. `description` is what search and
   social cards show.
 - **No `<h1>` in the body** — Starlight renders it from `title`.
-- `sidebar.order` is scoped to the page's directory, starting at 1. The material's `index.md`
+- `sidebar.order` is scoped to the page's directory, starting at 1. The material's `index.mdx`
   is `sidebar.order: 0`, `label: Getting Started` — it *is* the Getting Started page (what /
   why / structure / how to read a step / start here); there is no separate `getting-started.md`.
 - One `##` per top-level unit (step, chapter) so the right-hand TOC is a real table of contents.
@@ -168,6 +169,15 @@ non-negotiable, both recorded in [RFC 0003](docs/rfcs/0003-ai-material-conventio
 - `.astro` only, scoped `<style>` blocks, Starlight CSS custom properties for colour and
   spacing. No hardcoded hex, no global CSS outside `src/styles/custom.css`.
 - A component that exists to render catalog data reads it from `src/catalog.ts`.
+- **Every material's `index.mdx` embeds two diagram components from `src/components/diagrams/`:**
+  - `MaterialExamples` — prop-driven cards for the three named examples. Placed *before* the
+    examples table in `## What you are building, concretely`. Props: `examples` (array of
+    `{name, what, forces, role}`, where `role` ∈ `'simple'|'constraint'|'exception'`) and
+    optional `caption`.
+  - `MaterialRoadmapMap` — prop-driven roadmap map showing all steps banded by section. Placed
+    *after* the section table in `## How this material is structured`. Props: `bands` (array of
+    `{label, href, steps: [{n, title, mode}]}`) and optional `caption`. `mode` ∈
+    `'learn'|'build'`; `n` is a number or string (e.g. `'5b'`).
 
 ---
 

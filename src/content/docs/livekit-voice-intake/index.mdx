@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I have built a chatbot"* to something you can hand a stranger and let them
 try — built around one real system: **Switchboard**, a voice agent that answers a business's
 phone, takes the booking, and knows when to get a human, on LiveKit and a telephony number you
@@ -41,6 +44,30 @@ off when it must.
 
 Three businesses are the running examples. They disagree on the axis that matters here — **what
 the agent is allowed to decide on a live call**:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Bayside Dental',
+    what: 'Dental practice · appointment booking · structured facts',
+    forces: 'The control case: collect name, date, and reason, confirm, and write the booking exactly once — idempotency at the conversation boundary.',
+    role: 'simple',
+  },
+  {
+    name: 'Copper Kettle',
+    what: 'Restaurant · table reservations · ambiguous requests',
+    forces: 'Conversation difficulty: "something Saturday-ish for a few of us" is not a booking request. The agent must clarify without frustrating the caller, and must know when to stop asking.',
+    role: 'constraint',
+  },
+  {
+    name: 'Northgate Plumbing',
+    what: 'Plumber · emergency calls · handoff is the primary path',
+    forces: "Escalation as the goal, not the fallback: the agent's job is to qualify the emergency and transfer to a human. A caller who waits too long hangs up and calls a competitor.",
+    role: 'exception',
+  },
+  ]}
+  caption='Three voice intake scenarios, one agent: each one exists to break a rule the others do not.'
+/>
 
 | The business | What Switchboard does | What it forces you to handle |
 |---|---|---|
@@ -110,6 +137,66 @@ something:
 | [Reliability](./roadmap/reliability/) | 11–13 | Handoff to a human, the hostile-caller suite, and the failure modes only voice has |
 | [Cost](./roadmap/cost/) | 14–15 | The four meters and which is largest, then the levers |
 | [Operations](./roadmap/operations/) | 16–17 | Numbers, hours, out-of-hours, drift, transcript review, the monthly report |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Concepts',
+      href: './roadmap/concepts/',
+      steps: [
+      { n: 0, title: 'What a missed call costs', mode: 'learn' },
+      { n: 1, title: 'Where the latency comes from', mode: 'learn' },
+      { n: 2, title: 'What you could buy instead', mode: 'learn' },
+      { n: 3, title: 'The call policy: what it says, and what it must never say', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 4, title: 'Tooling, harness, and the first call', mode: 'build' },
+      { n: 5, title: 'The latency budget, measured', mode: 'learn' },
+      { n: 6, title: 'The call ledger, and consent', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Conversation',
+      href: './roadmap/conversation/',
+      steps: [
+      { n: 7, title: 'The first conversation', mode: 'build' },
+      { n: 8, title: 'Interruptions and turn-taking', mode: 'learn' },
+      { n: 9, title: 'Getting the facts right', mode: 'learn' },
+      { n: 10, title: 'Tools, and booking exactly once', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Reliability',
+      href: './roadmap/reliability/',
+      steps: [
+      { n: 11, title: 'Handing over to a human', mode: 'learn' },
+      { n: 12, title: 'The hostile-caller suite', mode: 'learn' },
+      { n: 13, title: 'The failure modes only voice has', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Cost',
+      href: './roadmap/cost/',
+      steps: [
+      { n: 14, title: 'Four meters, and which one is largest', mode: 'learn' },
+      { n: 15, title: 'Making it cost less without making it worse', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 16, title: 'Numbers, hours, and the day it fails', mode: 'build' },
+      { n: 17, title: 'Drift, transcript review, and the monthly report', mode: 'learn' },
+      ],
+    },
+  ]}
+  caption='Six sections, 18 steps: four concept steps before any code, because what the agent must never say is decided before the first prompt.'
+/>
 
 **There is deliberately no implementation code in any of these documents.**
 

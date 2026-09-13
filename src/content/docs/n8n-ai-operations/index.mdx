@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I can write code"* to the work businesses pay a monthly retainer for —
 built around one real system: **Relay**, an operations automation that runs a business's daily
 work with AI steps inside it, on self-hosted n8n with a TypeScript service beside it.
@@ -40,6 +43,30 @@ and cost per run.** Plus the golden set that says the AI steps still behave.
 
 Three businesses are the running examples all the way through. They disagree on the axis that
 matters here — **what a wrong AI step costs**:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Fern & Oak',
+    what: 'Homeware brand · AI product descriptions · low stakes',
+    forces: 'The baseline: an AI step with a clear contract, a golden set to validate against, and a cost ledger the client can read.',
+    role: 'simple',
+  },
+  {
+    name: 'Ridgeway Legal',
+    what: 'Law firm · document summaries · strict confidentiality',
+    forces: 'What may leave the building: data classification, workflow gates that check before any AI step, and a client who needs to see the evidence.',
+    role: 'constraint',
+  },
+  {
+    name: 'Brightline Recruiting',
+    what: 'Recruitment agency · AI-assisted shortlisting · decisions about people',
+    forces: "Fairness, audit, and accountability: the workflow makes a decision that affects a person's livelihood, and the client must be able to explain every output.",
+    role: 'exception',
+  },
+  ]}
+  caption='Three business workflows, one n8n platform: each one exists to break a rule the others do not.'
+/>
 
 | The business | What Relay does for them | What it forces you to handle |
 |---|---|---|
@@ -109,6 +136,64 @@ needs guarantees.**
 | [Trust](./roadmap/trust/) | 11–12 | The golden set for AI steps, and fairness and audit for decisions about people |
 | [Cost](./roadmap/cost/) | 13–14 | Where the spend is and how to show it to a client, then the levers |
 | [Operations](./roadmap/operations/) | 15 | Deploy, handover, the monthly report, and the requirement that changed |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Concepts',
+      href: './roadmap/concepts/',
+      steps: [
+      { n: 0, title: 'What the daily process costs', mode: 'learn' },
+      { n: 1, title: 'How an AI step behaves inside a workflow', mode: 'learn' },
+      { n: 2, title: 'What the no-code market already does', mode: 'learn' },
+      { n: 3, title: 'Scoping a retainer', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 4, title: 'Self-hosted n8n, the sidecar, and the quality gate', mode: 'build' },
+      { n: 5, title: 'The run ledger', mode: 'learn' },
+      { n: 6, title: 'The first workflow, with no AI in it', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Workflows',
+      href: './roadmap/workflows/',
+      steps: [
+      { n: 7, title: 'The first AI step, and its contract', mode: 'learn' },
+      { n: 8, title: 'Replay when a step is non-deterministic', mode: 'learn' },
+      { n: 9, title: 'Human sign-off as a workflow state', mode: 'learn' },
+      { n: 10, title: 'What may leave the building', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Trust',
+      href: './roadmap/trust/',
+      steps: [
+      { n: 11, title: 'The golden set, and a model you do not control', mode: 'learn' },
+      { n: 12, title: 'Decisions about people', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Cost',
+      href: './roadmap/cost/',
+      steps: [
+      { n: 13, title: 'Where the money goes, and showing it to the client', mode: 'learn' },
+      { n: 14, title: 'Making it cost less', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 15, title: 'Deploy, handover, and the requirement that changed', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Six sections, 16 steps: four concept steps before any workflow, because what may leave the building is decided before the first node.'
+/>
 
 **There is deliberately no implementation code in any of these documents.**
 

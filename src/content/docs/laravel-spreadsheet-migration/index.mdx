@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I can build a Laravel app"* to the job small businesses actually hire for —
 built around one real domain: **Fieldbook**, the operations back office that replaces the
 spreadsheet a business has run on for six years, on PHP 8.5 and Laravel 13.
@@ -39,6 +42,30 @@ somebody's head, and you have to get it out.
 
 Three businesses are used as the running examples all the way through the roadmap. They were
 picked because they disagree with each other on exactly the points that are hard:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Willow Lane Nursery',
+    what: '2 sheets · 400 rows · simple order tracking',
+    forces: 'The control case: a clean schema derivation, a straightforward import, and a reconciliation that actually matches.',
+    role: 'simple',
+  },
+  {
+    name: 'Cavendish Tutors',
+    what: '8 sheets · VLOOKUP joins · hidden columns',
+    forces: 'Cross-sheet relationships that are not foreign keys, business rules buried in formulas, and data the client did not know they had.',
+    role: 'constraint',
+  },
+  {
+    name: 'Portside Freight',
+    what: '6 sheets · macros · thousands of exception rows',
+    forces: 'Macros that encode process, not just calculation; rows that exist only as exceptions to a rule nobody wrote down; and a cutover the business cannot afford to get wrong.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three spreadsheet systems, one migration path: each one exists to break a rule the others do not.'
+/>
 
 | The business | Its spreadsheet | What it forces you to handle |
 |---|---|---|
@@ -117,6 +144,52 @@ The roadmap sections:
 | [Modelling](./roadmap/modelling/) | 4–7 | Deriving the schema, entity resolution, the import pipeline, reconciliation |
 | [The Application](./roadmap/application/) | 8–11 | The daily workflow, roles and permissions, the audit trail, the report that must match |
 | [Cutover](./roadmap/cutover/) | 12–15 | Parallel run and dual entry, freeze and switch, training and export-back, deploy and handover |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'The admin panel you did not write', mode: 'build' },
+      { n: 2, title: 'Discovery: read the data before you design anything', mode: 'learn' },
+      { n: 3, title: 'Rule extraction: the model is in the formulas', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Modelling',
+      href: './roadmap/modelling/',
+      steps: [
+      { n: 4, title: 'Deriving the schema', mode: 'learn' },
+      { n: 5, title: 'Entity resolution', mode: 'learn' },
+      { n: 6, title: 'The import pipeline', mode: 'learn' },
+      { n: 7, title: 'Reconciliation: does your database agree with their sheet?', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'The Application',
+      href: './roadmap/application/',
+      steps: [
+      { n: 8, title: 'The daily workflow', mode: 'build' },
+      { n: 9, title: 'Roles, permissions, and what people should not see', mode: 'learn' },
+      { n: 10, title: 'The audit trail', mode: 'learn' },
+      { n: 11, title: 'The one report that must match', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Cutover',
+      href: './roadmap/cutover/',
+      steps: [
+      { n: 12, title: 'Parallel run and dual entry', mode: 'learn' },
+      { n: 13, title: 'Freeze, switch, and the way back', mode: 'learn' },
+      { n: 14, title: 'Training, shadow usage, and the export they were promised', mode: 'build' },
+      { n: 15, title: 'Deploy, backups, handover', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Four sections, 16 steps: discovery and modelling before any application code, because the schema you derive is the whole project.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

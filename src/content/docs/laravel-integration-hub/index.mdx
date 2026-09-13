@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I can build a Laravel app"* to the work that keeps paying after launch —
 built around one real domain: **Conduit**, the integration hub a small business runs its
 operations on, joining the systems it already uses and does not control, on PHP 8.5 and
@@ -51,6 +54,30 @@ send events out of order, and sometimes they send nothing at all and that is the
 
 Three businesses are used as the running examples all the way through the roadmap. They were
 picked because they disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Meridian Print Co',
+    what: 'Print supplier · simple webhook · low volume',
+    forces: 'The control case: verified inbound webhooks, idempotent job processing, retries, and a dead-letter path.',
+    role: 'simple',
+  },
+  {
+    name: 'Harborline Supply',
+    what: 'Logistics partner · rate-limited API · scheduled pull',
+    forces: 'Outbound rate limits that are per-connection, scheduled polling that must not overlap itself, and partial responses that resume from a cursor.',
+    role: 'constraint',
+  },
+  {
+    name: 'Cedar & Co',
+    what: 'Furniture retailer · duplicate order IDs · nightly reconciliation',
+    forces: 'Duplicate detection across days, a reconciliation run that tells you the true state, and schema drift when their CSV format changes without notice.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three integration clients, one hub: each one exists to break a rule the others do not.'
+/>
 
 | The business | What it connects | What it forces you to handle |
 |---|---|---|
@@ -131,6 +158,64 @@ The roadmap sections:
 | [Outbound](./roadmap/outbound/) | 10–13 | HTTP timeouts and backoff, circuit breaking, per-connection rate limits, mapping and schema drift |
 | [Batch and Schedule](./roadmap/batch/) | 14–17 | Scheduled pulls, SFTP and CSV ingestion, quarantine and review, freshness and silence detection |
 | [Money and Operations](./roadmap/operations/) | 18–21 | Out-of-order events and derived state, daily reconciliation, the ops console, deploy and on-call |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'The connection registry', mode: 'build' },
+      { n: 2, title: 'The message model and the schema', mode: 'learn' },
+      { n: 3, title: 'The request contract and the error model', mode: 'learn' },
+      { n: 4, title: 'Credentials, encryption, and what never reaches a log', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Inbound',
+      href: './roadmap/inbound/',
+      steps: [
+      { n: 5, title: 'Receiving a webhook', mode: 'learn' },
+      { n: 6, title: 'Idempotency', mode: 'learn' },
+      { n: 7, title: 'The job pipeline', mode: 'build' },
+      { n: 8, title: 'Retry policy', mode: 'learn' },
+      { n: 9, title: 'Dead-letter, poison messages, and replay', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Outbound',
+      href: './roadmap/outbound/',
+      steps: [
+      { n: 10, title: 'Outbound adapters and the timeout you forgot', mode: 'build' },
+      { n: 11, title: "Rate limits, throttling, and someone else's budget", mode: 'learn' },
+      { n: 12, title: 'Circuit breaking and degrading on purpose', mode: 'learn' },
+      { n: 13, title: 'Mapping, schema drift, and contract tests', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Batch and Schedule',
+      href: './roadmap/batch/',
+      steps: [
+      { n: 14, title: 'Scheduled work, and the run that overlaps itself', mode: 'build' },
+      { n: 15, title: 'File ingestion that resumes', mode: 'learn' },
+      { n: 16, title: 'Quarantine and the person who fixes it', mode: 'build' },
+      { n: 17, title: 'Freshness, silence, and the failure that produces no error', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Operations',
+      href: './roadmap/operations/',
+      steps: [
+      { n: 18, title: 'Events that arrive in the wrong order', mode: 'learn' },
+      { n: 19, title: 'Reconciliation, and the number that tells you the truth', mode: 'learn' },
+      { n: 20, title: 'The ops console', mode: 'build' },
+      { n: 21, title: 'Deploy, drain, and the runbook', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Five sections, 22 steps: inbound before outbound, and operations last because you cannot operate what you have not built.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

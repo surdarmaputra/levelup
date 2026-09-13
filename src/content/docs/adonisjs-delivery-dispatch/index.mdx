@@ -6,6 +6,9 @@ sidebar:
   label: Getting Started
 ---
 
+import MaterialRoadmapMap from '../../../components/diagrams/MaterialRoadmapMap.astro';
+import MaterialExamples from '../../../components/diagrams/MaterialExamples.astro';
+
 A guided path from *"I know TypeScript, new to AdonisJS"* to a production-grade backend and
 fullstack application — built around one real domain: **Antar**, a last-mile delivery platform
 that shops use to get their goods to a customer's door, on Node 24 and AdonisJS 7.
@@ -33,6 +36,30 @@ is until it arrives.
 
 Three shops are used as the running examples all the way through the roadmap. They were picked
 because they disagree with each other on exactly the points that are hard to build:
+
+<MaterialExamples
+  examples={[
+  {
+    name: 'Warung Pak Budi',
+    what: '2 couriers · local food delivery · simple radius',
+    forces: 'The control case: geo-proximity, shift eligibility, and one-courier-one-job assignment under concurrency.',
+    role: 'simple',
+  },
+  {
+    name: 'Sehat Pharmacy',
+    what: 'Cold-chain deliveries · certified couriers only',
+    forces: 'Capability matching on top of proximity — a courier who is available but not certified must not receive the offer.',
+    role: 'constraint',
+  },
+  {
+    name: 'Atlas Hardware',
+    what: '3-drop route · 2 couriers available · one order',
+    forces: 'Multi-drop routing with a single assignment: the engine must score a route, not a courier, and the concurrency problem multiplies.',
+    role: 'exception',
+  },
+  ]}
+  caption='Three dispatch scenarios, one platform: each one exists to break a rule the others do not.'
+/>
 
 | The merchant | What it sends | What it forces you to handle |
 |---|---|---|
@@ -112,6 +139,66 @@ The roadmap sections:
 | [Realtime and Async](./roadmap/realtime/) | 10–13 | The courier API, background jobs, time and SLA, live tracking |
 | [Money](./roadmap/money/) | 14–16 | Payments and webhooks, refunds and failed deliveries, the payout ledger |
 | [Surface and Scale](./roadmap/scale/) | 17–23 | The ops console, the customer tracking page, the public API, read performance, observability, multi-city, deploy |
+
+<MaterialRoadmapMap
+  bands={[
+    {
+      label: 'Foundations',
+      href: './roadmap/foundations/',
+      steps: [
+      { n: 0, title: 'Dev environment, quality gate, agent harness', mode: 'build' },
+      { n: 1, title: 'Project skeleton and the AdonisJS mental model', mode: 'build' },
+      { n: 2, title: 'Lucid, migrations, and the schema', mode: 'learn' },
+      { n: 3, title: 'The request contract: validation, serialization, error model', mode: 'learn' },
+      { n: 4, title: 'Auth I: session auth, roles, policies', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Dispatch',
+      href: './roadmap/dispatch/',
+      steps: [
+      { n: 5, title: 'The order and the delivery job: two aggregates, one state machine', mode: 'learn' },
+      { n: 6, title: 'Couriers, shifts, and capabilities', mode: 'build' },
+      { n: 7, title: 'The dispatch engine: candidates, scoring, and offers', mode: 'learn' },
+      { n: 8, title: 'Assignment under concurrency: one courier, one job', mode: 'learn' },
+      { n: 9, title: 'Geography: nearest couriers, and the index that makes it fast', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Realtime and Async',
+      href: './roadmap/realtime/',
+      steps: [
+      { n: 10, title: 'The courier API: tokens, idempotency, out-of-order events', mode: 'learn' },
+      { n: 11, title: 'Background jobs: offers that expire, work that gets stuck', mode: 'build' },
+      { n: 12, title: 'Time: promised delivery, deadlines, and timezones', mode: 'learn' },
+      { n: 13, title: 'Live tracking with server-sent events', mode: 'build' },
+      ],
+    },
+    {
+      label: 'Money',
+      href: './roadmap/money/',
+      steps: [
+      { n: 14, title: 'Payments: charging the customer, and webhooks that arrive twice', mode: 'learn' },
+      { n: 15, title: 'Refunds, cancellations, and deliveries that fail', mode: 'learn' },
+      { n: 16, title: 'The ledger: courier payouts and platform commission', mode: 'learn' },
+      ],
+    },
+    {
+      label: 'Surface and Scale',
+      href: './roadmap/scale/',
+      steps: [
+      { n: 17, title: 'The ops console: Edge, Vite, and forms that tell the truth', mode: 'build' },
+      { n: 18, title: 'The customer tracking page: Inertia and React', mode: 'build' },
+      { n: 19, title: 'The public merchant API and outbound webhooks', mode: 'build' },
+      { n: 20, title: 'Read performance: the dispatch board, indexes, and cache keys', mode: 'learn' },
+      { n: 21, title: 'Observability: traces, logs, and the metric that matters', mode: 'build' },
+      { n: 22, title: 'Regional dispatch: one loop becomes many', mode: 'learn' },
+      { n: 23, title: 'Deploy: processes, drains, and the first bad night', mode: 'build' },
+      ],
+    },
+  ]}
+  caption='Five sections, 24 steps: the dispatch engine comes before money, because money without correct assignment is wrong money.'
+/>
 
 **There is deliberately no implementation code in any of these documents.** Handing you working
 code gives you the feeling of understanding, and you remember almost none of it later. The

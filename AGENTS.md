@@ -11,7 +11,7 @@ GitHub Pages today and a VPS later.
 The content is the product. The code exists to render it, stay out of its way, and make adding
 the next material cheap.
 
-Current release: **v0.3** — twelve materials. Six of them are the AI and automation set
+Current release: **v0.3** — thirteen materials. Six of them are the AI and automation set
 (`fastapi-support-assistant`, `fastapi-document-intake`, `mcp-operations-agent`,
 `n8n-ai-operations`, `playwright-legacy-rpa`, `livekit-voice-intake`), which carry two extra
 conventions — see *AI materials* below.

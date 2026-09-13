@@ -1,0 +1,147 @@
+---
+/**
+ * PermissionGrid — the authorisation matrix as an artefact, with the row that
+ * actually leaks: same role, different clinic.
+ *
+ * Generated in the real project from roles × resources × actions; here it is
+ * the readable slice that shows what the generated suite is asserting.
+ */
+
+const columns = ['Appointment', 'Record', 'Letter', 'Export'];
+
+const rows = [
+  { role: 'Clinic admin', scope: 'own clinic', cells: ['allow', 'allow', 'allow', 'allow'] },
+  { role: 'Receptionist', scope: 'own clinic', cells: ['allow', 'allow', 'allow', 'deny'] },
+  { role: 'Receptionist', scope: 'another clinic', cells: ['deny', 'deny', 'leak', 'deny'] },
+  { role: 'Patient', scope: 'own record', cells: ['allow', 'allow', 'allow', 'deny'] },
+  { role: 'Patient', scope: "another patient's", cells: ['deny', 'deny', 'deny', 'deny'] },
+];
+
+const glyph = { allow: '✓', deny: '✕', leak: '✓' } as const;
+---
+
+<figure class="lu-figure permissions">
+  <div class="lu-figure__frame lu-figure__scroll">
+    <table class="grid">
+      <thead>
+        <tr>
+          <th scope="col" class="corner">Who, and over what</th>
+          {columns.map((column) => <th scope="col">{column}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr class={row.cells.includes('leak') ? 'is-leak' : undefined}>
+              <th scope="row">
+                <span class="role">{row.role}</span>
+                <span class="scope">{row.scope}</span>
+              </th>
+              {row.cells.map((cell) => (
+                <td class={`cell cell--${cell}`}>
+                  <span class="glyph">{glyph[cell as keyof typeof glyph]}</span>
+                  {cell === 'leak' && <span class="cell__note">expected ✕</span>}
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Step 14. Nothing errors, nobody is told, and no test written from the happy
+    path ever runs that row — which is exactly where
+    <code>BEECH-LETTER-LEAK</code> lives.
+  </figcaption>
+</figure>
+
+<style>
+  .permissions .grid {
+    display: table;
+    width: 100%;
+    min-width: 30rem;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+  }
+
+  .grid th,
+  .grid td {
+    padding: 0.4375rem 0.625rem;
+    border: 1px solid var(--sl-color-hairline);
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .grid thead th {
+    font-family: var(--sl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 510;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-gray-3);
+    text-transform: uppercase;
+  }
+
+  .grid .corner {
+    text-align: left;
+  }
+
+  .grid tbody th {
+    display: table-cell;
+    text-align: left;
+    text-transform: none;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .role {
+    display: block;
+    text-transform: none;
+    font-size: 0.875rem;
+    font-weight: 510;
+    color: var(--sl-color-white);
+  }
+
+  .scope {
+    display: block;
+    text-transform: none;
+    font-family: var(--sl-font-mono);
+    font-size: 0.6875rem;
+    color: var(--sl-color-gray-4);
+  }
+
+  .glyph {
+    font-size: 0.9375rem;
+    font-weight: 590;
+  }
+
+  .cell--allow .glyph {
+    color: var(--sl-color-green-high);
+  }
+
+  .cell--deny .glyph {
+    color: var(--sl-color-gray-4);
+  }
+
+  .cell--leak {
+    background: var(--sl-color-red-low);
+    border-color: var(--sl-color-red-high);
+  }
+
+  .cell--leak .glyph {
+    color: var(--sl-color-red-high);
+  }
+
+  .cell__note {
+    display: block;
+    margin-top: 0.125rem;
+    font-family: var(--sl-font-mono);
+    font-size: 0.625rem;
+    color: var(--sl-color-red-high);
+  }
+
+  .is-leak th .role {
+    color: var(--sl-color-red-high);
+  }
+</style>

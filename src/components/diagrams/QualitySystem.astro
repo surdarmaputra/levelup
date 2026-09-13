@@ -1,0 +1,136 @@
+---
+/**
+ * QualitySystem — the shape of the thing being built across eighteen steps,
+ * ending in the artefact that is actually the deliverable: a release record.
+ * The return path is the part most teams never build.
+ */
+---
+
+<figure class="lu-figure system">
+  <div class="lu-figure__frame lu-figure__scroll">
+    <svg viewBox="0 28 700 236" role="img" aria-label="Strategy feeds the suite, the suite feeds the pipeline, the pipeline feeds the gate, the gate produces a release record, and an escaped defect returns to the strategy and the defect catalogue">
+      <defs>
+        <marker id="qs-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path class="arrowhead" d="M0 0 L10 5 L0 10 z" />
+        </marker>
+      </defs>
+
+      <g class="node">
+        <rect x="16" y="46" width="140" height="46" rx="8" />
+        <text class="title" x="86" y="68">Strategy</text>
+        <text class="sub" x="86" y="83">risk → level → test</text>
+      </g>
+      <path class="link" d="M160 69 L182 69" marker-end="url(#qs-arrow)" />
+
+      <g class="node">
+        <rect x="186" y="46" width="140" height="46" rx="8" />
+        <text class="title" x="256" y="68">Suite</text>
+        <text class="sub" x="256" y="83">journeys · API · contracts</text>
+      </g>
+      <path class="link" d="M330 69 L352 69" marker-end="url(#qs-arrow)" />
+
+      <g class="node">
+        <rect x="356" y="46" width="140" height="46" rx="8" />
+        <text class="title" x="426" y="68">Pipeline</text>
+        <text class="sub" x="426" y="83">selected · sharded</text>
+      </g>
+      <path class="link" d="M500 69 L522 69" marker-end="url(#qs-arrow)" />
+
+      <g class="node">
+        <rect x="526" y="46" width="140" height="46" rx="8" />
+        <text class="title" x="596" y="68">Gate</text>
+        <text class="sub" x="596" y="83">block · warn · accept</text>
+      </g>
+
+      <!-- what hangs off the suite -->
+      <path class="tie" d="M256 92 L256 118" />
+      <text class="hang" x="256" y="133">fixtures · factories · a clock you control</text>
+      <text class="hang" x="256" y="149">results · flake history · the risk each test is for</text>
+
+      <!-- the deliverable -->
+      <path class="link" d="M596 92 L596 148" marker-end="url(#qs-arrow)" />
+      <g class="node node--out">
+        <rect x="526" y="152" width="140" height="46" rx="8" />
+        <text class="title" x="596" y="174">Release record</text>
+        <text class="sub" x="596" y="189">one page, a decision</text>
+      </g>
+
+      <!-- the return path -->
+      <path class="loop" d="M596 198 L596 232 L86 232 L86 96" marker-end="url(#qs-arrow)" />
+      <text class="loop-label" x="340" y="252">an escaped defect becomes a catalogue entry, a test, and a change to the strategy</text>
+    </svg>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Everything upstream of the gate is work. The release record is the part
+    somebody outside the team ever sees.
+  </figcaption>
+</figure>
+
+<style>
+  .lu-figure__scroll svg {
+    display: block;
+    width: 100%;
+    min-width: 620px;
+    height: auto;
+  }
+
+  .node rect {
+    fill: var(--lu-surface-2);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .node--out rect {
+    stroke: var(--lu-marker);
+  }
+
+  .title {
+    fill: var(--sl-color-white);
+    font-size: 13px;
+    font-weight: 590;
+    text-anchor: middle;
+  }
+
+  .sub {
+    fill: var(--sl-color-gray-3);
+    font-family: var(--sl-font-mono);
+    font-size: 9px;
+    text-anchor: middle;
+  }
+
+  .link {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .tie {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 3;
+    fill: none;
+  }
+
+  .hang {
+    fill: var(--sl-color-gray-3);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .loop {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    fill: none;
+  }
+
+  .loop-label {
+    fill: var(--sl-color-gray-3);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .arrowhead {
+    fill: var(--sl-color-gray-3);
+  }
+</style>

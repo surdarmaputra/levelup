@@ -1,0 +1,168 @@
+---
+/**
+ * FlakeCauses — the six things an intermittent failure actually is, and the
+ * fix each one implies. The bottom row is the fix everybody reaches for and
+ * the reason it is the wrong one.
+ */
+---
+
+<figure class="lu-figure flake">
+  <div class="lu-figure__frame">
+    <p class="trigger">A test fails one run in twenty</p>
+    <p class="prompt">Which of these six is it? Answer before touching the test.</p>
+
+    <ol class="causes">
+      <li>
+        <span class="cause">Shared state between tests</span>
+        <span class="fix">Per-worker data, and a fixture instead of a shared variable</span>
+      </li>
+      <li>
+        <span class="cause">A wait on a duration</span>
+        <span class="fix">Wait for the condition, with a deadline</span>
+      </li>
+      <li>
+        <span class="cause">Real time, or a time zone</span>
+        <span class="fix">A clock the test controls</span>
+      </li>
+      <li>
+        <span class="cause">An ordering assumption</span>
+        <span class="fix">Assert on the outcome, and test the reordered delivery</span>
+      </li>
+      <li>
+        <span class="cause">Animation or focus timing</span>
+        <span class="fix">Wait for the settled state, not the transition</span>
+      </li>
+      <li>
+        <span class="cause">A load-dependent environment</span>
+        <span class="fix">Bound the resource, or move the check to a cheaper level</span>
+      </li>
+    </ol>
+
+    <p class="trap">
+      <span class="trap__label">The tempting fix</span>
+      <span class="trap__struck">add a retry</span>
+      <span class="trap__why">
+        It makes all six disappear from the report, and hides the one cause
+        that is not a test problem at all — a real race in the product, like
+        <code>TRAIL-STOCK-OVERSELL</code>, which then ships.
+      </span>
+    </p>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Step 10. Flake is a defect with an owner, and every cause has a different fix.
+  </figcaption>
+</figure>
+
+<style>
+  .trigger {
+    display: inline-block;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-surface-2);
+    font-family: var(--sl-font-mono);
+    font-size: 0.8125rem;
+    color: var(--sl-color-white);
+  }
+
+  .prompt {
+    margin: 0.625rem 0 1rem;
+    font-size: 0.8125rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .causes {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: cause;
+    border-top: 1px solid var(--sl-color-hairline);
+  }
+
+  .causes li {
+    display: grid;
+    grid-template-columns: minmax(11rem, 1fr) 1.6fr;
+    gap: 0.75rem 1rem;
+    align-items: baseline;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    counter-increment: cause;
+  }
+
+  .cause {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 510;
+    color: var(--sl-color-white);
+  }
+
+  .cause::before {
+    content: counter(cause);
+    position: absolute;
+    left: 0;
+    font-family: var(--sl-font-mono);
+    font-size: 0.75rem;
+    color: var(--lu-marker);
+  }
+
+  .fix {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--sl-color-gray-3);
+  }
+
+  .trap {
+    display: grid;
+    grid-template-columns: minmax(11rem, 1fr) 1.6fr;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    margin: 1rem 0 0;
+    padding: 0.75rem;
+    border: 1px dashed var(--sl-color-red-high);
+    border-radius: var(--lu-radius-control);
+    background: var(--sl-color-red-low);
+  }
+
+  .trap__label {
+    font-family: var(--sl-font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sl-color-red-high);
+  }
+
+  .trap__struck {
+    grid-column: 1;
+    font-size: 0.875rem;
+    font-weight: 510;
+    color: var(--sl-color-gray-2);
+    text-decoration: line-through;
+    text-decoration-color: var(--sl-color-red-high);
+  }
+
+  .trap__why {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--sl-color-gray-3);
+  }
+
+  @media (max-width: 44rem) {
+    .causes li,
+    .trap {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+
+    .trap__why,
+    .trap__struck {
+      grid-column: 1;
+      grid-row: auto;
+    }
+  }
+</style>

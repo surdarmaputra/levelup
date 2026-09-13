@@ -1,0 +1,140 @@
+---
+title: Strategy
+description: Steps 0–3. What a failure costs in each product, what to test and what to leave alone, where test data comes from, and what "ready to release" has to mean.
+sidebar:
+  order: 2
+---
+
+import TestLevels from '../../../../components/diagrams/TestLevels.astro';
+
+No code in this section. Four documents, and every later argument about what to automate is
+settled with them.
+
+---
+
+## Step 0 — What a failure costs
+
+**Story:** *As the quality engineer, I can say what each kind of failure costs in each product, so that "what should we test?" stops being a matter of opinion.*
+
+**Mode:** `LEARN` — a spreadsheet and an hour. Writing tests before this is guessing with effort.
+
+**Why now:** First step. Every decision after it is a cost argument, and you cannot make one without numbers.
+
+**Concepts:**
+- **A failure has four costs**, and they differ wildly between products: the direct loss (a wrong total, a lost order), the recovery cost (who fixes it, for how long), the detection delay (minutes for Trailhead, possibly weeks for Beechwood), and the consequence that is not money at all — a regulator, a patient, a carrier contract.
+- **Frequency times cost, not cost alone.** A catastrophic failure that needs three simultaneous conditions may be worth less attention than a small one that happens daily. Write both columns.
+- **Detection delay is the number people forget.** A storefront bug is reported by a customer in twenty minutes. A wrong letter in a patient portal may be found in six months, by someone who is not you.
+- **The three products disagree here on purpose.** Trailhead's worst day is money and apologies. Beechwood's worst day is a data breach that has to be reported. Polaris's worst day is a lorry going to the wrong depot and a carrier contract in dispute.
+- **What it costs to test** is the other half. An hour of your time, plus the minutes it adds to every pipeline run forever, plus the maintenance when the feature changes.
+- **The failures you will not prevent.** Say so now, in writing. A strategy that claims to cover everything is not read by anyone twice.
+
+**Libraries:** none
+
+**Expected outcome:** `docs/risk-model.md` — per product, a table of failure modes with direct cost, recovery cost, detection delay, frequency and the non-money consequence. A ranked list across all three products. A short statement of what you are deliberately accepting.
+
+**Verification**
+
+| | |
+|---|---|
+| **L1 — Gating test** | `ACC-00` — every product has at least six failure modes with all five columns filled and a stated source for each number; the ranking is across products, not within them; at least three failure modes appear on an explicit "accepted, not tested" list with reasons. |
+| **L2 — Manual checks** | (a) Show the ranking to someone who works on one of these products and ask what is missing. The first thing they say is usually the thing your suite would never have caught. <br />(b) Cover the cost column and try to rank from memory. If your ranking matches, you ranked by feel and wrote the numbers to fit. |
+| **L4 — Anti-patterns** | `AP-00-a`, `AP-00-b`, `AP-00-c` — [full text](../../reference/rubrics/) |
+| **Done when** | `ACC-00` green, and you can say which product gets the most of your time and why |
+
+---
+
+## Step 1 — What to test, and where
+
+**Story:** *As the quality engineer, I have a written strategy saying what is tested at which level, so that the team stops adding UI tests for things a unit test already proves.*
+
+**Mode:** `LEARN` — the argument, not the implementation.
+
+**Why now:** Directly after the risk model, because the strategy is the risk model spent.
+
+**Concepts:**
+- **The pyramid argued properly, not quoted.** The shape follows from cost and speed: a browser journey costs seconds and breaks when the page changes; an API test costs milliseconds; a unit test costs microseconds. The ratio is an outcome of those facts in your products, not a rule you inherit.
+- **The question each level can answer.** A unit test answers "does this function compute correctly". An API test answers "does this service honour its contract". A journey answers "can a person actually do this". Asking a journey to prove arithmetic is the most common waste in real suites.
+- **The oracle problem.** A test needs a source of truth. For Trailhead's total it is arithmetic you can restate. For Beechwood's letter content it is a document somebody approved. For Polaris's allocation rules it is a business rule nobody has written down yet — which is a finding, and a valuable one.
+- **Risk to test, explicitly.** Each entry in the strategy points at a failure mode from step 0. A test that points at nothing is either a missing risk or a test to delete.
+- **What you deliberately do not automate**: one-off migrations, things that change weekly, anything where the check costs more than the failure. Say it in the document so nobody re-opens it every sprint.
+- **Where exploratory testing sits.** Automation only checks the things you already thought of. Step 12 covers the practice; the strategy has to reserve time for it now, or it never happens.
+- **Coverage is not detection.** A line executed is not a line checked. Step 16 measures the real thing; the strategy has to stop the team reporting the fake one.
+
+<TestLevels />
+
+**Libraries:** none
+
+**Expected outcome:** `docs/test-strategy.md` — per product, a table of *risk → the level it is tested at → why not a cheaper level*. A stated target shape for the suite. A "not automated" list with reasons. A statement of the oracle for the three hardest checks. Time reserved for exploratory testing.
+
+**Verification**
+
+| | |
+|---|---|
+| **L1 — Gating test** | `ACC-01` — every strategy entry references a failure mode ID from `docs/risk-model.md`; each entry names why the next-cheaper level cannot answer the question; the "not automated" list has at least five entries with reasons; the oracle is stated for Trailhead's totals, Beechwood's letters and Polaris's allocation. |
+| **L2 — Manual checks** | (a) Take the five most important risks and ask, for each, what would still have to be true for the test to pass while the risk happened anyway. That gap is your real coverage. <br />(b) Give the strategy to a developer on the team and ask what they would add tests for anyway. Their answer tells you what the document fails to say clearly. |
+| **L4 — Anti-patterns** | `AP-01-a`, `AP-01-b`, `AP-01-c`, `AP-01-d` — [full text](../../reference/rubrics/) |
+| **Done when** | `ACC-01` green, and you can defend one deliberate gap out loud without hedging |
+
+---
+
+## Step 2 — Environments, test data, and what you may use
+
+**Story:** *As Beechwood Health, no patient's real record is ever copied into a test environment, and the tests still work.*
+
+**Mode:** `LEARN` — the position, written before any data exists to be careless with.
+
+**Why now:** Before the first line of test code. A suite built on a production copy cannot be un-built, and the habit spreads to the other products in a week.
+
+**Concepts:**
+- **Why "just anonymise production" fails.** Names are guessable from postcodes and dates, free-text fields carry everything the schema does not, and every restore re-imports the problem. It is also a decision you cannot defend afterwards.
+- **Manufactured data has to be realistic in the ways that matter**: accented and long names, a patient with two clinics, an address with no postcode, a consignment with a missing weight. Realistic means it exercises the edges, not that it looks pretty.
+- **Per-worker isolation.** Eight parallel workers sharing one seeded dataset produces failures that are real but not reproducible. Each worker gets its own namespace, its own records, and cleans up after itself.
+- **Deterministic randomness.** A factory using a seeded generator gives you variety and reproducibility at once. Unseeded randomness gives you a suite that fails on Tuesdays.
+- **The environment question**: what runs locally, what runs in CI, what needs a shared environment and why. The default answer is everything in Compose, because a shared environment that anyone can change is a source of failures nobody can explain.
+- **Third parties you cannot call**: the payment provider and the carriers. Decide now whether they are stubbed, recorded, or sandboxed — step 9 implements the choice.
+- **Retention and access.** Even manufactured data in a health-shaped schema attracts rules. State who can reach the environment, what is logged, and how long artefacts are kept.
+
+**Libraries:** none yet — the factory choice is made in step 7
+
+**Expected outcome:** `docs/test-data.md` — the rule that production data is never copied, and what replaces it per product; the shape of the factories; the isolation model for parallel workers; the third-party position; the environment matrix (local, CI, shared) with what each is for; retention and access for artefacts.
+
+**Verification**
+
+| | |
+|---|---|
+| **L1 — Gating test** | `ACC-02` — the document forbids production copies without exception and says what replaces them for each product; the isolation model states what a worker owns; the third-party position covers the payment provider and both carriers; the environment matrix says which environments may be shared and what breaks when they are. |
+| **L2 — Manual checks** | (a) Describe your Beechwood test data to someone who works with patient data. If they hesitate, the schema is closer to real than you think. <br />(b) Write down what happens when two workers run the same test against the same clinic at the same time. If the answer is "it would be fine", check it again. |
+| **L4 — Anti-patterns** | `AP-02-a`, `AP-02-b`, `AP-02-c` — [full text](../../reference/rubrics/) |
+| **Done when** | `ACC-02` green, and no part of your plan needs a production restore to work |
+
+---
+
+## Step 3 — What "ready to release" means
+
+**Story:** *As the person who signs the release, I know in advance what would stop it, so that nobody is arguing about it at 17:00 on a Friday.*
+
+**Mode:** `LEARN` — the definition, written when nothing is at stake.
+
+**Why now:** Last of the documents. Written before a release exists to argue about, because the meaning of "ready" negotiated during an incident is whatever the loudest person wants.
+
+**Concepts:**
+- **A gate is a list of conditions, agreed in advance.** Not a feeling, not a green tick, not "QA signed off". Each condition has a source — a check, a report, a document — and a stated owner.
+- **Blocking and non-blocking are different decisions.** A failing journey blocks. A performance threshold missed by four percent might warn. Decide which is which now and write the reason; a gate where everything blocks gets bypassed, and a gate where nothing blocks is decoration.
+- **The three products need different bars.** Trailhead can ship a fix in an hour, so its bar is lower. Beechwood's release needs an accessibility statement and evidence that a human signed. Polaris ships into a system where an error costs a lorry, and its cut-off behaviour is not negotiable.
+- **The known-failure path.** Real releases go out with known defects. The gate has to allow that explicitly — an accepted failure, named, with who accepted it — or people will simply lie to it.
+- **Evidence a non-engineer can read.** "42 tests passed" is not evidence. What ran, what failed, what was accepted and by whom — one page, attached to the build.
+- **Who can say no, and what happens next.** A gate nobody can invoke is not a gate. Write down who blocks, who overrides, and that an override is recorded rather than prevented.
+- **Rollback is part of ready.** If the release cannot be undone in a stated time, the bar is higher. That is a statement about each product, and Polaris's answer is not Trailhead's.
+
+**Libraries:** none
+
+**Expected outcome:** `docs/release-readiness.md` — the conditions per product, each marked blocking or warning with a reason and a source; the accepted-failure process; the shape of the one-page release record; who blocks, who overrides, and how an override is recorded; the rollback position per product.
+
+**Verification**
+
+| | |
+|---|---|
+| **L1 — Gating test** | `ACC-03` — every condition names its source and owner and is marked blocking or warning with a reason; the three products have different bars with the difference explained; there is a written accepted-failure path; the release record template fits on one page and contains no test-runner jargon. |
+| **L2 — Manual checks** | (a) Take last month's worst plausible release and walk it through the gate on paper. If it passes, your gate is decoration. <br />(b) Show the release record template to someone non-technical and ask what decision they would make from it. If they cannot answer, rewrite it. |
+| **L4 — Anti-patterns** | `AP-03-a`, `AP-03-b`, `AP-03-c`, `AP-03-d` — [full text](../../reference/rubrics/) |
+| **Done when** | `ACC-03` green, and you could refuse a release on Friday and point at the line that says why |

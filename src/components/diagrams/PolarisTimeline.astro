@@ -1,0 +1,192 @@
+---
+/**
+ * PolarisTimeline — what "no user interface" actually looks like.
+ *
+ * One clock, three lanes: orders crossing the 16:00 cut-off, a carrier that
+ * answers minutes later, and webhooks that arrive out of order and twice.
+ * Simultaneity is the thing prose cannot show, so it is the whole picture.
+ */
+---
+
+<figure class="lu-figure polaris">
+  <div class="lu-figure__frame lu-figure__scroll">
+    <svg viewBox="0 0 700 258" role="img" aria-label="A timeline from 15:55 to 16:05 with a cut-off at 16:00, showing two orders either side of it, a carrier call answered three minutes later, and webhooks arriving out of order and twice">
+      <defs>
+        <marker id="pt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path class="arrowhead" d="M0 0 L10 5 L0 10 z" />
+        </marker>
+        <marker id="pt-arrow-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path class="arrowhead arrowhead--warn" d="M0 0 L10 5 L0 10 z" />
+        </marker>
+      </defs>
+
+      <!-- clock -->
+      <line class="axis" x1="110" y1="42" x2="678" y2="42" />
+      <g class="ticks">
+        <line x1="110" y1="36" x2="110" y2="48" /><text x="110" y="26">15:55</text>
+        <line x1="390" y1="36" x2="390" y2="48" /><text x="390" y="26">16:00</text>
+        <line x1="670" y1="36" x2="670" y2="48" /><text x="670" y="26">16:05</text>
+      </g>
+
+      <!-- the cut-off -->
+      <line class="cutoff" x1="390" y1="42" x2="390" y2="240" />
+      <text class="cutoff-label" x="396" y="60">cut-off</text>
+
+      <!-- lane 1 — orders -->
+      <text class="lane" x="0" y="88">orders in</text>
+      <line class="rail" x1="110" y1="84" x2="670" y2="84" />
+      <g class="event">
+        <circle cx="334" cy="84" r="5" />
+        <text class="stamp" x="334" y="70">15:59</text>
+        <text class="note" x="334" y="106">goes today</text>
+      </g>
+      <g class="event event--late">
+        <circle cx="446" cy="84" r="5" />
+        <text class="stamp" x="446" y="70">16:01</text>
+        <text class="note" x="446" y="106">goes tomorrow</text>
+      </g>
+
+      <!-- lane 2 — carrier round trip -->
+      <text class="lane" x="0" y="152">carrier</text>
+      <line class="rail" x1="110" y1="148" x2="670" y2="148" />
+      <path class="call" d="M398 148 L556 148" marker-end="url(#pt-arrow)" />
+      <circle class="event-dot" cx="398" cy="148" r="5" />
+      <circle class="event-dot" cx="558" cy="148" r="5" />
+      <text class="note note--start" x="408" y="176">call placed</text>
+      <text class="note" x="558" y="134">answered, three minutes later</text>
+
+      <!-- lane 3 — webhooks -->
+      <text class="lane" x="0" y="212">webhooks</text>
+      <line class="rail" x1="110" y1="208" x2="670" y2="208" />
+
+      <g class="event event--wrong">
+        <circle cx="450" cy="208" r="5" />
+        <text class="stamp" x="450" y="194">acknowledged</text>
+      </g>
+      <g class="event event--wrong">
+        <circle cx="530" cy="208" r="5" />
+        <text class="stamp" x="530" y="194">dispatched</text>
+      </g>
+      <path class="reorder" d="M530 220 q-40 22 -80 0" marker-end="url(#pt-arrow-warn)" />
+      <text class="note note--warn" x="490" y="250">the cause arrived second</text>
+
+      <g class="event event--dupe">
+        <circle cx="600" cy="208" r="5" />
+        <circle cx="640" cy="208" r="5" />
+        <text class="stamp" x="620" y="194">delivered</text>
+        <text class="note note--warn" x="620" y="228">the same webhook, twice</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Step 8 in one picture. Nothing here is observable by clicking, none of it can
+    be tested by waiting for the real clock, and two of the three marks are the
+    seeded defects <code>POLARIS-CUTOFF-OFF-BY-ONE</code> and <code>POLARIS-DOUBLE-BOOK</code>.
+  </figcaption>
+</figure>
+
+<style>
+  .lu-figure__scroll svg {
+    display: block;
+    width: 100%;
+    min-width: 620px;
+    height: auto;
+  }
+
+  .axis,
+  .rail {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .rail {
+    stroke-dasharray: 2 5;
+  }
+
+  .ticks line {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1.5;
+  }
+
+  .ticks text {
+    fill: var(--sl-color-gray-3);
+    font-family: var(--sl-font-mono);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .cutoff {
+    stroke: var(--lu-marker);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+
+  .cutoff-label {
+    fill: var(--lu-marker);
+    font-family: var(--sl-font-mono);
+    font-size: 11px;
+  }
+
+  .lane {
+    fill: var(--sl-color-gray-3);
+    font-family: var(--sl-font-mono);
+    font-size: 11px;
+  }
+
+  .event circle,
+  .event-dot {
+    fill: var(--sl-color-bg);
+    stroke: var(--sl-color-gray-2);
+    stroke-width: 2;
+  }
+
+  .event--late circle {
+    stroke: var(--sl-color-gray-4);
+  }
+
+  .event--wrong circle,
+  .event--dupe circle {
+    stroke: var(--sl-color-red-high);
+  }
+
+  .stamp {
+    fill: var(--sl-color-gray-2);
+    font-family: var(--sl-font-mono);
+    font-size: 10px;
+    text-anchor: middle;
+  }
+
+  .note {
+    fill: var(--sl-color-gray-3);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .note--start {
+    text-anchor: start;
+  }
+
+  .note--warn {
+    fill: var(--sl-color-red-high);
+  }
+
+  .call {
+    stroke: var(--sl-color-gray-2);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .reorder {
+    stroke: var(--sl-color-red-high);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .arrowhead {
+    fill: var(--sl-color-gray-2);
+  }
+
+  .arrowhead--warn {
+    fill: var(--sl-color-red-high);
+  }
+</style>

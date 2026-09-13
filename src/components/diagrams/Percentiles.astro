@@ -1,0 +1,130 @@
+---
+/**
+ * Percentiles — why a performance report quotes p95 and not the average.
+ *
+ * A response-time distribution with a long right tail: the average sits in the
+ * quiet part, and every complaint comes from the part it hides.
+ */
+---
+
+<figure class="lu-figure percentiles">
+  <div class="lu-figure__frame lu-figure__scroll">
+    <svg viewBox="0 24 640 216" role="img" aria-label="A right-skewed response-time distribution. The average sits near the peak, while p95 and p99 sit far out in the tail where the slow requests are.">
+      <defs>
+        <linearGradient id="pc-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--sl-color-gray-4)" stop-opacity="0.22" />
+          <stop offset="100%" stop-color="var(--sl-color-gray-4)" stop-opacity="0.02" />
+        </linearGradient>
+      </defs>
+
+      <!-- distribution -->
+      <path
+        class="curve-fill"
+        d="M60 190 C120 190 130 60 176 60 C214 60 226 138 266 156 C320 180 360 174 420 180 C480 186 540 188 596 189 L596 190 Z"
+      />
+      <path
+        class="curve"
+        d="M60 190 C120 190 130 60 176 60 C214 60 226 138 266 156 C320 180 360 174 420 180 C480 186 540 188 596 189"
+      />
+
+      <!-- baseline -->
+      <line class="axis" x1="60" y1="190" x2="608" y2="190" />
+      <text class="axis-label" x="60" y="206">faster</text>
+      <text class="axis-label axis-label--end" x="608" y="206">slower</text>
+
+      <!-- the average -->
+      <line class="mark mark--mean" x1="196" y1="52" x2="196" y2="190" />
+      <text class="mark-label mark-label--mean" x="196" y="42">average</text>
+      <text class="mark-note" x="196" y="226">what a report usually quotes</text>
+
+      <!-- percentiles -->
+      <line class="mark" x1="404" y1="96" x2="404" y2="190" />
+      <text class="mark-label" x="404" y="88">p95</text>
+      <line class="mark" x1="536" y1="96" x2="536" y2="190" />
+      <text class="mark-label" x="536" y="88">p99</text>
+
+      <!-- the tail -->
+      <path class="brace" d="M404 214 L404 220 L596 220 L596 214" />
+      <text class="tail" x="500" y="236">every complaint you will receive</text>
+    </svg>
+  </div>
+  <figcaption class="lu-figure__caption">
+    Step 13. The average is not wrong, it is answering a question nobody asked.
+    State which percentile the threshold uses, and gate on that.
+  </figcaption>
+</figure>
+
+<style>
+  .lu-figure__scroll svg {
+    display: block;
+    width: 100%;
+    min-width: 560px;
+    height: auto;
+  }
+
+  .curve {
+    fill: none;
+    stroke: var(--sl-color-gray-2);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+
+  .curve-fill {
+    fill: url(#pc-fill);
+    stroke: none;
+  }
+
+  .axis {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .axis-label {
+    fill: var(--sl-color-gray-4);
+    font-family: var(--sl-font-mono);
+    font-size: 10px;
+  }
+
+  .axis-label--end {
+    text-anchor: end;
+  }
+
+  .mark {
+    stroke: var(--lu-marker);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+
+  .mark--mean {
+    stroke: var(--sl-color-gray-4);
+  }
+
+  .mark-label {
+    fill: var(--lu-marker);
+    font-family: var(--sl-font-mono);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .mark-label--mean {
+    fill: var(--sl-color-gray-3);
+  }
+
+  .mark-note {
+    fill: var(--sl-color-gray-4);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .brace {
+    fill: none;
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+
+  .tail {
+    fill: var(--sl-color-gray-3);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+</style>
